@@ -1,0 +1,74 @@
+# OS / Editor
+.DS_Store
+*.swp
+*.swo
+*.log
+.idea/
+*.iml
+# .vscode/
+
+# Flutter / Dart
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.pub/
+**/.pub-cache/
+**/build/
+**/coverage/
+**/doc/api/
+
+# Pubspec lockfiles — apps commit, libraries don't
+# zp_client and zp_expert are apps: their pubspec.lock stays committed (reproducible builds across your machine, your dev, Codemagic, and the reviewer)
+# zp_core is a library: its lockfile is noise, ignore it
+packages/zp_core/pubspec.lock
+
+# Generated code — ignored, regenerate via build_runner
+# CI (Codemagic) and every clone must run: dart run build_runner build before compiling
+**/*.g.dart
+**/*.freezed.dart
+
+# Generated build mapping / symbols
+**/app.*.symbols
+**/app.*.map.json
+
+# Android
+**/.gradle/
+**/android/.gradle/
+**/android/local.properties
+**/android/key.properties
+**/*.jks
+**/*.keystore
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+**/.cxx/
+**/captures/
+
+# iOS / macOS
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/ephemeral/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Flutter/Generated.xcconfig
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/DerivedData/
+**/ios/Runner/GeneratedPluginRegistrant.*
+**/macos/Flutter/ephemeral/
+**/macos/Flutter/flutter_export_environment.sh
+**/macos/Flutter/Generated.xcconfig
+**/macos/Pods/
+**/macos/.symlinks/
+**/macos/DerivedData/
+**/macos/Runner/GeneratedPluginRegistrant.*
+
+# Linux / Windows generated
+**/linux/flutter/generated_plugin_registrant.*
+**/windows/flutter/generated_plugin_registrant.*
+**/windows/flutter/ephemeral/
+
+# Secrets / env files
+.env
+.env.*
+*.env
+*.secret
+*.secrets
