@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'navigation/router.dart';
 import 'themes/app_themes.dart';
 
-void main() => runApp(const ZpExpertApp());
+void main() => runApp(
+      const ProviderScope(
+        child: ZpExpertApp(),
+      ),
+    );
 
 class ZpExpertApp extends StatelessWidget {
   const ZpExpertApp({super.key});
