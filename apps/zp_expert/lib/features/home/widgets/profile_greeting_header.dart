@@ -101,14 +101,14 @@ class _Avatar extends StatelessWidget {
             color: Colors.white,
           ),
           child: CircleAvatar(
-            radius: 32,
+            radius: 42,
             backgroundImage: AssetImage(avatarUrl),
           ),
         ),
         if (isOnline)
           Positioned(
-            bottom: 2,
-            right: 2,
+            bottom: 7,
+            right: 7,
             child: Container(
               width: 14,
               height: 14,
@@ -154,6 +154,13 @@ class _RolePill extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFFE6E0F8),
         borderRadius: BorderRadius.circular(7),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.15),
+            blurRadius: 2,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Text(
         role,
