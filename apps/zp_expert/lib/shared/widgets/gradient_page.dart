@@ -15,15 +15,14 @@ class GradientPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              colors.primary,
-              colors.secondary,
-            ],
-            stops: const [0.0, 0.28],
+            colors: <Color>[colors.primary, colors.secondary],
+            stops: const <double>[0.0, 0.28],
           ),
         ),
         child: SafeArea(child: child),

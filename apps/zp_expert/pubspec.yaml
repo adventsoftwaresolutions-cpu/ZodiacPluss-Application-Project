@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   go_router: ^14.0.0
+  skeletonizer: ^1.4.2
   flutter_localizations:
     sdk: flutter
 
@@ -36,3 +37,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
