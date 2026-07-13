@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../features/faq/faq.dart';
 import 'package:go_router/go_router.dart';
 
 import 'navigation_scaffold.dart';
@@ -17,7 +18,7 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: '/home',
+  initialLocation: '/faq',
   routes: <RouteBase>[
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state, StatefulNavigationShell shell) {
@@ -37,6 +38,10 @@ final GoRouter expertRouter = GoRouter(
           GoRoute(path: '/profile', builder: (BuildContext c, GoRouterState s) => const ProfileScreen()),
         ]),
       ],
+    ),
+    GoRoute(
+      path: '/faq',
+      builder: (BuildContext c, GoRouterState s) => const FaqPage(),
     ),
   ],
 );
