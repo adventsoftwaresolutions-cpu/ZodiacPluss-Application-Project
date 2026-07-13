@@ -22,6 +22,12 @@ sealed class AppThemes {
           onSurface: Colors.black87,
           onError: Colors.white,
         ),
+        dividerColor: AppColors.separatorLight,
+        dividerTheme: const DividerThemeData(
+          color: AppColors.separatorLight,
+          thickness: 1,
+          space: 1,
+        ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: AppColors.white,
           selectedItemColor: AppColors.primary,
@@ -46,6 +52,12 @@ sealed class AppThemes {
           onSecondary: Colors.white,
           onSurface: Colors.white,
           onError: Colors.white,
+        ),
+        dividerColor: AppColors.separatorDark,
+        dividerTheme: const DividerThemeData(
+          color: AppColors.separatorDark,
+          thickness: 1,
+          space: 1,
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: Color(0xFF1A1826),

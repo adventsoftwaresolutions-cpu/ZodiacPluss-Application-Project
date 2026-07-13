@@ -19,6 +19,8 @@ sealed class AppColors {
 
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
+  static const Color separatorLight = Color(0x1A000000);
+  static const Color separatorDark = Color(0x26FFFFFF);
 
   // =========================
   // Semantic

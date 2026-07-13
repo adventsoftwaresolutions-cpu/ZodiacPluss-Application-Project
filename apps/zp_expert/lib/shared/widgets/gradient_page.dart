@@ -25,7 +25,7 @@ class GradientPage extends StatelessWidget {
             stops: const <double>[0.0, 0.28],
           ),
         ),
-        child: SafeArea(child: child),
+        child: SafeArea(bottom: false, top:false, child: child),
       ),
     );
   }

@@ -22,8 +22,8 @@ class ManagePricingCard extends StatelessWidget {
                 'assets/icons/offer.svg',
                 width: 22,
                 height: 22,
-                colorFilter: const ColorFilter.mode(
-                  Color(0xFF2C6E6B),
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).colorScheme.primary,
                   BlendMode.srcIn,
                 ),
               ),
@@ -38,9 +38,9 @@ class ManagePricingCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.arrow_forward_rounded,
-                color: Color(0xFF2C6E6B),
+                color: Theme.of(context).colorScheme.primary,
                 size: 20,
               ),
             ],

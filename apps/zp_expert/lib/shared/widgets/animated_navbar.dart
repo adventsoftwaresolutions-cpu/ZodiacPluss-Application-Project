@@ -27,7 +27,8 @@ class AnimatedNavbar extends StatelessWidget {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final Color activeColor =
         isDark ? AppColors.primaryVariant : AppColors.primary;
-    const Color inactiveColor = Colors.white;
+    final Color inactiveColor =
+        (isDark ? Colors.white : Colors.black87).withValues(alpha: 0.55);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -40,13 +41,39 @@ class AnimatedNavbar extends StatelessWidget {
           child: Container(
             height: _barHeight,
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.4),
+              // subtle translucent gradient to give depth
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: <Color>[
+                  Theme.of(context).colorScheme.surface.withOpacity(0.46),
+                  Theme.of(context).colorScheme.surface.withOpacity(0.32),
+                ],
+              ),
               borderRadius: BorderRadius.circular(AppRadius.xl),
               border: Border.all(
-                color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.1),
+                color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08),
               ),
+              // slight outer shadow for lift
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.06),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+                // a tiny negative spread shadow to fake inner depth (lightweight)
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.03),
+                  blurRadius: 6,
+                  offset: const Offset(0, 1),
+                  spreadRadius: -4,
+                ),
+              ],
             ),
-            child: LayoutBuilder(
+            child: Stack(
+              children: <Widget>[
+                // main interactive area
+                LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
                 final double itemWidth = constraints.maxWidth / items.length;
                 return Stack(
@@ -79,6 +106,14 @@ class AnimatedNavbar extends StatelessWidget {
                                 selected ? item.selectedIcon : item.icon,
                                 color: selected ? activeColor : inactiveColor,
                                 size: 24,
+                                shadows: selected
+                                    ? null
+                                    : const <Shadow>[
+                                        Shadow(
+                                          color: Colors.black38,
+                                          blurRadius: 4,
+                                        ),
+                                      ],
                               ),
                             ),
                           ),
@@ -88,6 +123,31 @@ class AnimatedNavbar extends StatelessWidget {
                   ],
                 );
               },
+                ),
+                // subtle top sheen for glassy highlight
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 6,
+                  child: IgnorePointer(
+                    ignoring: true,
+                    child: Container(
+                      height: 18,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: <Color>[
+                            Colors.white.withOpacity(isDark ? 0.03 : 0.18),
+                            Colors.white.withOpacity(isDark ? 0.01 : 0.06),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(AppRadius.xl),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
