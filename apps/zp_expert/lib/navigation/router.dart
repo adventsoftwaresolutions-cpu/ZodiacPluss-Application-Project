@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../features/faq/faq.dart';
+import '../../features/auth/auth.dart';
+import '../../features/verification/verification.dart';
 import 'package:go_router/go_router.dart';
 
 import 'navigation_scaffold.dart';
@@ -17,7 +20,7 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: '/home',
+  initialLocation: '/verification',
   routes: <RouteBase>[
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state, StatefulNavigationShell shell) {
@@ -37,6 +40,19 @@ final GoRouter expertRouter = GoRouter(
           GoRoute(path: '/profile', builder: (BuildContext c, GoRouterState s) => const ProfileScreen()),
         ]),
       ],
+    ),
+    GoRoute(
+      path: '/faq',
+      builder: (BuildContext c, GoRouterState s) => const FaqPage(),
+    ),
+    GoRoute(
+      path: '/auth',
+      builder: (BuildContext c, GoRouterState s) => const AuthPage(),
+    ),
+    GoRoute(
+      path: '/verification',
+      builder: (BuildContext c, GoRouterState s) =>
+          const VerificationPage(),
     ),
   ],
 );

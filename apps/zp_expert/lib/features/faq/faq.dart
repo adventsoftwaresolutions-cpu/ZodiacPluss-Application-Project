@@ -1,0 +1,38 @@
+import 'package:flutter/material.dart';
+
+import '../../shared/widgets/gradient_page.dart';
+import 'widgets/faq_header.dart';
+import 'widgets/faq_list.dart';
+
+class FaqPage extends StatelessWidget {
+  const FaqPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GradientPage(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          20,
+          12,
+          20,
+          0,
+        ),
+        child: Column(
+          children: <Widget>[
+            FaqHeader(
+              onBackTap: () => Navigator.pop(context),
+              onNotificationTap: () {},
+              onChatTap: () {},
+            ),
+
+            const SizedBox(height: 28),
+
+            const Expanded(
+              child: FaqList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
