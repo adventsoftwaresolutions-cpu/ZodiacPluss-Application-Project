@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../features/faq/faq.dart';
+import '../../features/verification_pending/verification_pending.dart';
 import '../../features/auth/auth.dart';
 import '../../features/verification/verification.dart';
 import 'package:go_router/go_router.dart';
@@ -20,7 +21,7 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: '/verification',
+  initialLocation: '/verification-pending',
   routes: <RouteBase>[
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state, StatefulNavigationShell shell) {
@@ -53,6 +54,10 @@ final GoRouter expertRouter = GoRouter(
       path: '/verification',
       builder: (BuildContext c, GoRouterState s) =>
           const VerificationPage(),
-    ),
+    ),GoRoute(
+      path: '/verification-pending',
+      builder: (BuildContext c, GoRouterState s) =>
+          const VerificationPendingPage(),
+),
   ],
 );
