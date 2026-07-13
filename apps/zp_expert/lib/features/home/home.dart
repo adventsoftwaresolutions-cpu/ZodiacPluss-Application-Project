@@ -1,15 +1,20 @@
 // home.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zp_expert/features/home/widgets/manage_pricing_card.dart';
 import '../../shared/widgets/gradient_page.dart';
 import 'widgets/profile_greeting_header.dart';
 import 'widgets/wallet_balance_card.dart';
 import 'widgets/availability_toggle_card.dart';
+import 'data/availability_controller.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final status = ref.watch(availabilityControllerProvider);
+
     return GradientPage(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -21,7 +26,7 @@ class HomePage extends StatelessWidget {
               role: 'Psychologist',
               avatarUrl: 'assets/images/dp.jpg',
               isVerified: true,
-              isAvailable: true,
+              status: status,
               onNotificationTap: () {},
               onChatTap: () {},
             ),
@@ -49,6 +54,12 @@ class HomePage extends StatelessWidget {
                   const AvailabilityToggleCard(),
                 ],
               ),
+            ),
+            const SizedBox(height: 12),
+            ManagePricingCard(
+              onTap: () {
+                // TODO: wire to pricing/offers route once that screen exists
+              },
             ),
           ],
         ),

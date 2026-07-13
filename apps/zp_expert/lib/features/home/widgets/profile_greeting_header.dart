@@ -1,6 +1,7 @@
 // widgets/profile_greeting_header.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../data/availability_status.dart';
 
 class ProfileGreetingHeader extends StatelessWidget {
   const ProfileGreetingHeader({
@@ -8,7 +9,7 @@ class ProfileGreetingHeader extends StatelessWidget {
     required this.role,
     required this.avatarUrl,
     required this.isVerified,
-    required this.isAvailable,
+    required this.status,
     required this.onNotificationTap,
     required this.onChatTap,
     super.key,
@@ -18,7 +19,7 @@ class ProfileGreetingHeader extends StatelessWidget {
   final String role;
   final String avatarUrl;
   final bool isVerified;
-  final bool isAvailable;
+  final AvailabilityStatus status;
   final VoidCallback onNotificationTap;
   final VoidCallback onChatTap;
 
@@ -27,7 +28,7 @@ class ProfileGreetingHeader extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        _Avatar(avatarUrl: avatarUrl, isOnline: isAvailable),
+        _Avatar(avatarUrl: avatarUrl, isOnline: status.isOnline),
         const SizedBox(width: 16),
         Expanded(
           child: Column(
@@ -53,7 +54,7 @@ class ProfileGreetingHeader extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  if (isVerified) ...<Widget>[
+                      if (isVerified) ...<Widget>[
                     const SizedBox(width: 6),
                     const _VerifiedBadge(),
                   ],
@@ -61,10 +62,8 @@ class ProfileGreetingHeader extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               _RolePill(role: role),
-              if (isAvailable) ...<Widget>[
-                const SizedBox(height: 6),
-                const _AvailabilityStatus(),
-              ],
+              const SizedBox(height: 6),
+              _AvailabilityStatus(status: status),
             ],
           ),
         ),
@@ -105,20 +104,27 @@ class _Avatar extends StatelessWidget {
             backgroundImage: AssetImage(avatarUrl),
           ),
         ),
-        if (isOnline)
-          Positioned(
-            bottom: 7,
-            right: 7,
+        Positioned(
+          bottom: 7,
+          right: 7,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (Widget child, Animation<double> anim) {
+              return ScaleTransition(scale: anim, child: FadeTransition(opacity: anim, child: child));
+            },
             child: Container(
+              // key ensures AnimatedSwitcher distinguishes between online/offline
+              key: ValueKey<bool>(isOnline),
               width: 14,
               height: 14,
               decoration: BoxDecoration(
-                color: Colors.green,
+                color: isOnline ? Colors.green : Colors.red,
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: 2),
               ),
             ),
           ),
+        ),
       ],
     );
   }
@@ -174,22 +180,38 @@ class _RolePill extends StatelessWidget {
 }
 
 class _AvailabilityStatus extends StatelessWidget {
-  const _AvailabilityStatus();
+  const _AvailabilityStatus({required this.status});
+
+  final AvailabilityStatus status;
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    final bool online = status.isOnline;
+    final Color color = online ? const Color(0xFF2CA340) : Colors.red;
+    final String text = online
+        ? 'Available for sessions'
+        : 'Back at ${_formatTime(status.offlineUntil)}';
+
+    return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Icon(Icons.circle, size: 8, color: Color(0xFF2CA340)),
-        SizedBox(width: 6),
+        Icon(Icons.circle, size: 8, color: color),
+        const SizedBox(width: 6),
         Text(
-          'Available for sessions',
-          style: TextStyle(color: Color(0xFF2CA340), fontSize: 12),
+          text,
+          style: TextStyle(color: color, fontSize: 12),
         ),
       ],
     );
   }
+}
+
+String _formatTime(DateTime? time) {
+  if (time == null) return '—';
+  final int hour = time.hour % 12 == 0 ? 12 : time.hour % 12;
+  final String period = time.hour >= 12 ? 'PM' : 'AM';
+  final String minute = time.minute.toString().padLeft(2, '0');
+  return '$hour:$minute $period';
 }
 
 class _IconButtonCircle extends StatelessWidget {

@@ -25,10 +25,17 @@ class AvailabilityToggleCard extends ConsumerWidget {
             borderRadius: BorderRadius.circular(14),
           ),
           alignment: Alignment.center,
-          child: Icon(
-            Icons.circle,
-            size: 14,
-            color: status.isOnline ? Colors.green : Colors.red,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (Widget child, Animation<double> anim) {
+              return ScaleTransition(scale: anim, child: FadeTransition(opacity: anim, child: child));
+            },
+            child: Icon(
+              Icons.circle,
+              key: ValueKey<bool>(status.isOnline),
+              size: 14,
+              color: status.isOnline ? Colors.green : Colors.red,
+            ),
           ),
         ),
         const SizedBox(width: 12),
@@ -37,19 +44,37 @@ class AvailabilityToggleCard extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Text(
-                status.isOnline ? 'You are online' : 'You are offline',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: status.isOnline ? Colors.green : Colors.black54,
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (Widget child, Animation<double> anim) {
+                  return SlideTransition(
+                    position: Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(anim),
+                    child: FadeTransition(opacity: anim, child: child),
+                  );
+                },
+                child: Text(
+                  status.isOnline ? 'You are online' : 'You are offline',
+                  key: ValueKey<bool>(status.isOnline),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: status.isOnline ? Colors.green : Colors.black54,
+                  ),
                 ),
               ),
-              Text(
-                status.isOnline
-                    ? 'You are visible to clients'
-                    : 'Back at ${_formatTime(status.offlineUntil)}',
-                style: const TextStyle(color: Colors.black54, fontSize: 13),
+              const SizedBox(height: 4),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (Widget child, Animation<double> anim) {
+                  return FadeTransition(opacity: anim, child: child);
+                },
+                child: Text(
+                  status.isOnline
+                      ? 'You are visible to clients'
+                      : 'Back at ${_formatTime(status.offlineUntil)}',
+                  key: ValueKey<int?>(status.offlineUntil?.millisecondsSinceEpoch),
+                  style: TextStyle(color: status.isOnline ? Colors.black54 : Colors.red, fontSize: 13),
+                ),
               ),
             ],
           ),

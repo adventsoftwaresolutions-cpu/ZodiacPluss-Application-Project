@@ -1,23 +1,28 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'availability_repository.dart';
 import 'availability_status.dart';
 
 final StateNotifierProvider<AvailabilityController, AvailabilityStatus>
     availabilityControllerProvider =
     StateNotifierProvider<AvailabilityController, AvailabilityStatus>(
-  (Ref ref) => AvailabilityController(),
+  (Ref ref) =>
+      AvailabilityController(ref.watch(availabilityRepositoryProvider)),
 );
 
 class AvailabilityController extends StateNotifier<AvailabilityStatus> {
-  AvailabilityController() : super(AvailabilityStatus.online());
+  AvailabilityController(this._repository)
+      : super(AvailabilityStatus.online());
 
-  /// TODO: replace with real repo call (API/local persistence) once backend
-  /// contract for expert availability is defined.
+  final AvailabilityRepository _repository;
+
   Future<void> goOnline() async {
+    await _repository.setOnline();
     state = state.copyWith(isOnline: true, clearOfflineUntil: true);
   }
 
   Future<void> goOffline(DateTime returnTime) async {
+    await _repository.setOffline(returnTime);
     state = state.copyWith(isOnline: false, offlineUntil: returnTime);
   }
 }
