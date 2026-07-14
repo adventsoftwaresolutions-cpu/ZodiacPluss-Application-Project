@@ -12,6 +12,9 @@ sealed class AppColors {
 
   static const Color secondary = Color(0xFFE8EBE4);
   static const Color secondaryVariant = Color(0xFFFBFBFB);
+  static const Color ticketField = Color(0xFFE6F1F0);
+  static const Color ticketText = Color(0xFF10143D);
+  static const Color mutedText = Color(0xFF526565);
 
   // =========================
   // Neutrals

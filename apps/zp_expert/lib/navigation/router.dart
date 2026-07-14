@@ -15,6 +15,7 @@ import '../../features/home/home.dart';
 import '../../features/wallet/wallet.dart';
 import '../../features/session/session.dart';
 import '../../features/profile/profile.dart';
+import '../../features/support/support.dart';
 
 final List<NavItem> expertNavItems = <NavItem>[
   const NavItem(icon: Icons.home_outlined, selectedIcon: Icons.home),
@@ -27,8 +28,13 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: '/home',
+  initialLocation: '/raise-ticket',
   routes: <RouteBase>[
+    GoRoute(
+      path: '/raise-ticket',
+      builder: (BuildContext context, GoRouterState state) =>
+          const RaiseTicketPage(),
+    ),
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state,
           StatefulNavigationShell shell) {
@@ -85,10 +91,10 @@ final GoRouter expertRouter = GoRouter(
     GoRoute(
       path: '/verification-failed',
       builder: (context, state) => const VerificationFailedPage(),
-    ),GoRoute(
+    ),
+    GoRoute(
       path: '/max-attempt',
-      builder: (context, state) =>
-      const MaxAttemptExhaustedPage(),
-),
+      builder: (context, state) => const MaxAttemptExhaustedPage(),
+    ),
   ],
 );
