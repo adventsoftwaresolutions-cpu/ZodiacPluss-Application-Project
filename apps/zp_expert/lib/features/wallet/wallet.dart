@@ -1,128 +1,209 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zp_expert/features/wallet/data/provider/transaction_history_provider.dart';
 import 'package:zp_expert/features/wallet/widgets/payout_assistance_banner.dart';
+import 'widgets/stats_row_skeleton.dart';
+import 'package:zp_expert/features/wallet/widgets/transaction_card.dart';
+import 'package:zp_expert/features/wallet/widgets/transaction_card_skeleton.dart';
+import 'package:zp_expert/features/wallet/widgets/transaction_history_header.dart';
 
 import '../../shared/widgets/gradient_page.dart';
 import 'data/provider/wallet_provider.dart';
 import 'widgets/wallet_balance_card.dart';
+import 'widgets/stats_row.dart';
 import 'widgets/wallet_header.dart';
+import 'widgets/wallet_card_error.dart';
+import 'widgets/wallet_card_skeleton.dart';
 
-class WalletPage extends ConsumerWidget {
+class WalletPage extends ConsumerStatefulWidget {
   const WalletPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<WalletPage> createState() => _WalletPageState();
+}
+
+class _WalletPageState extends ConsumerState<WalletPage> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 300) {
+      ref.read(transactionHistoryProvider.notifier).loadMore();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final walletAsync = ref.watch(walletProvider);
+    final historyAsync = ref.watch(transactionHistoryProvider);
 
     return GradientPage(
       child: SafeArea(
-        child: SingleChildScrollView(
+        child: CustomScrollView(
+          controller: _scrollController,
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              WalletHeader(
-                onBackTap: () => Navigator.of(context).pop(),
-                onNotificationTap: () {}, // TODO: wire notification route
-                onChatTap: () {}, // TODO: wire chat route
-              ),
-              const SizedBox(height: 24),
-              walletAsync.when(
-                data: (wallet) => WalletBalanceCard(
-                  totalBalance: wallet.totalBalance,
-                  availableBalance: wallet.availableBalance,
-                  monthlyEarnings: wallet.monthlyEarnings,
-                ),
-                loading: () => const _WalletCardSkeleton(),
-                error: (err, stack) => _WalletCardError(
-                  message: err.toString(),
-                  onRetry: () => ref.invalidate(walletProvider),
+          slivers: <Widget>[
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              sliver: SliverToBoxAdapter(
+                child: WalletHeader(
+                  onBackTap: () => Navigator.of(context).pop(),
+                  onNotificationTap: () {}, // TODO: wire notification route
+                  onChatTap: () {}, // TODO: wire chat route
                 ),
               ),
-              const SizedBox(height: 20),
-              PayoutAssistanceBanner(
-                onGetAssistanceTap: () {}, // TODO: wire assistance or contact route
-              ),
-
-              // Upcoming widgets
-              // SizedBox(height: 16),
-              // TransactionHistoryCard(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-//Wallet skeleton and error widgets
-class _WalletCardSkeleton extends StatelessWidget {
-  const _WalletCardSkeleton();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 220,
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: const Center(
-        child: CircularProgressIndicator(color: Colors.white70),
-      ),
-    );
-  }
-}
-
-class _WalletCardError extends StatelessWidget {
-  const _WalletCardError({
-    required this.message,
-    required this.onRetry,
-  });
-
-  final String message;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 220,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            const Icon(Icons.error_outline, color: Colors.white, size: 32),
-            const SizedBox(height: 8),
-            const Text(
-              "Couldn't load your wallet",
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
             ),
-            const SizedBox(height: 4),
-            Text(
-              message,
-              style: const TextStyle(color: Colors.white70, fontSize: 12),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton(
-              onPressed: onRetry,
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.white,
-                side: const BorderSide(color: Colors.white54),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+              sliver: SliverToBoxAdapter(
+                child: walletAsync.when(
+                  data: (wallet) => WalletBalanceCard(
+                    totalBalance: wallet.totalBalance,
+                    availableBalance: wallet.availableBalance,
+                    monthlyEarnings: wallet.monthlyEarnings,
+                  ),
+                  loading: () => const WalletCardSkeleton(),
+                  error: (err, stack) => WalletCardError(
+                    message: "Failed to load wallet data.",
+                    onRetry: () => ref.invalidate(walletProvider),
+                  ),
+                ),
               ),
-              child: const Text('Retry'),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+              sliver: SliverToBoxAdapter(
+                child: walletAsync.when(
+                  data: (wallet) => StatsRow(
+                    totalWithdraw: wallet.totalWithdraw,
+                    sessionsCompleted: wallet.sessionsCompleted,
+                    avgEarningPerSession: wallet.avgEarningPerSession,
+                  ),
+                  loading: () => const StatsRowSkeleton(),
+                  error: (err, stack) => const SizedBox.shrink(),
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+              sliver: SliverToBoxAdapter(
+                child: PayoutAssistanceBanner(
+                  onGetAssistanceTap: () {
+                    // TODO: wire assistance or contact route
+                  },
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+              sliver: SliverToBoxAdapter(
+                child: TransactionHistoryHeader(
+                  onDownloadRangeTap: (range) {
+                    // TODO: implement actual export — fetch transactions in
+                    // [range.start, range.end] from repository, generate
+                    // PDF/CSV, trigger device save/share. Deferred per instruction,
+                    // same as per-transaction receipt download.
+                    debugPrint('Download requested: ${range.start} → ${range.end}');
+                  },
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+              sliver: historyAsync.when(
+                data: (state) {
+                  if (state.items.isEmpty) {
+                    return const SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 40),
+                        child: Center(
+                          child: Text('No transactions yet', style: TextStyle(color: Colors.black45)),
+                        ),
+                      ),
+                    );
+                  }
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        if (index == state.items.length) {
+                          return _buildFooter(state);
+                        }
+                        return TransactionCard(transaction: state.items[index]);
+                      },
+                      childCount: state.items.length + 1,
+                    ),
+                  );
+                },
+                loading: () => SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => const TransactionCardSkeleton(),
+                    childCount: 5,
+                  ),
+                ),
+                error: (err, stack) => SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    child: Center(
+                      child: Column(
+                        children: <Widget>[
+                          const Text("Couldn't load transactions", style: TextStyle(color: Colors.black54)),
+                          const SizedBox(height: 8),
+                          TextButton(
+                            onPressed: () => ref.invalidate(transactionHistoryProvider),
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildFooter(dynamic state) {
+    if (state.isLoadingMore) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 16),
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      );
+    }
+    if (state.loadMoreError != null) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Center(
+          child: TextButton(
+            onPressed: () => ref.read(transactionHistoryProvider.notifier).loadMore(),
+            child: const Text('Retry loading more'),
+          ),
+        ),
+      );
+    }
+    if (!state.hasMore) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 16),
+        child: Center(
+          child: Text("You've reached the beginning", style: TextStyle(fontSize: 12, color: Colors.black38)),
+        ),
+      );
+    }
+    return const SizedBox.shrink();
   }
 }

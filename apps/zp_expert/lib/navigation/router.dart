@@ -28,7 +28,11 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
+<<<<<<< HEAD
   initialLocation: '/contact',
+=======
+  initialLocation: '/home',
+>>>>>>> de6b5f01920c6ff071d266148987c2187078db91
   routes: <RouteBase>[
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state,
