@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../features/faq/faq.dart';
 import '../../features/verification_pending/verification_pending.dart';
 import '../../features/auth/auth.dart';
+import '../../features/max_attempt_exhausted/max_attempt_exhausted.dart';
 import '../../features/verification_failed/verification_failed.dart';
 import '../../features/verification_complete/verification_complete.dart';
 import '../../features/verification/verification.dart';
@@ -26,7 +27,7 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: '/home',
+  initialLocation: '/max-attempt',
   routes: <RouteBase>[
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state,
@@ -84,6 +85,10 @@ final GoRouter expertRouter = GoRouter(
     GoRoute(
       path: '/verification-failed',
       builder: (context, state) => const VerificationFailedPage(),
-    ),
+    ),GoRoute(
+      path: '/max-attempt',
+      builder: (context, state) =>
+      const MaxAttemptExhaustedPage(),
+),
   ],
 );
