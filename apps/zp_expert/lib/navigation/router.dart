@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../features/faq/faq.dart';
-import '../../features/contact/contact.dart';
 import '../../features/verification_pending/verification_pending.dart';
 import '../../features/auth/auth.dart';
 import '../../features/max_attempt_exhausted/max_attempt_exhausted.dart';
@@ -28,11 +27,7 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-<<<<<<< HEAD
-  initialLocation: '/contact',
-=======
   initialLocation: '/home',
->>>>>>> de6b5f01920c6ff071d266148987c2187078db91
   routes: <RouteBase>[
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state,
@@ -94,9 +89,6 @@ final GoRouter expertRouter = GoRouter(
       path: '/max-attempt',
       builder: (context, state) =>
       const MaxAttemptExhaustedPage(),
-),GoRoute(
-      path: '/contact',
-       builder: (BuildContext c, GoRouterState s) => const ContactPage(),
 ),
   ],
 );
