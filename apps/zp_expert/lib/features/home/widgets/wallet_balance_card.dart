@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:zp_expert/themes/app_themes.dart';
+import 'package:zp_expert/shared/utils/currency_formatter.dart';
 
 import '../data/wallet_repository.dart';
 
@@ -14,13 +13,12 @@ class WalletBalanceCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<double> balance = ref.watch(walletBalanceProvider);
-    final NumberFormat formatter =
-        NumberFormat.currency(locale: 'en_IN', symbol: '₹', decimalDigits: 2);
 
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         const double baseWidth = 360.0;
-        final double scale = (constraints.maxWidth / baseWidth).clamp(0.85, 1.4);
+        final double scale =
+            (constraints.maxWidth / baseWidth).clamp(0.85, 1.4);
 
         final double iconSize = 40 * scale;
         final double spacing12 = 12 * scale;
@@ -49,12 +47,13 @@ class WalletBalanceCard extends ConsumerWidget {
                 children: <Widget>[
                   Text(
                     'Wallet Balance',
-                    style: TextStyle(fontSize: titleFont, color: Colors.black54),
+                    style:
+                        TextStyle(fontSize: titleFont, color: Colors.black54),
                   ),
                   SizedBox(height: 2 * scale),
                   balance.when(
                     data: (double value) => Text(
-                      formatter.format(value),
+                      formatCompactINR(value),
                       style: TextStyle(
                         fontSize: balanceFont,
                         fontWeight: FontWeight.bold,

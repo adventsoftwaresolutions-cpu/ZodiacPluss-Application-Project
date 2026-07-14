@@ -37,6 +37,7 @@ class FaqRepository {
         answer:
             'Yes. We prioritize user privacy and secure all sensitive information using industry-standard practices.',
       ),
+      
     ];
   }
 }

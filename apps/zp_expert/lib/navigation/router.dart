@@ -17,30 +17,45 @@ import '../../features/profile/profile.dart';
 
 final List<NavItem> expertNavItems = <NavItem>[
   const NavItem(icon: Icons.home_outlined, selectedIcon: Icons.home),
-  const NavItem(icon: Icons.account_balance_wallet_outlined, selectedIcon: Icons.account_balance_wallet),
-  const NavItem(icon: Icons.videocam_outlined, selectedIcon: Icons.videocam),
+  const NavItem(
+      icon: Icons.account_balance_wallet_outlined,
+      selectedIcon: Icons.account_balance_wallet),
+  const NavItem(
+      icon: Icons.history_rounded, selectedIcon: Icons.history_rounded),
   const NavItem(icon: Icons.person_outline, selectedIcon: Icons.person),
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: '/verification-failed',
+  initialLocation: '/home',
   routes: <RouteBase>[
     StatefulShellRoute.indexedStack(
-      builder: (BuildContext context, GoRouterState state, StatefulNavigationShell shell) {
-        return NavigationScaffold(navigationShell: shell, items: expertNavItems);
+      builder: (BuildContext context, GoRouterState state,
+          StatefulNavigationShell shell) {
+        return NavigationScaffold(
+            navigationShell: shell, items: expertNavItems);
       },
       branches: <StatefulShellBranch>[
         StatefulShellBranch(routes: <RouteBase>[
-          GoRoute(path: '/home', builder: (BuildContext c, GoRouterState s) => const HomePage()),
+          GoRoute(
+              path: '/home',
+              builder: (BuildContext c, GoRouterState s) => const HomePage()),
         ]),
         StatefulShellBranch(routes: <RouteBase>[
-          GoRoute(path: '/wallet', builder: (BuildContext c, GoRouterState s) => const WalletPage()),
+          GoRoute(
+              path: '/wallet',
+              builder: (BuildContext c, GoRouterState s) => const WalletPage()),
         ]),
         StatefulShellBranch(routes: <RouteBase>[
-          GoRoute(path: '/session', builder: (BuildContext c, GoRouterState s) => const SessionScreen()),
+          GoRoute(
+              path: '/session',
+              builder: (BuildContext c, GoRouterState s) =>
+                  const SessionScreen()),
         ]),
         StatefulShellBranch(routes: <RouteBase>[
-          GoRoute(path: '/profile', builder: (BuildContext c, GoRouterState s) => const ProfileScreen()),
+          GoRoute(
+              path: '/profile',
+              builder: (BuildContext c, GoRouterState s) =>
+                  const ProfileScreen()),
         ]),
       ],
     ),
@@ -54,19 +69,21 @@ final GoRouter expertRouter = GoRouter(
     ),
     GoRoute(
       path: '/verification',
-      builder: (BuildContext c, GoRouterState s) =>
-          const VerificationPage(),
-    ),GoRoute(
+      builder: (BuildContext c, GoRouterState s) => const VerificationPage(),
+    ),
+    GoRoute(
       path: '/verification-pending',
       builder: (BuildContext c, GoRouterState s) =>
           const VerificationPendingPage(),
-),    GoRoute(
+    ),
+    GoRoute(
       path: '/verification-complete',
       builder: (BuildContext c, GoRouterState s) =>
-      const VerificationCompletePage(),
-),    GoRoute(
-       path: '/verification-failed',
+          const VerificationCompletePage(),
+    ),
+    GoRoute(
+      path: '/verification-failed',
       builder: (context, state) => const VerificationFailedPage(),
-),
+    ),
   ],
 );

@@ -52,7 +52,6 @@ class FaqItem extends StatelessWidget {
                       ),
                     ),
                   ),
-
                   AnimatedRotation(
                     turns: faq.isExpanded ? 0.5 : 0,
                     duration: const Duration(milliseconds: 250),
@@ -66,29 +65,32 @@ class FaqItem extends StatelessWidget {
               ),
             ),
           ),
-
-          AnimatedCrossFade(
-            firstChild: const SizedBox.shrink(),
-            secondChild: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                18,
-                0,
-                18,
-                18,
-              ),
-              child: Text(
-                faq.answer,
-                style: TextStyle(
-                  fontSize: 14,
-                  height: 1.6,
-                  color: colors.onSurface.withValues(alpha: 0.75),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+            alignment: Alignment.topCenter,
+            child: ClipRect(
+              child: Align(
+                alignment: Alignment.topLeft,
+                heightFactor: faq.isExpanded ? 1 : 0,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    18,
+                    0,
+                    18,
+                    18,
+                  ),
+                  child: Text(
+                    faq.answer,
+                    style: TextStyle(
+                      fontSize: 14,
+                      height: 1.6,
+                      color: colors.onSurface.withValues(alpha: 0.75),
+                    ),
+                  ),
                 ),
               ),
             ),
-            crossFadeState: faq.isExpanded
-                ? CrossFadeState.showSecond
-                : CrossFadeState.showFirst,
-            duration: const Duration(milliseconds: 250),
           ),
         ],
       ),

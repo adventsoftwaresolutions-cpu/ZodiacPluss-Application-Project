@@ -10,27 +10,27 @@ class FaqPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GradientPage(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          20,
-          12,
-          20,
-          0,
-        ),
-        child: Column(
-          children: <Widget>[
-            FaqHeader(
-              onBackTap: () => Navigator.pop(context),
-              onNotificationTap: () {},
-              onChatTap: () {},
-            ),
-
-            const SizedBox(height: 28),
-
-            const Expanded(
-              child: FaqList(),
-            ),
-          ],
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            20,
+            20,
+            20,
+            0,
+          ),
+          child: Column(
+            children: <Widget>[
+              FaqHeader(
+                onBackTap: () => Navigator.pop(context),
+                onNotificationTap: () {},
+                onChatTap: () {},
+              ),
+              const SizedBox(height: 28),
+              const Expanded(
+                child: FaqList(),
+              ),
+            ],
+          ),
         ),
       ),
     );

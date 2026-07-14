@@ -7,7 +7,7 @@ abstract class WalletRepository {
 /// Placeholder until the real wallet API is wired in.
 class MockWalletRepository implements WalletRepository {
   @override
-  Future<double> fetchBalance() async => 520750.00;
+  Future<double> fetchBalance() async => 720000.00;
 }
 
 final Provider<WalletRepository> walletRepositoryProvider =
