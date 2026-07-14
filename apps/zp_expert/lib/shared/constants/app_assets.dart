@@ -21,6 +21,11 @@ class AppAssets {
   static const String questionMarkIcon = 'assets/icons/questionMark.svg';
   static const String ticketIcon = 'assets/icons/ticket.svg';
   static const String ticketStatusIcon = 'assets/icons/ticketStatus.svg';
+  static const String categoryIcon = 'assets/icons/category.svg';
+  static const String notesIcon = 'assets/icons/notes.svg';
+  static const String pencilIcon = 'assets/icons/pencil.svg';
+  static const String sendIcon = 'assets/icons/send.svg';
+  static const String uploadIcon = 'assets/icons/upload.svg';
 
   // Animations
   static const String walletAnimation =
