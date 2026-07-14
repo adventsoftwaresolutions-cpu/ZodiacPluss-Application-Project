@@ -16,6 +16,7 @@ import '../../features/wallet/wallet.dart';
 import '../../features/session/session.dart';
 import '../../features/profile/profile.dart';
 import '../../features/support/support.dart';
+import '../../features/contact/contact.dart';
 import '../../features/clients/clients.dart';
 
 final List<NavItem> expertNavItems = <NavItem>[
@@ -29,7 +30,7 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: '/clients',
+  initialLocation: '/ticket-status',
   routes: <RouteBase>[
     GoRoute(
       path: '/raise-ticket',
@@ -37,6 +38,14 @@ final GoRouter expertRouter = GoRouter(
           const RaiseTicketPage(),
     ),
     GoRoute(
+      path: '/ticket-status',
+      builder: (BuildContext context, GoRouterState state) =>
+          const TicketStatusPage(),
+    ),
+    GoRoute(
+      path: '/contact',
+      builder: (BuildContext context, GoRouterState state) =>
+          const ContactPage(),
       path: '/clients',
       builder: (BuildContext context, GoRouterState state) =>
           const ClientsPage(),

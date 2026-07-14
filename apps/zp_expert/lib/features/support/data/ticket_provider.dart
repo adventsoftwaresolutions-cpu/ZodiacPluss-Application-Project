@@ -72,3 +72,15 @@ final StateNotifierProvider<TicketController, TicketFormState>
     StateNotifierProvider<TicketController, TicketFormState>(
   (Ref ref) => TicketController(ref.watch(ticketRepositoryProvider)),
 );
+
+class TicketFilterController extends StateNotifier<TicketProgress> {
+  TicketFilterController() : super(TicketProgress.all);
+
+  void select(TicketProgress filter) => state = filter;
+}
+
+final StateNotifierProvider<TicketFilterController, TicketProgress>
+    ticketFilterProvider =
+    StateNotifierProvider<TicketFilterController, TicketProgress>(
+  (Ref ref) => TicketFilterController(),
+);
