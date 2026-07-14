@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import '../../../shared/dev/stimulated_latency.dart';
 import 'availability_repository.dart';
 import 'availability_status.dart';
 
@@ -17,11 +17,13 @@ class AvailabilityController extends StateNotifier<AvailabilityStatus> {
   final AvailabilityRepository _repository;
 
   Future<void> goOnline() async {
+    await simulateNetworkLatency();
     await _repository.setOnline();
     state = state.copyWith(isOnline: true, clearOfflineUntil: true);
   }
 
   Future<void> goOffline(DateTime returnTime) async {
+    await simulateNetworkLatency();
     await _repository.setOffline(returnTime);
     state = state.copyWith(isOnline: false, offlineUntil: returnTime);
   }

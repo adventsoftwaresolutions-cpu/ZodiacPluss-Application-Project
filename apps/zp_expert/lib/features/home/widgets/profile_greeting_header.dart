@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../data/availability_status.dart';
+import '../../../shared/widgets/shimmer_box.dart';
 
 class ProfileGreetingHeader extends StatelessWidget {
   const ProfileGreetingHeader({
@@ -242,6 +243,40 @@ class _IconButtonCircle extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class ProfileGreetingHeaderSkeleton extends StatelessWidget {
+  const ProfileGreetingHeaderSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        ShimmerBox(width: 90, height: 90, borderRadius: 45),
+        SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ShimmerBox(width: 100, height: 14),
+              SizedBox(height: 8),
+              ShimmerBox(width: 160, height: 22),
+              SizedBox(height: 8),
+              ShimmerBox(width: 90, height: 18, borderRadius: 7),
+              SizedBox(height: 10),
+              ShimmerBox(width: 130, height: 12),
+            ],
+          ),
+        ),
+        SizedBox(width: 8),
+        ShimmerBox(width: 35, height: 35, borderRadius: 17.5),
+        SizedBox(width: 10),
+        ShimmerBox(width: 35, height: 35, borderRadius: 17.5),
+      ],
     );
   }
 }

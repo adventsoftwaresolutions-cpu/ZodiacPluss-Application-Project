@@ -62,7 +62,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   onNotificationTap: () {},
                   onChatTap: () {},
                 ),
-                loading: () => const SizedBox(height: 90),
+                loading: () => const ProfileGreetingHeaderSkeleton(),
                 error: (Object e, StackTrace s) => const SizedBox.shrink(),
               ),
               const SizedBox(height: 24),

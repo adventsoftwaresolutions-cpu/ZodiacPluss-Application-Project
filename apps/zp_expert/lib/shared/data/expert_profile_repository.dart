@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import '../dev/stimulated_latency.dart';
 import 'expert_profile.dart';
 
 abstract class ExpertProfileRepository {
@@ -12,6 +12,7 @@ abstract class ExpertProfileRepository {
 class MockExpertProfileRepository implements ExpertProfileRepository {
   @override
   Future<ExpertProfile> fetchProfile() async {
+    await simulateNetworkLatency();
     return const ExpertProfile(
       id: 'expert_001',
       name: 'Shreya',

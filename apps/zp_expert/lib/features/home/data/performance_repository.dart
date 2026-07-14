@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import '../../../shared/dev/stimulated_latency.dart';
 import 'performance_stats.dart';
 
 abstract class PerformanceRepository {
@@ -10,6 +10,7 @@ abstract class PerformanceRepository {
 class MockPerformanceRepository implements PerformanceRepository {
   @override
   Future<PerformanceStats> fetchStats() async {
+    await simulateNetworkLatency();
     return const PerformanceStats(
       earningsToday: 5840.00,
       averageRating: 4.8,

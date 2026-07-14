@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-
+import 'performance_card_skeleton.dart';
 import '../data/performance_repository.dart';
 import '../data/performance_stats.dart';
 
@@ -49,10 +49,7 @@ class PerformanceCard extends ConsumerWidget {
               onTransactionHistoryTap: onTransactionHistoryTap,
               onReviewsTap: onReviewsTap,
             ),
-            loading: () => const Padding(
-              padding: EdgeInsets.symmetric(vertical: 32),
-              child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-            ),
+            loading: () => const PerformanceCardSkeleton(),
             error: (Object error, StackTrace stackTrace) => const Padding(
               padding: EdgeInsets.symmetric(vertical: 24),
               child: Text(

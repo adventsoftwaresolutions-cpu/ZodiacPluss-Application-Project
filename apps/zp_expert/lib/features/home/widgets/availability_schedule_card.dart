@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
+import 'availability_schedule_card_skeleton.dart';
 import '../data/weekly_availability.dart';
 import '../data/weekly_availability_controller.dart';
 
@@ -29,10 +29,7 @@ class AvailabilityScheduleCard extends ConsumerWidget {
           scheduleState.when(
             data: (WeeklyAvailability schedule) =>
                 _ScheduleRows(schedule: schedule),
-            loading: () => const Padding(
-              padding: EdgeInsets.symmetric(vertical: 32),
-              child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-            ),
+            loading: () => const AvailabilityScheduleCardSkeleton(),
             error: (Object error, StackTrace stackTrace) => const Padding(
               padding: EdgeInsets.symmetric(vertical: 24),
               child: Text(
