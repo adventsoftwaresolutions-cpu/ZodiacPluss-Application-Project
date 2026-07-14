@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../shared/constans/app_assets.dart';
+
 class ProfileGreetingHeader extends StatelessWidget {
   const ProfileGreetingHeader({
     required this.name,
@@ -70,12 +72,12 @@ class ProfileGreetingHeader extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         _IconButtonCircle(
-          assetPath: 'assets/icons/notification.svg',
+          assetPath: AppAssets.notificationIcon,
           onTap: onNotificationTap,
         ),
         const SizedBox(width: 10),
         _IconButtonCircle(
-          assetPath: 'assets/icons/chat.svg',
+          assetPath: AppAssets.chatIcon,
           onTap: onChatTap,
         ),
       ],

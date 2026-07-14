@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../data/wallet_repository.dart';
+import '../../../shared/constans/app_assets.dart';
 
 class WalletBalanceCard extends ConsumerWidget {
   const WalletBalanceCard({required this.onCheckStatus, super.key});
@@ -19,7 +20,7 @@ class WalletBalanceCard extends ConsumerWidget {
     return Row(
       children: <Widget>[
         SvgPicture.asset(
-          'assets/icons/wallet.svg',
+          AppAssets.walletIcon,
           width: 40,
           height: 40,
         ),
@@ -59,8 +60,7 @@ class WalletBalanceCard extends ConsumerWidget {
           onPressed: onCheckStatus,
           style: TextButton.styleFrom(
             backgroundColor: const Color(0xFFD6E9E7),
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),

@@ -18,7 +18,7 @@ class ZpExpertApp extends StatelessWidget {
       routerConfig: expertRouter,
       theme: AppThemes.light,
       darkTheme: AppThemes.dark,
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
     );
   }
 }
