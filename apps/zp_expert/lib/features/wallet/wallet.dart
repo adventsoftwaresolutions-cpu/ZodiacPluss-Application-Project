@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zp_expert/features/wallet/widgets/payout_assistance_banner.dart';
 
 import '../../shared/widgets/gradient_page.dart';
 import 'data/provider/wallet_provider.dart';
@@ -38,6 +39,10 @@ class WalletPage extends ConsumerWidget {
                   message: err.toString(),
                   onRetry: () => ref.invalidate(walletProvider),
                 ),
+              ),
+              const SizedBox(height: 20),
+              PayoutAssistanceBanner(
+                onGetAssistanceTap: () {}, // TODO: wire assistance or contact route
               ),
 
               // Upcoming widgets

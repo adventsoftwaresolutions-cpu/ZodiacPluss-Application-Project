@@ -17,7 +17,7 @@ class StubWalletRepository implements WalletRepository {
     return const WalletModel(
       totalBalance: 24850000,
       availableBalance: 18400,
-      monthlyEarnings: 6450,
+      monthlyEarnings: 6450, totalWithdraw: 6000, sessionsCompleted: 12, avgEarningPerSession: 537.5,
     );
   }
 }
