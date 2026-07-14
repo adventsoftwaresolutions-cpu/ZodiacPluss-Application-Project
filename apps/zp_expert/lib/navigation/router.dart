@@ -16,6 +16,7 @@ import '../../features/wallet/wallet.dart';
 import '../../features/session/session.dart';
 import '../../features/profile/profile.dart';
 import '../../features/support/support.dart';
+import '../../features/clients/clients.dart';
 
 final List<NavItem> expertNavItems = <NavItem>[
   const NavItem(icon: Icons.home_outlined, selectedIcon: Icons.home),
@@ -28,12 +29,17 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: '/raise-ticket',
+  initialLocation: '/clients',
   routes: <RouteBase>[
     GoRoute(
       path: '/raise-ticket',
       builder: (BuildContext context, GoRouterState state) =>
           const RaiseTicketPage(),
+    ),
+    GoRoute(
+      path: '/clients',
+      builder: (BuildContext context, GoRouterState state) =>
+          const ClientsPage(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state,
