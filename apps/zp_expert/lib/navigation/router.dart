@@ -17,6 +17,7 @@ import '../../features/session/session.dart';
 import '../../features/profile/profile.dart';
 import '../../features/support/support.dart';
 import '../../features/contact/contact.dart';
+import '../../features/clients/clients.dart';
 
 final List<NavItem> expertNavItems = <NavItem>[
   const NavItem(icon: Icons.home_outlined, selectedIcon: Icons.home),
@@ -45,6 +46,9 @@ final GoRouter expertRouter = GoRouter(
       path: '/contact',
       builder: (BuildContext context, GoRouterState state) =>
           const ContactPage(),
+      path: '/clients',
+      builder: (BuildContext context, GoRouterState state) =>
+          const ClientsPage(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state,
