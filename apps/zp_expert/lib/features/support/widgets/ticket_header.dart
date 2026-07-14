@@ -9,12 +9,16 @@ class TicketHeader extends StatelessWidget {
     required this.onBackTap,
     required this.onNotificationTap,
     required this.onChatTap,
+    this.title = 'Raise a Ticket',
+    this.subtitle = 'We are here to help you',
     super.key,
   });
 
   final VoidCallback onBackTap;
   final VoidCallback onNotificationTap;
   final VoidCallback onChatTap;
+  final String title;
+  final String subtitle;
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -36,13 +40,12 @@ class TicketHeader extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16),
-            const Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('Raise a Ticket', style: TicketStyles.pageTitle),
-                  Text('We are here to help you',
-                      style: TicketStyles.pageSubtitle),
+                  Text(title, style: TicketStyles.pageTitle),
+                  Text(subtitle, style: TicketStyles.pageSubtitle),
                 ],
               ),
             ),

@@ -7,11 +7,9 @@ import '../../themes/app_radius.dart';
 import '../../themes/app_spacing.dart';
 import 'data/ticket_model.dart';
 import 'data/ticket_provider.dart';
-import 'data/ticket_repository.dart';
 import 'widgets/ticket_form_card.dart';
 import 'widgets/ticket_header.dart';
 import 'widgets/ticket_status_card.dart';
-import 'widgets/ticket_styles.dart';
 
 class RaiseTicketPage extends ConsumerStatefulWidget {
   const RaiseTicketPage({super.key});
@@ -58,49 +56,6 @@ class _RaiseTicketPageState extends ConsumerState<RaiseTicketPage> {
     _subjectController.clear();
     _descriptionController.clear();
     _showMessage('Ticket ${ticket.id} submitted successfully.');
-  }
-
-  Future<void> _showStatus() async {
-    final List<SupportTicket> tickets =
-        await ref.read(ticketRepositoryProvider).fetchTickets();
-    if (!mounted) return;
-    await showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (BuildContext context) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-          child: tickets.isEmpty
-              ? const SizedBox(
-                  height: 150,
-                  child:
-                      Center(child: Text('No tickets have been raised yet.')),
-                )
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    const Text('Ticket Status',
-                        style: TicketStyles.sectionTitle),
-                    const SizedBox(height: 12),
-                    ...tickets.map(
-                      (SupportTicket ticket) => ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: const CircleAvatar(
-                          backgroundColor: AppColors.ticketField,
-                          child: Icon(Icons.confirmation_number_outlined,
-                              color: AppColors.primary),
-                        ),
-                        title: Text(ticket.subject),
-                        subtitle: Text('${ticket.id} · Open'),
-                        trailing: const Icon(Icons.chevron_right_rounded),
-                      ),
-                    ),
-                  ],
-                ),
-        ),
-      ),
-    );
   }
 
   void _showMessage(String message) => ScaffoldMessenger.of(context)
@@ -160,7 +115,9 @@ class _RaiseTicketPageState extends ConsumerState<RaiseTicketPage> {
                           onPressed: _submit,
                         ),
                         const SizedBox(height: AppSpacing.xl),
-                        TicketStatusCard(onTap: _showStatus),
+                        TicketStatusCard(
+                          onTap: () => context.push('/ticket-status'),
+                        ),
                       ],
                     ),
                   ),
