@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:zp_expert/features/wallet/widgets/dotted_circle_ring.dart';
 import 'package:zp_expert/shared/constants/app_assets.dart';
 
 class PayoutAssistanceBanner extends StatelessWidget {
@@ -12,10 +13,15 @@ class PayoutAssistanceBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    final Color primary = colors.primary;
+
+
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 255, 255, 255),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -24,23 +30,37 @@ class PayoutAssistanceBanner extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Container(
+              SizedBox(
                 width: 56,
                 height: 56,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Theme.of(context).primaryColor,
-                ),
-                child: Center(
-                  child: SvgPicture.asset(
-                    AppAssets.bankIcon,
-                    width: 26,
-                    height: 26,
-                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                  ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    DottedCircleRing(diameter: 56, color: primary),
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: <Color>[primary.withAlpha(33), primary],
+                        ),
+                      ),
+                      child: Center(
+                        child: SvgPicture.asset(
+                          AppAssets.bankIcon,
+                          width: 18,
+                          height: 18,
+                          colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,40 +68,43 @@ class PayoutAssistanceBanner extends StatelessWidget {
                     Text(
                       'Payout Assistance',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 18,
                         fontWeight: FontWeight.w800,
-                        color: Theme.of(context).primaryColor,
+                        color: primary,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     const Text(
                       'Facing delays or issues with your earnings? We are here to help.',
-                      style: TextStyle(fontSize: 13, color: Colors.black54),
+                      style: TextStyle(fontSize: 12.5, color: Colors.black54),
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 14),
           Align(
             alignment: Alignment.centerRight,
             child: ElevatedButton(
               onPressed: onGetAssistanceTap,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
+                backgroundColor: primary,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(24),
                 ),
               ),
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Text('Get Assistance', style: TextStyle(fontWeight: FontWeight.w700)),
-                  SizedBox(width: 8),
-                  Icon(Icons.arrow_forward, size: 18),
+                  Text(
+                    'Get Assistance',
+                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                  ),
+                  SizedBox(width: 6),
+                  Icon(Icons.arrow_forward, size: 16),
                 ],
               ),
             ),

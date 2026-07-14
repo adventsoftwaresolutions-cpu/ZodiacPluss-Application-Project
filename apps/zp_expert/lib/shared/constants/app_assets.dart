@@ -15,6 +15,12 @@ class AppAssets {
   static const String documentVerificationIcon = 'assets/icons/verification.svg';
   static const String trendUpIcon = 'assets/icons/trend_up.svg';
   static const String bankIcon = 'assets/icons/bank.svg';
+  static const String contactIcon = 'assets/icons/contact.svg';
+  static const String emailIcon = 'assets/icons/email.svg';
+  static const String feedbackIcon = 'assets/icons/feedback.svg';
+  static const String questionMarkIcon = 'assets/icons/questionMark.svg';
+  static const String ticketIcon = 'assets/icons/ticket.svg';
+  static const String ticketStatusIcon = 'assets/icons/ticketStatus.svg';
 
   // Animations
   static const String walletAnimation =
