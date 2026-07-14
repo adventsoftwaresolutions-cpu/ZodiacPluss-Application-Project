@@ -27,6 +27,11 @@ class AppAssets {
   static const String sendIcon = 'assets/icons/send.svg';
   static const String uploadIcon = 'assets/icons/upload.svg';
 
+  // Images
+  static const String clientAvatarOne = 'assets/images/riya.jpg';
+  static const String clientAvatarTwo = 'assets/images/ikcha.jpg';
+  static const String clientAvatarThree = 'assets/images/dp.jpg';
+
   // Animations
   static const String walletAnimation =
       'assets/animation/wallet.lottie';
