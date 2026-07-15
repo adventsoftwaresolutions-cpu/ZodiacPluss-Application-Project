@@ -60,7 +60,6 @@ class _WalletPageState extends ConsumerState<WalletPage> {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               sliver: SliverToBoxAdapter(
                 child: WalletHeader(
-                  onBackTap: () => Navigator.of(context).pop(),
                   onNotificationTap: () {}, // TODO: wire notification route
                   onChatTap: () {}, // TODO: wire chat route
                 ),
@@ -116,7 +115,8 @@ class _WalletPageState extends ConsumerState<WalletPage> {
                     // [range.start, range.end] from repository, generate
                     // PDF/CSV, trigger device save/share. Deferred per instruction,
                     // same as per-transaction receipt download.
-                    debugPrint('Download requested: ${range.start} → ${range.end}');
+                    debugPrint(
+                        'Download requested: ${range.start} → ${range.end}');
                   },
                 ),
               ),
@@ -130,7 +130,8 @@ class _WalletPageState extends ConsumerState<WalletPage> {
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 40),
                         child: Center(
-                          child: Text('No transactions yet', style: TextStyle(color: Colors.black45)),
+                          child: Text('No transactions yet',
+                              style: TextStyle(color: Colors.black45)),
                         ),
                       ),
                     );
@@ -159,10 +160,12 @@ class _WalletPageState extends ConsumerState<WalletPage> {
                     child: Center(
                       child: Column(
                         children: <Widget>[
-                          const Text("Couldn't load transactions", style: TextStyle(color: Colors.black54)),
+                          const Text("Couldn't load transactions",
+                              style: TextStyle(color: Colors.black54)),
                           const SizedBox(height: 8),
                           TextButton(
-                            onPressed: () => ref.invalidate(transactionHistoryProvider),
+                            onPressed: () =>
+                                ref.invalidate(transactionHistoryProvider),
                             child: const Text('Retry'),
                           ),
                         ],
@@ -190,7 +193,8 @@ class _WalletPageState extends ConsumerState<WalletPage> {
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Center(
           child: TextButton(
-            onPressed: () => ref.read(transactionHistoryProvider.notifier).loadMore(),
+            onPressed: () =>
+                ref.read(transactionHistoryProvider.notifier).loadMore(),
             child: const Text('Retry loading more'),
           ),
         ),
@@ -200,7 +204,8 @@ class _WalletPageState extends ConsumerState<WalletPage> {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 16),
         child: Center(
-          child: Text("You've reached the beginning", style: TextStyle(fontSize: 12, color: Colors.black38)),
+          child: Text("You've reached the beginning",
+              style: TextStyle(fontSize: 12, color: Colors.black38)),
         ),
       );
     }

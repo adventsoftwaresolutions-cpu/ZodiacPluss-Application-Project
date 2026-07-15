@@ -34,7 +34,7 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: ExpertRoutes.managePricing,
+  initialLocation: '/profile',
   routes: <RouteBase>[
     GoRoute(
       path: ExpertRoutes.managePricing,

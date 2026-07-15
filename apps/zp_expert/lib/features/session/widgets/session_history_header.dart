@@ -11,6 +11,8 @@ class SessionHistoryHeader extends StatelessWidget {
     super.key,
     this.title = 'Session History',
     this.subtitle = 'All session details',
+    this.showBackButton = true,
+    this.showSubtitle = true,
   });
 
   final VoidCallback onBackTap;
@@ -18,48 +20,47 @@ class SessionHistoryHeader extends StatelessWidget {
   final VoidCallback onChatTap;
   final String title;
   final String subtitle;
+  final bool showBackButton;
+  final bool showSubtitle;
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
-
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Material(
-          color: colors.surface,
-          elevation: 1,
-          shape: const CircleBorder(),
-          child: InkWell(
-            onTap: onBackTap,
-            customBorder: const CircleBorder(),
-            child: const SizedBox(
-              width: 44,
-              height: 44,
-              child: Icon(
-                Icons.arrow_back_ios_new_rounded,
-                color: AppColors.primary,
-                size: 19,
+        if (showBackButton) ...<Widget>[
+          Material(
+            color: Theme.of(context).colorScheme.surface,
+            elevation: 1,
+            shape: const CircleBorder(),
+            child: InkWell(
+              onTap: onBackTap,
+              customBorder: const CircleBorder(),
+              child: const SizedBox(
+                width: 44,
+                height: 44,
+                child: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: AppColors.primary,
+                  size: 19,
+                ),
               ),
             ),
           ),
-        ),
-        const SizedBox(width: 16),
+          const SizedBox(width: 16),
+        ],
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 2),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                    height: 1.1,
-                  ),
-                ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                title,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
+              if (showSubtitle) ...<Widget>[
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
@@ -70,12 +71,12 @@ class SessionHistoryHeader extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
+            ],
           ),
         ),
         HeaderActionButtons(
-          diameter: 44,
-          iconSize: 22,
+          diameter: showBackButton ? 44 : 35,
+          iconSize: showBackButton ? 22 : 18,
           spacing: 10,
           onNotificationTap: onNotificationTap,
           onChatTap: onChatTap,

@@ -20,6 +20,8 @@ class SessionScreen extends StatelessWidget {
                 onBackTap: () => Navigator.of(context).maybePop(),
                 onNotificationTap: () {},
                 onChatTap: () {},
+                showBackButton: false,
+                showSubtitle: false,
               ),
               const SizedBox(height: 28),
               const Expanded(child: SessionHistoryList()),
