@@ -49,7 +49,8 @@ class ClientCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    _ClientDetail(icon: Icons.phone_outlined, text: client.phoneNumber),
+                    _ClientDetail(
+                        icon: Icons.phone_outlined, text: client.phoneNumber),
                     const SizedBox(height: 3),
                     _ClientDetail(
                       icon: Icons.access_time_rounded,

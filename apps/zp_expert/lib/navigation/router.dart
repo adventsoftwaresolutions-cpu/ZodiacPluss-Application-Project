@@ -20,6 +20,7 @@ import '../../features/profile/profile.dart';
 import '../../features/support/support.dart';
 import '../../features/contact/contact.dart';
 import '../../features/clients/clients.dart';
+import '../../features/clients/client_history.dart';
 
 final List<NavItem> expertNavItems = <NavItem>[
   const NavItem(icon: Icons.home_outlined, selectedIcon: Icons.home),
@@ -32,7 +33,7 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: '/session',
+  initialLocation: ExpertRoutes.clientHistory,
   routes: <RouteBase>[
     GoRoute(
       path: ExpertRoutes.sessionInfo,
@@ -56,7 +57,13 @@ final GoRouter expertRouter = GoRouter(
           const ContactPage(),
     ),
     GoRoute(
-      path: '/clients',
+      path: ExpertRoutes.clientHistory,
+      builder: (BuildContext context, GoRouterState state) => ClientHistoryPage(
+        clientId: state.pathParameters['clientId']!,
+      ),
+    ),
+    GoRoute(
+      path: ExpertRoutes.clients,
       builder: (BuildContext context, GoRouterState state) =>
           const ClientsPage(),
     ),

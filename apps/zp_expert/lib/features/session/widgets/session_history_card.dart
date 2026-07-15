@@ -11,10 +11,20 @@ class SessionHistoryCard extends StatefulWidget {
     required this.session,
     super.key,
     this.onTap,
+    this.trailingLabel = 'Earned',
+    this.trailingColor,
+    this.datePrefix,
+    this.actionLabel,
+    this.onActionTap,
   });
 
   final SessionHistoryModel session;
   final VoidCallback? onTap;
+  final String trailingLabel;
+  final Color? trailingColor;
+  final String? datePrefix;
+  final String? actionLabel;
+  final VoidCallback? onActionTap;
 
   @override
   State<SessionHistoryCard> createState() => _SessionHistoryCardState();
@@ -49,13 +59,21 @@ class _SessionHistoryCardState extends State<SessionHistoryCard> {
           borderRadius: BorderRadius.circular(AppRadius.lg),
           clipBehavior: Clip.antiAlias,
           child: InkWell(
-            onTap: () {
-              HapticFeedback.selectionClick();
-              widget.onTap?.call();
-            },
-            onTapDown: (_) => setState(() => _isPressed = true),
-            onTapUp: (_) => setState(() => _isPressed = false),
-            onTapCancel: () => setState(() => _isPressed = false),
+            onTap: widget.onTap == null
+                ? null
+                : () {
+                    HapticFeedback.selectionClick();
+                    widget.onTap!();
+                  },
+            onTapDown: widget.onTap == null
+                ? null
+                : (_) => setState(() => _isPressed = true),
+            onTapUp: widget.onTap == null
+                ? null
+                : (_) => setState(() => _isPressed = false),
+            onTapCancel: widget.onTap == null
+                ? null
+                : () => setState(() => _isPressed = false),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(14, 12, 12, 10),
               child: Column(
@@ -91,7 +109,7 @@ class _SessionHistoryCardState extends State<SessionHistoryCard> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
                           Text(
-                            'Earned',
+                            widget.trailingLabel,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
@@ -107,25 +125,44 @@ class _SessionHistoryCardState extends State<SessionHistoryCard> {
                                 .textTheme
                                 .titleMedium
                                 ?.copyWith(
-                                  color: AppColors.ticketResolved,
+                                  color: widget.trailingColor ??
+                                      AppColors.ticketResolved,
                                   fontWeight: FontWeight.w700,
                                 ),
                           ),
                         ],
                       ),
-                      const SizedBox(width: 2),
-                      Icon(
-                        Icons.chevron_right_rounded,
-                        color: colors.onSurface.withValues(alpha: .48),
-                        size: 28,
-                      ),
+                      const SizedBox(width: 4),
+                      if (widget.actionLabel == null)
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          color: colors.onSurface.withValues(alpha: .48),
+                          size: 28,
+                        )
+                      else
+                        SizedBox(
+                          height: 32,
+                          child: OutlinedButton(
+                            onPressed: widget.onActionTap,
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor:
+                                  Theme.of(context).colorScheme.error,
+                              side: BorderSide(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 9),
+                              visualDensity: VisualDensity.compact,
+                            ),
+                            child: Text(widget.actionLabel!),
+                          ),
+                        ),
                     ],
                   ),
                   const SizedBox(height: 7),
                   _DetailLine(
                     icon: Icons.calendar_month_outlined,
-                    label: DateFormat('d MMM, y, h:mm a')
-                        .format(session.startedAt),
+                    label: _dateLabel(session.startedAt),
                   ),
                 ],
               ),
@@ -145,6 +182,13 @@ class _SessionHistoryCardState extends State<SessionHistoryCard> {
       case SessionType.video:
         return Icons.videocam_outlined;
     }
+  }
+
+  String _dateLabel(DateTime date) {
+    final String formatted = DateFormat('d MMM, y, h:mm a').format(date);
+    return widget.datePrefix == null
+        ? formatted
+        : '${widget.datePrefix} • $formatted';
   }
 }
 

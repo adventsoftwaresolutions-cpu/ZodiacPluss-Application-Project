@@ -9,11 +9,15 @@ class ClientsHeader extends StatelessWidget {
     required this.onNotificationTap,
     required this.onChatTap,
     super.key,
+    this.title = 'Clients',
+    this.subtitle = 'Manage your clients',
   });
 
   final VoidCallback onBackTap;
   final VoidCallback onNotificationTap;
   final VoidCallback onChatTap;
+  final String title;
+  final String subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -22,24 +26,24 @@ class ClientsHeader extends StatelessWidget {
       children: <Widget>[
         _BackButton(onTap: onBackTap),
         const SizedBox(width: 16),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                'Clients',
-                style: TextStyle(
-                  color: AppColors.ticketText,
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
                   fontSize: 26,
                   fontWeight: FontWeight.w700,
                   height: 1.08,
                 ),
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
-                'Manage your clients',
-                style: TextStyle(
-                  color: AppColors.mutedText,
+                subtitle,
+                style: const TextStyle(
+                  color: Colors.white,
                   fontSize: 13,
                   height: 1.2,
                 ),
