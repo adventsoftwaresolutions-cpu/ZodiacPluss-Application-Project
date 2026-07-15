@@ -28,6 +28,12 @@ Architecture
 
 # Folder Structure
 
+## Data layout (canonical)
+
+Use the nested data layout below for every new feature. This is the single
+source of truth for feature data organisation: models live in `models/`,
+repositories in `repository/`, and Riverpod providers in `provider/`.
+
 Every feature follows this structure.
 
 ```

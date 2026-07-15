@@ -21,6 +21,7 @@ import '../../features/support/support.dart';
 import '../../features/contact/contact.dart';
 import '../../features/clients/clients.dart';
 import '../../features/clients/client_history.dart';
+import '../../features/manage_pricing/manage_pricing.dart';
 
 final List<NavItem> expertNavItems = <NavItem>[
   const NavItem(icon: Icons.home_outlined, selectedIcon: Icons.home),
@@ -33,8 +34,13 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: ExpertRoutes.clientHistory,
+  initialLocation: ExpertRoutes.managePricing,
   routes: <RouteBase>[
+    GoRoute(
+      path: ExpertRoutes.managePricing,
+      builder: (BuildContext context, GoRouterState state) =>
+          const ManagePricingPage(),
+    ),
     GoRoute(
       path: ExpertRoutes.sessionInfo,
       builder: (BuildContext context, GoRouterState state) => SessionInfoScreen(

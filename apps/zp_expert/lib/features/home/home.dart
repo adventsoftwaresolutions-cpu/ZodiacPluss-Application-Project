@@ -13,6 +13,8 @@ import 'widgets/profile_greeting_header.dart';
 import 'widgets/wallet_balance_card.dart';
 import 'widgets/availability_toggle_card.dart';
 import 'data/availability_controller.dart';
+import '../../navigation/app_routes.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -36,7 +38,8 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final status = ref.watch(availabilityControllerProvider);
-    final AsyncValue<ExpertProfile> profileAsync = ref.watch(expertProfileProvider);
+    final AsyncValue<ExpertProfile> profileAsync =
+        ref.watch(expertProfileProvider);
 
     return GradientPage(
       child: Padding(
@@ -50,7 +53,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               SizedBox(
-                 height: MediaQuery.paddingOf(context).top,
+                height: MediaQuery.paddingOf(context).top,
               ),
               profileAsync.when(
                 data: (ExpertProfile profile) => ProfileGreetingHeader(
@@ -93,7 +96,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               const SizedBox(height: 12),
               ManagePricingCard(
                 onTap: () {
-                  // TODO: wire to pricing/offers route once that screen exists
+                  context.push(ExpertRoutes.managePricing);
                 },
               ),
               const SizedBox(height: 12),
