@@ -7,9 +7,14 @@ import '../../../themes/app_radius.dart';
 import '../data/models/session_history_model.dart';
 
 class SessionHistoryCard extends StatefulWidget {
-  const SessionHistoryCard({required this.session, super.key});
+  const SessionHistoryCard({
+    required this.session,
+    super.key,
+    this.onTap,
+  });
 
   final SessionHistoryModel session;
+  final VoidCallback? onTap;
 
   @override
   State<SessionHistoryCard> createState() => _SessionHistoryCardState();
@@ -44,7 +49,10 @@ class _SessionHistoryCardState extends State<SessionHistoryCard> {
           borderRadius: BorderRadius.circular(AppRadius.lg),
           clipBehavior: Clip.antiAlias,
           child: InkWell(
-            onTap: HapticFeedback.selectionClick,
+            onTap: () {
+              HapticFeedback.selectionClick();
+              widget.onTap?.call();
+            },
             onTapDown: (_) => setState(() => _isPressed = true),
             onTapUp: (_) => setState(() => _isPressed = false),
             onTapCancel: () => setState(() => _isPressed = false),

@@ -12,7 +12,8 @@ class AppAssets {
   static const String offerIcon = 'assets/icons/offer.svg';
   static const String shieldIcon = 'assets/icons/shield.svg';
   static const String greenTick = 'assets/icons/tick.svg';
-  static const String documentVerificationIcon = 'assets/icons/verification.svg';
+  static const String documentVerificationIcon =
+      'assets/icons/verification.svg';
   static const String trendUpIcon = 'assets/icons/trend_up.svg';
   static const String bankIcon = 'assets/icons/bank.svg';
   static const String contactIcon = 'assets/icons/contact.svg';
@@ -26,6 +27,13 @@ class AppAssets {
   static const String pencilIcon = 'assets/icons/pencil.svg';
   static const String sendIcon = 'assets/icons/send.svg';
   static const String uploadIcon = 'assets/icons/upload.svg';
+  static const String voiceCallIcon = 'assets/icons/voiceCall.svg';
+  static const String playIcon = 'assets/icons/play.svg';
+  static const String brainIcon = 'assets/icons/brain.svg';
+  static const String yogaIcon = 'assets/icons/yoga.svg';
+  static const String flagIcon = 'assets/icons/flag.svg';
+  static const String cautionIcon = 'assets/icons/caution.svg';
+  static const String profileIcon = 'assets/icons/profile.svg';
 
   // Images
   static const String clientAvatarOne = 'assets/images/riya.jpg';
@@ -33,6 +41,5 @@ class AppAssets {
   static const String clientAvatarThree = 'assets/images/dp.jpg';
 
   // Animations
-  static const String walletAnimation =
-      'assets/animation/wallet.lottie';
+  static const String walletAnimation = 'assets/animation/wallet.lottie';
 }

@@ -9,11 +9,15 @@ class SessionHistoryHeader extends StatelessWidget {
     required this.onNotificationTap,
     required this.onChatTap,
     super.key,
+    this.title = 'Session History',
+    this.subtitle = 'All session details',
   });
 
   final VoidCallback onBackTap;
   final VoidCallback onNotificationTap;
   final VoidCallback onChatTap;
+  final String title;
+  final String subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -41,25 +45,25 @@ class SessionHistoryHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 16),
-        const Expanded(
+        Expanded(
           child: Padding(
-            padding: EdgeInsets.only(top: 2),
+            padding: const EdgeInsets.only(top: 2),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Session History',
-                  style: TextStyle(
+                  title,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 28,
                     fontWeight: FontWeight.w700,
                     height: 1.1,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
-                  'All session details',
-                  style: TextStyle(
+                  subtitle,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 15,
                     height: 1.2,

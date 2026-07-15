@@ -9,11 +9,13 @@ import '../../features/verification/verification.dart';
 import 'package:go_router/go_router.dart';
 
 import 'navigation_scaffold.dart';
+import 'app_routes.dart';
 import '../../shared/widgets/nav_item.dart';
 
 import '../../features/home/home.dart';
 import '../../features/wallet/wallet.dart';
 import '../../features/session/session.dart';
+import '../../features/session/session_info.dart';
 import '../../features/profile/profile.dart';
 import '../../features/support/support.dart';
 import '../../features/contact/contact.dart';
@@ -32,6 +34,12 @@ final List<NavItem> expertNavItems = <NavItem>[
 final GoRouter expertRouter = GoRouter(
   initialLocation: '/session',
   routes: <RouteBase>[
+    GoRoute(
+      path: ExpertRoutes.sessionInfo,
+      builder: (BuildContext context, GoRouterState state) => SessionInfoScreen(
+        sessionId: state.pathParameters['sessionId']!,
+      ),
+    ),
     GoRoute(
       path: '/raise-ticket',
       builder: (BuildContext context, GoRouterState state) =>
@@ -71,7 +79,7 @@ final GoRouter expertRouter = GoRouter(
         ]),
         StatefulShellBranch(routes: <RouteBase>[
           GoRoute(
-              path: '/session',
+              path: ExpertRoutes.sessionHistory,
               builder: (BuildContext c, GoRouterState s) =>
                   const SessionScreen()),
         ]),
