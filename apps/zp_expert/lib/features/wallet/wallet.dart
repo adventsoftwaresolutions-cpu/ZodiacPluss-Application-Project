@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zp_expert/features/wallet/data/provider/transaction_history_provider.dart';
 import 'package:zp_expert/features/wallet/widgets/payout_assistance_banner.dart';
 import 'widgets/stats_row_skeleton.dart';
@@ -8,6 +9,7 @@ import 'package:zp_expert/features/wallet/widgets/transaction_card_skeleton.dart
 import 'package:zp_expert/features/wallet/widgets/transaction_history_header.dart';
 
 import '../../shared/widgets/gradient_page.dart';
+import '../../navigation/app_routes.dart';
 import 'data/provider/wallet_provider.dart';
 import 'widgets/wallet_balance_card.dart';
 import 'widgets/stats_row.dart';
@@ -100,9 +102,7 @@ class _WalletPageState extends ConsumerState<WalletPage> {
               padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
               sliver: SliverToBoxAdapter(
                 child: PayoutAssistanceBanner(
-                  onGetAssistanceTap: () {
-                    // TODO: wire assistance or contact route
-                  },
+                  onGetAssistanceTap: () => context.push(ExpertRoutes.contact),
                 ),
               ),
             ),

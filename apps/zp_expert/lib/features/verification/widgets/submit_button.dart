@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../navigation/app_routes.dart';
 
 class SubmitButton extends StatefulWidget {
   const SubmitButton({super.key});
@@ -34,9 +37,9 @@ class _SubmitButtonState extends State<SubmitButton> {
               const Duration(milliseconds: 900),
             );
 
-            if (mounted) {
-              setState(() => loading = false);
-            }
+            if (!context.mounted) return;
+            setState(() => loading = false);
+            context.go('/home');
           },
           child: loading
               ? const SizedBox(

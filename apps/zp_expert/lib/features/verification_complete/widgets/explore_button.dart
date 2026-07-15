@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../navigation/app_routes.dart';
 
 class ExploreButton extends StatelessWidget {
   const ExploreButton({super.key});
@@ -19,7 +22,7 @@ class ExploreButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(14),
           ),
         ),
-        onPressed: () {},
+        onPressed: () => context.go(ExpertRoutes.home),
         child: const Text(
           'Explore App',
           style: TextStyle(

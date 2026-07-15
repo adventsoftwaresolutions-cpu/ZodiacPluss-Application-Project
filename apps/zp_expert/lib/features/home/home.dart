@@ -84,7 +84,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                 ),
                 child: Column(
                   children: <Widget>[
-                    WalletBalanceCard(onCheckStatus: () {}),
+                    WalletBalanceCard(
+                      onCheckStatus: () => context.go(ExpertRoutes.wallet),
+                    ),
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 14),
                       child: Divider(height: 1),
@@ -102,14 +104,12 @@ class _HomePageState extends ConsumerState<HomePage> {
               const SizedBox(height: 12),
               PerformanceCard(
                 onSessionHistoryTap: () {
-                  // TODO: wire to session history route
+                  context.go(ExpertRoutes.sessionHistory);
                 },
                 onTransactionHistoryTap: () {
-                  // TODO: wire to transaction history route
+                  context.go(ExpertRoutes.wallet);
                 },
-                onReviewsTap: () {
-                  // TODO: wire to reviews route
-                },
+                onReviewsTap: () {},
               ),
               const SizedBox(height: 12),
               const AvailabilityScheduleCard(),

@@ -10,16 +10,19 @@ class ContactRepository {
         title: 'Raise a Ticket',
         subtitle: 'Get help with your issues',
         icon: AppAssets.ticketIcon,
+        destination: ContactActionDestination.raiseTicket,
       ),
       ContactAction(
         title: 'Ticket Status',
         subtitle: 'Track your existing tickets',
         icon: AppAssets.ticketStatusIcon,
+        destination: ContactActionDestination.ticketStatus,
       ),
       ContactAction(
         title: "FAQ's",
         subtitle: 'Find answers instantly',
         icon: AppAssets.questionMarkIcon,
+        destination: ContactActionDestination.faq,
       ),
       ContactAction(
         title: 'Email Us',

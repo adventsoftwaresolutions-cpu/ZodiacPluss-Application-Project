@@ -34,7 +34,7 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: '/profile',
+  initialLocation: '/auth',
   routes: <RouteBase>[
     GoRoute(
       path: ExpertRoutes.managePricing,
@@ -48,17 +48,17 @@ final GoRouter expertRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: '/raise-ticket',
+      path: ExpertRoutes.raiseTicket,
       builder: (BuildContext context, GoRouterState state) =>
           const RaiseTicketPage(),
     ),
     GoRoute(
-      path: '/ticket-status',
+      path: ExpertRoutes.ticketStatus,
       builder: (BuildContext context, GoRouterState state) =>
           const TicketStatusPage(),
     ),
     GoRoute(
-      path: '/contact',
+      path: ExpertRoutes.contact,
       builder: (BuildContext context, GoRouterState state) =>
           const ContactPage(),
     ),
@@ -82,12 +82,12 @@ final GoRouter expertRouter = GoRouter(
       branches: <StatefulShellBranch>[
         StatefulShellBranch(routes: <RouteBase>[
           GoRoute(
-              path: '/home',
+              path: ExpertRoutes.home,
               builder: (BuildContext c, GoRouterState s) => const HomePage()),
         ]),
         StatefulShellBranch(routes: <RouteBase>[
           GoRoute(
-              path: '/wallet',
+              path: ExpertRoutes.wallet,
               builder: (BuildContext c, GoRouterState s) => const WalletPage()),
         ]),
         StatefulShellBranch(routes: <RouteBase>[
@@ -98,40 +98,40 @@ final GoRouter expertRouter = GoRouter(
         ]),
         StatefulShellBranch(routes: <RouteBase>[
           GoRoute(
-              path: '/profile',
+              path: ExpertRoutes.profile,
               builder: (BuildContext c, GoRouterState s) =>
                   const ProfileScreen()),
         ]),
       ],
     ),
     GoRoute(
-      path: '/faq',
+      path: ExpertRoutes.faq,
       builder: (BuildContext c, GoRouterState s) => const FaqPage(),
     ),
     GoRoute(
-      path: '/auth',
+      path: ExpertRoutes.auth,
       builder: (BuildContext c, GoRouterState s) => const AuthPage(),
     ),
     GoRoute(
-      path: '/verification',
+      path: ExpertRoutes.verification,
       builder: (BuildContext c, GoRouterState s) => const VerificationPage(),
     ),
     GoRoute(
-      path: '/verification-pending',
+      path: ExpertRoutes.verificationPending,
       builder: (BuildContext c, GoRouterState s) =>
           const VerificationPendingPage(),
     ),
     GoRoute(
-      path: '/verification-complete',
+      path: ExpertRoutes.verificationComplete,
       builder: (BuildContext c, GoRouterState s) =>
           const VerificationCompletePage(),
     ),
     GoRoute(
-      path: '/verification-failed',
+      path: ExpertRoutes.verificationFailed,
       builder: (context, state) => const VerificationFailedPage(),
     ),
     GoRoute(
-      path: '/max-attempt',
+      path: ExpertRoutes.maxAttempts,
       builder: (context, state) => const MaxAttemptExhaustedPage(),
     ),
   ],

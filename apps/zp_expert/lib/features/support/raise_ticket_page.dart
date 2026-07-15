@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_radius.dart';
 import '../../themes/app_spacing.dart';
+import '../../navigation/app_routes.dart';
 import 'data/ticket_model.dart';
 import 'data/ticket_provider.dart';
 import 'widgets/ticket_form_card.dart';
@@ -116,7 +117,7 @@ class _RaiseTicketPageState extends ConsumerState<RaiseTicketPage> {
                         ),
                         const SizedBox(height: AppSpacing.xl),
                         TicketStatusCard(
-                          onTap: () => context.push('/ticket-status'),
+                          onTap: () => context.push(ExpertRoutes.ticketStatus),
                         ),
                       ],
                     ),

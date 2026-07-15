@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+enum ContactActionDestination { raiseTicket, ticketStatus, faq }
+
 class ContactAction {
   final String title;
   final String subtitle;
@@ -9,7 +11,10 @@ class ContactAction {
     required this.title,
     required this.subtitle,
     required this.icon,
+    this.destination,
   });
+
+  final ContactActionDestination? destination;
 }
 
 class ContactInfo {

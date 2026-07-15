@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../navigation/app_routes.dart';
 
 class RetryButton extends StatelessWidget {
   const RetryButton({super.key});
@@ -19,7 +22,7 @@ class RetryButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(14),
           ),
         ),
-        onPressed: () {},
+        onPressed: () => context.go(ExpertRoutes.verification),
         child: const Text(
           'Retry',
           style: TextStyle(

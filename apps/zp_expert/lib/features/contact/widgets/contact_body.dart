@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../navigation/app_routes.dart';
+import '../data/contact_model.dart';
 import '../data/contact_provider.dart';
 import 'contact_action_grid.dart';
 import 'contact_header.dart';
@@ -51,33 +54,24 @@ class ContactBody extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const ContactHeader(),
-
                       const SizedBox(height: 28),
-
                       ContactActionGrid(
                         actions: actionList,
+                        onActionTap: (ContactAction action) =>
+                            _openAction(context, action),
                       ),
-
                       const SizedBox(height: 28),
-
                       const ContactSupportBanner(),
-
                       const SizedBox(height: 20),
-
                       ContactWorkingHours(
                         workingHours: hours,
                       ),
-
                       const SizedBox(height: 28),
-
                       ContactInfoSection(
                         contactInfo: infoList,
                       ),
-
                       const SizedBox(height: 24),
-
                       const FeedbackBanner(),
-
                       const SizedBox(height: 30),
                     ],
                   ),
@@ -88,5 +82,21 @@ class ContactBody extends ConsumerWidget {
         );
       },
     );
+  }
+
+  void _openAction(BuildContext context, ContactAction action) {
+    switch (action.destination) {
+      case ContactActionDestination.raiseTicket:
+        context.push(ExpertRoutes.raiseTicket);
+        return;
+      case ContactActionDestination.ticketStatus:
+        context.push(ExpertRoutes.ticketStatus);
+        return;
+      case ContactActionDestination.faq:
+        context.push(ExpertRoutes.faq);
+        return;
+      case null:
+        return;
+    }
   }
 }

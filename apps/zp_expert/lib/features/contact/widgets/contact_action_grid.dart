@@ -5,10 +5,12 @@ import 'contact_action_card.dart';
 
 class ContactActionGrid extends StatelessWidget {
   final List<ContactAction> actions;
+  final ValueChanged<ContactAction> onActionTap;
 
   const ContactActionGrid({
     super.key,
     required this.actions,
+    required this.onActionTap,
   });
 
   @override
@@ -26,7 +28,9 @@ class ContactActionGrid extends StatelessWidget {
       itemBuilder: (context, index) {
         return ContactActionCard(
           action: actions[index],
-          onTap: () {},
+          onTap: actions[index].destination == null
+              ? null
+              : () => onActionTap(actions[index]),
         );
       },
     );

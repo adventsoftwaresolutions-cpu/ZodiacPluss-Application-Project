@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
+import '../../navigation/app_routes.dart';
 import 'data/ticket_model.dart';
 import 'data/ticket_provider.dart';
 import 'data/ticket_repository.dart';
@@ -104,9 +105,10 @@ class TicketStatusPage extends ConsumerWidget {
                       ),
                       const SizedBox(height: 8),
                       TicketQuickHelp(
-                        onFaqTap: () => context.push('/faq'),
-                        onContactTap: () => context.push('/contact'),
-                        onRaiseTicketTap: () => context.push('/raise-ticket'),
+                        onFaqTap: () => context.push(ExpertRoutes.faq),
+                        onContactTap: () => context.push(ExpertRoutes.contact),
+                        onRaiseTicketTap: () =>
+                            context.push(ExpertRoutes.raiseTicket),
                       ),
                     ],
                   ),
