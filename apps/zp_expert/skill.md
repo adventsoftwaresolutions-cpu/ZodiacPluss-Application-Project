@@ -36,9 +36,12 @@ lib/
         feature_name/
             feature.dart
             data/
-                feature_model.dart
-                feature_repository.dart
-                feature_provider.dart
+                models/
+                    feature_model.dart
+                repository/
+                    feature_repository.dart
+                provider/
+                    feature_provider.dart
             widgets/
                 widget_one.dart
                 widget_two.dart
@@ -50,9 +53,12 @@ Example
 faq/
     faq.dart
     data/
-        faq_model.dart
-        faq_repository.dart
-        faq_provider.dart
+        models/
+            faq_model.dart
+        repository/
+            faq_repository.dart
+        provider/
+            faq_provider.dart
     widgets/
         faq_header.dart
         faq_item.dart

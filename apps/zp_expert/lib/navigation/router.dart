@@ -30,7 +30,7 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: '/ticket-status',
+  initialLocation: '/session',
   routes: <RouteBase>[
     GoRoute(
       path: '/raise-ticket',
@@ -46,6 +46,8 @@ final GoRouter expertRouter = GoRouter(
       path: '/contact',
       builder: (BuildContext context, GoRouterState state) =>
           const ContactPage(),
+    ),
+    GoRoute(
       path: '/clients',
       builder: (BuildContext context, GoRouterState state) =>
           const ClientsPage(),
