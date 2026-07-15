@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:zp_expert/shared/constants/app_assets.dart';
 
 class ManagePricingCard extends StatelessWidget {
   const ManagePricingCard({required this.onTap, super.key});
@@ -19,7 +20,7 @@ class ManagePricingCard extends StatelessWidget {
           child: Row(
             children: <Widget>[
               SvgPicture.asset(
-                'assets/icons/offer.svg',
+                AppAssets.offerIcon,
                 width: 22,
                 height: 22,
                 colorFilter: ColorFilter.mode(

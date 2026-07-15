@@ -34,9 +34,9 @@ class ClientSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface.withOpacity(.94),
+        color: Theme.of(context).colorScheme.surface.withValues(alpha: .94),
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: AppColors.primary.withOpacity(.10)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: .10)),
         boxShadow: const <BoxShadow>[
           BoxShadow(
             color: Color(0x10007D88),
@@ -65,7 +65,8 @@ class ClientSection extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       subtitle,
-                      style: const TextStyle(color: Colors.black45, fontSize: 13),
+                      style:
+                          const TextStyle(color: Colors.black45, fontSize: 13),
                     ),
                   ],
                 ),
@@ -76,8 +77,9 @@ class ClientSection extends StatelessWidget {
                   iconAlignment: IconAlignment.end,
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.primary,
-                    backgroundColor: AppColors.primary.withOpacity(.08),
-                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                    backgroundColor: AppColors.primary.withValues(alpha: .08),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
                     shape: const StadiumBorder(),
                     visualDensity: VisualDensity.compact,
                   ),
@@ -89,7 +91,8 @@ class ClientSection extends StatelessWidget {
                   ),
                   label: Text(
                     isExpanded ? 'Show less' : 'View all',
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+                    style: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w700),
                   ),
                 ),
             ],
@@ -98,7 +101,8 @@ class ClientSection extends StatelessWidget {
           if (visibleClients.isEmpty)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 28),
-              child: Text('No matching clients', style: TextStyle(color: Colors.black45)),
+              child: Text('No matching clients',
+                  style: TextStyle(color: Colors.black45)),
             )
           else
             AnimatedSize(
@@ -112,7 +116,9 @@ class ClientSection extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 10),
                         child: ClientCard(
                           client: client,
-                          onTap: onClientTap == null ? null : () => onClientTap!(client),
+                          onTap: onClientTap == null
+                              ? null
+                              : () => onClientTap!(client),
                         ),
                       ),
                     )

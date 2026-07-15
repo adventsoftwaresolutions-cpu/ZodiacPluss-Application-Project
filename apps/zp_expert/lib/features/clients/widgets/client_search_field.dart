@@ -22,7 +22,8 @@ class ClientSearchField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: 'Search patients by name or number',
         hintStyle: const TextStyle(color: Colors.black45, fontSize: 13),
-        prefixIcon: const Icon(Icons.search_rounded, color: Colors.black45, size: 26),
+        prefixIcon:
+            const Icon(Icons.search_rounded, color: Colors.black45, size: 26),
         filled: true,
         fillColor: Theme.of(context).colorScheme.surface,
         contentPadding: const EdgeInsets.symmetric(vertical: 13),

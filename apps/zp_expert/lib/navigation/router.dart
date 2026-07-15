@@ -9,15 +9,19 @@ import '../../features/verification/verification.dart';
 import 'package:go_router/go_router.dart';
 
 import 'navigation_scaffold.dart';
+import 'app_routes.dart';
 import '../../shared/widgets/nav_item.dart';
 
 import '../../features/home/home.dart';
 import '../../features/wallet/wallet.dart';
 import '../../features/session/session.dart';
+import '../../features/session/session_info.dart';
 import '../../features/profile/profile.dart';
 import '../../features/support/support.dart';
 import '../../features/contact/contact.dart';
 import '../../features/clients/clients.dart';
+import '../../features/clients/client_history.dart';
+import '../../features/manage_pricing/manage_pricing.dart';
 
 final List<NavItem> expertNavItems = <NavItem>[
   const NavItem(icon: Icons.home_outlined, selectedIcon: Icons.home),
@@ -30,8 +34,19 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: '/session',
+  initialLocation: ExpertRoutes.managePricing,
   routes: <RouteBase>[
+    GoRoute(
+      path: ExpertRoutes.managePricing,
+      builder: (BuildContext context, GoRouterState state) =>
+          const ManagePricingPage(),
+    ),
+    GoRoute(
+      path: ExpertRoutes.sessionInfo,
+      builder: (BuildContext context, GoRouterState state) => SessionInfoScreen(
+        sessionId: state.pathParameters['sessionId']!,
+      ),
+    ),
     GoRoute(
       path: '/raise-ticket',
       builder: (BuildContext context, GoRouterState state) =>
@@ -48,7 +63,13 @@ final GoRouter expertRouter = GoRouter(
           const ContactPage(),
     ),
     GoRoute(
-      path: '/clients',
+      path: ExpertRoutes.clientHistory,
+      builder: (BuildContext context, GoRouterState state) => ClientHistoryPage(
+        clientId: state.pathParameters['clientId']!,
+      ),
+    ),
+    GoRoute(
+      path: ExpertRoutes.clients,
       builder: (BuildContext context, GoRouterState state) =>
           const ClientsPage(),
     ),
@@ -71,7 +92,7 @@ final GoRouter expertRouter = GoRouter(
         ]),
         StatefulShellBranch(routes: <RouteBase>[
           GoRoute(
-              path: '/session',
+              path: ExpertRoutes.sessionHistory,
               builder: (BuildContext c, GoRouterState s) =>
                   const SessionScreen()),
         ]),

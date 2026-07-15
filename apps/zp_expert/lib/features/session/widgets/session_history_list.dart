@@ -2,7 +2,9 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../navigation/app_routes.dart';
 import '../data/models/session_history_model.dart';
 import '../data/provider/session_history_provider.dart';
 import 'session_history_card.dart';
@@ -99,7 +101,14 @@ class _StaggeredSessionListState extends State<_StaggeredSessionList>
                   padding: const EdgeInsets.only(bottom: 14),
                   child: widget.isLoading
                       ? const SessionHistoryCardSkeleton()
-                      : SessionHistoryCard(session: widget.sessions[index - 1]),
+                      : SessionHistoryCard(
+                          session: widget.sessions[index - 1],
+                          onTap: () => context.push(
+                            ExpertRoutes.sessionInfoFor(
+                              widget.sessions[index - 1].id,
+                            ),
+                          ),
+                        ),
                 ),
               );
             },
