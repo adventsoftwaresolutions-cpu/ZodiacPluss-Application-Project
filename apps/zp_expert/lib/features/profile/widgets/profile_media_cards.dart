@@ -74,7 +74,7 @@ class IntroCard extends StatelessWidget {
             Row(
               children: <Widget>[
                 Expanded(
-                  flex: 3,
+                  flex: 2,
                   child: AspectRatio(
                     aspectRatio: 1.55,
                     child: ClipRRect(

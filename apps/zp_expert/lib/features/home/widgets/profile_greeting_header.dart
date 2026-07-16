@@ -157,23 +157,17 @@ class _RolePill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 1),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
       decoration: BoxDecoration(
-        color: const Color(0xFFE6E0F8),
+        color: const Color(0xFFD6EDEF),
         borderRadius: BorderRadius.circular(7),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
-            blurRadius: 2,
-            offset: const Offset(0, 3),
-          ),
-        ],
       ),
       child: Text(
         role,
-        style: const TextStyle(
-          fontWeight: FontWeight.w400,
-          color: Color(0xFF3D2E6B),
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.primary,
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
         ),
       ),
     );

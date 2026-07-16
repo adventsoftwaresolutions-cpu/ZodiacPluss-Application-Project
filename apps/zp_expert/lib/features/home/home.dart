@@ -5,6 +5,7 @@ import 'package:zp_expert/features/home/widgets/availability_schedule_card.dart'
 import 'package:zp_expert/features/home/widgets/manage_pricing_card.dart';
 import 'package:zp_expert/features/home/widgets/performance_card.dart';
 import 'package:zp_expert/features/home/widgets/schedule_card.dart';
+import 'package:zp_expert/features/home/widgets/top_scroll_fade.dart';
 import 'package:zp_expert/shared/data/expert_profile.dart';
 import 'package:zp_expert/shared/data/expert_profile_repository.dart';
 import 'package:zp_expert/startup_timing.dart';
@@ -44,14 +45,16 @@ class _HomePageState extends ConsumerState<HomePage> {
     return GradientPage(
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewPadding.bottom + 24,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+        child: TopScrollFade(
+          fadeExtent: MediaQuery.paddingOf(context).top,
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewPadding.bottom + 24,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
               SizedBox(
                 height: MediaQuery.paddingOf(context).top,
               ),
@@ -120,7 +123,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                 },
               ),
               const SizedBox(height: 44),
-            ],
+              ],
+            ),
           ),
         ),
       ),
