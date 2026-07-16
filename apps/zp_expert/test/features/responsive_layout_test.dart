@@ -92,6 +92,35 @@ void main() {
 
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('pricing can be entered directly with the keyboard',
+      (WidgetTester tester) async {
+    int? enteredPrice;
+
+    await _pumpNarrow(
+      tester,
+      PricingPlanCard(
+        plan: const PricingPlan(
+          userType: PricingUserType.normal,
+          description: 'Flexible pricing for regular clients',
+          kind: PricingPlanKind.normal,
+          items: <PricingItem>[
+            PricingItem(
+              service: PricingService.chat,
+              price: 25,
+              discountPercent: 10,
+            ),
+          ],
+        ),
+        onItemChanged: (_, int? price, __) => enteredPrice = price,
+      ),
+    );
+
+    await tester.enterText(find.byType(TextField), '42');
+    await tester.pump();
+
+    expect(enteredPrice, 42);
+  });
 }
 
 Future<void> _pumpNarrow(

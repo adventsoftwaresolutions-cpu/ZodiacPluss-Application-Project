@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../shared/constants/expert_specializations.dart';
 import 'profile_section_card.dart';
 
 class SpecializationsCard extends StatefulWidget {
@@ -17,21 +18,6 @@ class SpecializationsCard extends StatefulWidget {
 }
 
 class _SpecializationsCardState extends State<SpecializationsCard> {
-  static const List<String> _allOptions = <String>[
-    'Stress Management',
-    'Depression',
-    'Self Esteem',
-    'Anxiety',
-    'Relationships',
-    'Trauma Recovery',
-    'Grief Support',
-    'Sleep Issues',
-    'Mindfulness',
-    'Career Guidance',
-    'Family Therapy',
-    'Workplace Wellness',
-  ];
-
   late Set<String> _draft;
   bool _isEditing = false;
   bool _isSaving = false;
@@ -59,7 +45,8 @@ class _SpecializationsCardState extends State<SpecializationsCard> {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> visible = _isEditing ? _allOptions : widget.selected;
+    final List<String> visible =
+        _isEditing ? ExpertSpecializations.all : widget.selected;
     return ProfileSectionCard(
       child: AnimatedSize(
         duration: const Duration(milliseconds: 300),

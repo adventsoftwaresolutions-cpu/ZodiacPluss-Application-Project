@@ -46,4 +46,5 @@ class AppAssets {
 
   // Animations
   static const String walletAnimation = 'assets/animation/wallet.lottie';
+  static const String paperPlaneAnimation = 'assets/animation/paperPlane_flying.lottie';
 }

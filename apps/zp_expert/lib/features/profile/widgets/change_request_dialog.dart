@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../shared/constants/app_assets.dart';
 
@@ -16,21 +16,13 @@ Future<void> showChangeRequestDialog(
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Container(
-            width: 82,
-            height: 82,
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color:
-                  Theme.of(context).colorScheme.primary.withValues(alpha: .1),
-              shape: BoxShape.circle,
-            ),
-            child: SvgPicture.asset(
-              AppAssets.sendIcon,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).colorScheme.primary,
-                BlendMode.srcIn,
-              ),
+          SizedBox(
+            width: 120,
+            height: 120,
+            child: Lottie.asset(
+              AppAssets.paperPlaneAnimation,
+              fit: BoxFit.contain,
+              repeat: true,
             ),
           ),
           const SizedBox(height: 18),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../data/models/pricing_model.dart';
 
@@ -150,10 +151,62 @@ class _LabelledField extends StatelessWidget {
       ]);
 }
 
-class _PriceControl extends StatelessWidget {
+class _PriceControl extends StatefulWidget {
   const _PriceControl({required this.value, required this.onChanged});
+
   final int value;
   final ValueChanged<int> onChanged;
+
+  @override
+  State<_PriceControl> createState() => _PriceControlState();
+}
+
+class _PriceControlState extends State<_PriceControl> {
+  late final TextEditingController _controller;
+  late final FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: '${widget.value}');
+    _focusNode = FocusNode();
+  }
+
+  @override
+  void didUpdateWidget(covariant _PriceControl oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value && !_focusNode.hasFocus) {
+      _setText(widget.value);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _setText(int value) {
+    _controller.value = TextEditingValue(
+      text: '$value',
+      selection: TextSelection.collapsed(offset: '$value'.length),
+    );
+  }
+
+  void _changeBy(int amount) {
+    final int next = (widget.value + amount).clamp(0, 99999).toInt();
+    _setText(next);
+    widget.onChanged(next);
+  }
+
+  void _handleTextChanged(String text) {
+    final int? parsed = int.tryParse(text);
+    if (parsed != null && parsed != widget.value) {
+      widget.onChanged(parsed.clamp(0, 99999).toInt());
+    }
+  }
+
   @override
   Widget build(BuildContext context) => Container(
         height: 44,
@@ -161,23 +214,47 @@ class _PriceControl extends StatelessWidget {
             border: Border.all(color: const Color(0xFFD6D8DC)),
             borderRadius: BorderRadius.circular(8)),
         child: Row(children: <Widget>[
-          const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Text('₹',
-                  style: TextStyle(fontSize: 22, color: Color(0xFF008A98)))),
           Expanded(
-              child: Center(
-                  child: Text('$value',
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w600)))),
+            child: TextField(
+              controller: _controller,
+              focusNode: _focusNode,
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.done,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(5),
+              ],
+              onChanged: _handleTextChanged,
+              onSubmitted: (String text) {
+                final int value = int.tryParse(text) ?? widget.value;
+                _setText(value);
+                widget.onChanged(value);
+              },
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                isDense: true,
+                prefixText: '₹ ',
+                prefixStyle: TextStyle(
+                  fontSize: 20,
+                  color: Color(0xFF008A98),
+                ),
+                contentPadding: EdgeInsets.symmetric(horizontal: 8),
+              ),
+            ),
+          ),
           Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 InkWell(
-                    onTap: () => onChanged(value + 5),
+                    onTap: () => _changeBy(5),
                     child: const Icon(Icons.arrow_drop_up, size: 20)),
                 InkWell(
-                    onTap: value > 5 ? () => onChanged(value - 5) : null,
+                    onTap: widget.value > 0 ? () => _changeBy(-5) : null,
                     child: const Icon(Icons.arrow_drop_down, size: 20))
               ])
         ]),

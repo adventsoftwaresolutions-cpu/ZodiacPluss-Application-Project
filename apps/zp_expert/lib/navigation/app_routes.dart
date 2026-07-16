@@ -12,6 +12,7 @@ abstract final class ExpertRoutes {
   static const String sessionInfo = '$sessionHistory/:sessionId';
   static const String clients = '/clients';
   static const String managePricing = '/manage-pricing';
+  static const String reviews = '/reviews';
   static const String clientHistory = '$clients/:clientId';
   static const String raiseTicket = '/raise-ticket';
   static const String ticketStatus = '/ticket-status';

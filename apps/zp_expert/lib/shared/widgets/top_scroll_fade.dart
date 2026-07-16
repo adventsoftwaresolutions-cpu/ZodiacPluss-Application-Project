@@ -6,11 +6,13 @@ class TopScrollFade extends StatefulWidget {
   const TopScrollFade({
     required this.child,
     this.fadeExtent = AppSpacing.xl,
+    this.notificationDepth = 0,
     super.key,
   });
 
   final Widget child;
   final double fadeExtent;
+  final int notificationDepth;
 
   @override
   State<TopScrollFade> createState() => _TopScrollFadeState();
@@ -20,7 +22,8 @@ class _TopScrollFadeState extends State<TopScrollFade> {
   bool _isScrolled = false;
 
   bool _handleScroll(ScrollNotification notification) {
-    if (notification.depth != 0 || notification.metrics.axis != Axis.vertical) {
+    if (notification.depth != widget.notificationDepth ||
+        notification.metrics.axis != Axis.vertical) {
       return false;
     }
 

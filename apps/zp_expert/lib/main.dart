@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'navigation/router.dart';
 import 'startup_timing.dart';
@@ -8,6 +9,8 @@ void main() {
   stopwatch.start();
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
   debugPrint('Binding: ${stopwatch.elapsedMilliseconds} ms');
 

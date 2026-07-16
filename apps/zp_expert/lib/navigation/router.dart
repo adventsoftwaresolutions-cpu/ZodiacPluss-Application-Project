@@ -22,6 +22,7 @@ import '../../features/contact/contact.dart';
 import '../../features/clients/clients.dart';
 import '../../features/clients/client_history.dart';
 import '../../features/manage_pricing/manage_pricing.dart';
+import '../../features/reviews/reviews.dart';
 
 final List<NavItem> expertNavItems = <NavItem>[
   const NavItem(icon: Icons.home_outlined, selectedIcon: Icons.home),
@@ -40,6 +41,11 @@ final GoRouter expertRouter = GoRouter(
       path: ExpertRoutes.managePricing,
       builder: (BuildContext context, GoRouterState state) =>
           const ManagePricingPage(),
+    ),
+    GoRoute(
+      path: ExpertRoutes.reviews,
+      builder: (BuildContext context, GoRouterState state) =>
+          const ReviewsPage(),
     ),
     GoRoute(
       path: ExpertRoutes.sessionInfo,
