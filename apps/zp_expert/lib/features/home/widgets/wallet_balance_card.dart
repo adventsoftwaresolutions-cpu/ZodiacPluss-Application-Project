@@ -32,7 +32,7 @@ class WalletBalanceCard extends ConsumerWidget {
         final double buttonRadius = 12 * scale;
         final double buttonFont = 14 * scale;
 
-        return Row(
+        final Widget balanceDetails = Row(
           children: <Widget>[
             SvgPicture.asset(
               'assets/icons/wallet.svg',
@@ -73,24 +73,44 @@ class WalletBalanceCard extends ConsumerWidget {
                 ],
               ),
             ),
-            SizedBox(width: spacing8),
-            _PressableButton(
-              onPressed: onCheckStatus,
-              radius: buttonRadius,
-              padding: EdgeInsets.symmetric(
-                horizontal: buttonPaddingH,
-                vertical: buttonPaddingV,
-              ),
-              backgroundColor: const Color(0xFFD6E9E7),
-              child: Text(
-                'Check Status',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
-                  fontSize: buttonFont,
-                ),
-              ),
+          ],
+        );
+
+        final Widget statusButton = _PressableButton(
+          onPressed: onCheckStatus,
+          radius: buttonRadius,
+          padding: EdgeInsets.symmetric(
+            horizontal: buttonPaddingH,
+            vertical: buttonPaddingV,
+          ),
+          backgroundColor: const Color(0xFFD6E9E7),
+          child: Text(
+            'Check Status',
+            maxLines: 1,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.primary,
+              fontSize: buttonFont,
             ),
+          ),
+        );
+
+        if (constraints.maxWidth < 280) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              balanceDetails,
+              SizedBox(height: spacing12),
+              statusButton,
+            ],
+          );
+        }
+
+        return Row(
+          children: <Widget>[
+            Expanded(child: balanceDetails),
+            SizedBox(width: spacing8),
+            statusButton,
           ],
         );
       },

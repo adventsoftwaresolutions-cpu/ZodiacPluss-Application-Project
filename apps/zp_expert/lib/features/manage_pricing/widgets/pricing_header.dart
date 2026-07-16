@@ -15,10 +15,16 @@ class PricingHeader extends StatelessWidget {
             constraints: const BoxConstraints.tightFor(width: 40, height: 40),
           ),
           const SizedBox(width: 8),
-          const Text(
-            'Manage Pricing/Offers',
-            style: TextStyle(
-                color: Colors.white, fontSize: 26, fontWeight: FontWeight.w700),
+          Expanded(
+            child: Text(
+              'Manage Pricing/Offers',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+            ),
           ),
         ],
       );

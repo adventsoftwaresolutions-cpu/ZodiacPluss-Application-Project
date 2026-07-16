@@ -1,7 +1,7 @@
 // widgets/profile_greeting_header.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../data/availability_status.dart';
+import '../../../shared/widgets/header_action_buttons.dart';
 import '../../../shared/widgets/shimmer_box.dart';
 
 class ProfileGreetingHeader extends StatelessWidget {
@@ -26,68 +26,113 @@ class ProfileGreetingHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        _Avatar(avatarUrl: avatarUrl, isOnline: status.isOnline),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const Text(
-                'Good Morning,',
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w500),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final bool compact = constraints.maxWidth < 360;
+        final bool veryNarrow = constraints.maxWidth < 300;
+
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _Avatar(
+              avatarUrl: avatarUrl,
+              isOnline: status.isOnline,
+              radius: compact ? 34 : 42,
+            ),
+            SizedBox(width: compact ? 10 : 16),
+            Expanded(
+              child: _ProfileSummary(
+                name: name,
+                role: role,
+                isVerified: isVerified,
+                status: status,
+                nameFontSize: compact ? 22 : 26,
               ),
-              Row(
-                children: <Widget>[
-                  Flexible(
-                    child: Text(
-                      name,
-                      style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w700,
-                          color: Theme.of(context).colorScheme.primary),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                      if (isVerified) ...<Widget>[
-                    const SizedBox(width: 6),
-                    const _VerifiedBadge(),
-                  ],
-                ],
-              ),
-              const SizedBox(height: 2),
-              _RolePill(role: role),
-              const SizedBox(height: 6),
-              _AvailabilityStatus(status: status),
-            ],
-          ),
-        ),
-        const SizedBox(width: 8),
-        _IconButtonCircle(
-          assetPath: 'assets/icons/notification.svg',
-          onTap: onNotificationTap,
-        ),
-        const SizedBox(width: 10),
-        _IconButtonCircle(
-          assetPath: 'assets/icons/chat.svg',
-          onTap: onChatTap,
-        ),
-      ],
+            ),
+            SizedBox(width: compact ? 6 : 8),
+            HeaderActionButtons(
+              diameter: compact ? 32 : 35,
+              iconSize: compact ? 16 : 18,
+              spacing: compact ? 6 : 10,
+              direction: veryNarrow ? Axis.vertical : Axis.horizontal,
+              onNotificationTap: onNotificationTap,
+              onChatTap: onChatTap,
+            ),
+          ],
+        );
+      },
     );
   }
 }
 
+class _ProfileSummary extends StatelessWidget {
+  const _ProfileSummary({
+    required this.name,
+    required this.role,
+    required this.isVerified,
+    required this.status,
+    required this.nameFontSize,
+  });
+
+  final String name;
+  final String role;
+  final bool isVerified;
+  final AvailabilityStatus status;
+  final double nameFontSize;
+
+  @override
+  Widget build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          const Text(
+            'Good Morning,',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black54,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Row(
+            children: <Widget>[
+              Flexible(
+                child: Text(
+                  name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: nameFontSize,
+                    fontWeight: FontWeight.w700,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ),
+              if (isVerified) ...<Widget>[
+                const SizedBox(width: 6),
+                const _VerifiedBadge(),
+              ],
+            ],
+          ),
+          const SizedBox(height: 2),
+          _RolePill(role: role),
+          const SizedBox(height: 6),
+          _AvailabilityStatus(status: status),
+        ],
+      );
+}
+
 class _Avatar extends StatelessWidget {
-  const _Avatar({required this.avatarUrl, required this.isOnline});
+  const _Avatar({
+    required this.avatarUrl,
+    required this.isOnline,
+    required this.radius,
+  });
 
   final String avatarUrl;
   final bool isOnline;
+  final double radius;
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +146,7 @@ class _Avatar extends StatelessWidget {
             color: Colors.white,
           ),
           child: CircleAvatar(
-            radius: 42,
+            radius: radius,
             backgroundImage: AssetImage(avatarUrl),
           ),
         ),
@@ -111,7 +156,9 @@ class _Avatar extends StatelessWidget {
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
             transitionBuilder: (Widget child, Animation<double> anim) {
-              return ScaleTransition(scale: anim, child: FadeTransition(opacity: anim, child: child));
+              return ScaleTransition(
+                  scale: anim,
+                  child: FadeTransition(opacity: anim, child: child));
             },
             child: Container(
               // key ensures AnimatedSwitcher distinguishes between online/offline
@@ -157,23 +204,19 @@ class _RolePill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 1),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
       decoration: BoxDecoration(
-        color: const Color(0xFFE6E0F8),
+        color: const Color(0xFFD6EDEF),
         borderRadius: BorderRadius.circular(7),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
-            blurRadius: 2,
-            offset: const Offset(0, 3),
-          ),
-        ],
       ),
       child: Text(
         role,
-        style: const TextStyle(
-          fontWeight: FontWeight.w400,
-          color: Color(0xFF3D2E6B),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.primary,
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
         ),
       ),
     );
@@ -194,13 +237,16 @@ class _AvailabilityStatus extends StatelessWidget {
         : 'Back at ${_formatTime(status.offlineUntil)}';
 
     return Row(
-      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Icon(Icons.circle, size: 8, color: color),
         const SizedBox(width: 6),
-        Text(
-          text,
-          style: TextStyle(color: color, fontSize: 12),
+        Expanded(
+          child: Text(
+            text,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(color: color, fontSize: 12),
+          ),
         ),
       ],
     );
@@ -215,68 +261,71 @@ String _formatTime(DateTime? time) {
   return '$hour:$minute $period';
 }
 
-class _IconButtonCircle extends StatelessWidget {
-  const _IconButtonCircle({required this.assetPath, required this.onTap});
-
-  final String assetPath;
-  final VoidCallback onTap;
-
-  static const double _diameter = 35;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      shape: const CircleBorder(),
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onTap,
-        child: SizedBox(
-          width: _diameter,
-          height: _diameter,
-          child: Center(
-            child: SvgPicture.asset(
-              assetPath,
-              width: 18,
-              height: 18,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class ProfileGreetingHeaderSkeleton extends StatelessWidget {
   const ProfileGreetingHeaderSkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        ShimmerBox(width: 90, height: 90, borderRadius: 45),
-        SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ShimmerBox(width: 100, height: 14),
-              SizedBox(height: 8),
-              ShimmerBox(width: 160, height: 22),
-              SizedBox(height: 8),
-              ShimmerBox(width: 90, height: 18, borderRadius: 7),
-              SizedBox(height: 10),
-              ShimmerBox(width: 130, height: 12),
-            ],
-          ),
-        ),
-        SizedBox(width: 8),
-        ShimmerBox(width: 35, height: 35, borderRadius: 17.5),
-        SizedBox(width: 10),
-        ShimmerBox(width: 35, height: 35, borderRadius: 17.5),
-      ],
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final bool compact = constraints.maxWidth < 360;
+        final bool veryNarrow = constraints.maxWidth < 300;
+        final double avatarSize = compact ? 74 : 90;
+        final double actionSize = compact ? 32 : 35;
+
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            ShimmerBox(
+              width: avatarSize,
+              height: avatarSize,
+              borderRadius: avatarSize / 2,
+            ),
+            SizedBox(width: compact ? 10 : 16),
+            const Expanded(child: _ProfileSummarySkeleton()),
+            SizedBox(width: compact ? 6 : 8),
+            Flex(
+              direction: veryNarrow ? Axis.vertical : Axis.horizontal,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                ShimmerBox(
+                  width: actionSize,
+                  height: actionSize,
+                  borderRadius: actionSize / 2,
+                ),
+                SizedBox(
+                  width: veryNarrow ? 0 : (compact ? 6 : 10),
+                  height: veryNarrow ? 6 : 0,
+                ),
+                ShimmerBox(
+                  width: actionSize,
+                  height: actionSize,
+                  borderRadius: actionSize / 2,
+                ),
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
+}
+
+class _ProfileSummarySkeleton extends StatelessWidget {
+  const _ProfileSummarySkeleton();
+
+  @override
+  Widget build(BuildContext context) => const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ShimmerBox(width: double.infinity, height: 14),
+          SizedBox(height: 8),
+          ShimmerBox(width: double.infinity, height: 22),
+          SizedBox(height: 8),
+          ShimmerBox(width: double.infinity, height: 18, borderRadius: 7),
+          SizedBox(height: 10),
+          ShimmerBox(width: double.infinity, height: 12),
+        ],
+      );
 }

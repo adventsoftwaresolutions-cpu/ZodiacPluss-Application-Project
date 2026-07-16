@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../data/models/pricing_model.dart';
 
@@ -84,22 +85,41 @@ class _PricingRow extends StatelessWidget {
                 style:
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
             const SizedBox(height: 2),
-            Row(
-              children: <Widget>[
-                Expanded(
-                    child: _LabelledField(
-                        label: 'Price per minute',
-                        child: _PriceControl(
-                            value: item.price,
-                            onChanged: (int value) => onChanged(value, null)))),
-                const SizedBox(width: 12),
-                Expanded(
-                    child: _LabelledField(
-                        label: 'Price per minute',
-                        child: _DiscountControl(
-                            value: item.discountPercent,
-                            onChanged: (int value) => onChanged(null, value)))),
-              ],
+            LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                final Widget priceField = _LabelledField(
+                  label: 'Price per minute',
+                  child: _PriceControl(
+                    value: item.price,
+                    onChanged: (int value) => onChanged(value, null),
+                  ),
+                );
+                final Widget discountField = _LabelledField(
+                  label: 'Discount offer',
+                  child: _DiscountControl(
+                    value: item.discountPercent,
+                    onChanged: (int value) => onChanged(null, value),
+                  ),
+                );
+
+                if (constraints.maxWidth < 280) {
+                  return Column(
+                    children: <Widget>[
+                      priceField,
+                      const SizedBox(height: 10),
+                      discountField,
+                    ],
+                  );
+                }
+
+                return Row(
+                  children: <Widget>[
+                    Expanded(child: priceField),
+                    const SizedBox(width: 12),
+                    Expanded(child: discountField),
+                  ],
+                );
+              },
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8, top: 3),
@@ -131,10 +151,62 @@ class _LabelledField extends StatelessWidget {
       ]);
 }
 
-class _PriceControl extends StatelessWidget {
+class _PriceControl extends StatefulWidget {
   const _PriceControl({required this.value, required this.onChanged});
+
   final int value;
   final ValueChanged<int> onChanged;
+
+  @override
+  State<_PriceControl> createState() => _PriceControlState();
+}
+
+class _PriceControlState extends State<_PriceControl> {
+  late final TextEditingController _controller;
+  late final FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: '${widget.value}');
+    _focusNode = FocusNode();
+  }
+
+  @override
+  void didUpdateWidget(covariant _PriceControl oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value && !_focusNode.hasFocus) {
+      _setText(widget.value);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _setText(int value) {
+    _controller.value = TextEditingValue(
+      text: '$value',
+      selection: TextSelection.collapsed(offset: '$value'.length),
+    );
+  }
+
+  void _changeBy(int amount) {
+    final int next = (widget.value + amount).clamp(0, 99999).toInt();
+    _setText(next);
+    widget.onChanged(next);
+  }
+
+  void _handleTextChanged(String text) {
+    final int? parsed = int.tryParse(text);
+    if (parsed != null && parsed != widget.value) {
+      widget.onChanged(parsed.clamp(0, 99999).toInt());
+    }
+  }
+
   @override
   Widget build(BuildContext context) => Container(
         height: 44,
@@ -142,23 +214,47 @@ class _PriceControl extends StatelessWidget {
             border: Border.all(color: const Color(0xFFD6D8DC)),
             borderRadius: BorderRadius.circular(8)),
         child: Row(children: <Widget>[
-          const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Text('₹',
-                  style: TextStyle(fontSize: 22, color: Color(0xFF008A98)))),
           Expanded(
-              child: Center(
-                  child: Text('$value',
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w600)))),
+            child: TextField(
+              controller: _controller,
+              focusNode: _focusNode,
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.done,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(5),
+              ],
+              onChanged: _handleTextChanged,
+              onSubmitted: (String text) {
+                final int value = int.tryParse(text) ?? widget.value;
+                _setText(value);
+                widget.onChanged(value);
+              },
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                isDense: true,
+                prefixText: '₹ ',
+                prefixStyle: TextStyle(
+                  fontSize: 20,
+                  color: Color(0xFF008A98),
+                ),
+                contentPadding: EdgeInsets.symmetric(horizontal: 8),
+              ),
+            ),
+          ),
           Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 InkWell(
-                    onTap: () => onChanged(value + 5),
+                    onTap: () => _changeBy(5),
                     child: const Icon(Icons.arrow_drop_up, size: 20)),
                 InkWell(
-                    onTap: value > 5 ? () => onChanged(value - 5) : null,
+                    onTap: widget.value > 0 ? () => _changeBy(-5) : null,
                     child: const Icon(Icons.arrow_drop_down, size: 20))
               ])
         ]),
@@ -179,6 +275,7 @@ class _DiscountControl extends StatelessWidget {
         child: DropdownButtonHideUnderline(
             child: DropdownButton<int>(
                 isExpanded: true,
+                isDense: true,
                 value: value,
                 icon: const Icon(Icons.arrow_drop_down),
                 items: <int>[0, 10, 20, 30, 40, 50]
@@ -188,9 +285,17 @@ class _DiscountControl extends StatelessWidget {
                           const Icon(Icons.local_offer_outlined,
                               color: Color(0xFF008A98), size: 19),
                           const SizedBox(width: 5),
-                          Text(discount == 0 ? 'No offer' : '$discount% off',
+                          Expanded(
+                            child: Text(
+                              discount == 0 ? 'No offer' : '$discount% off',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w600))
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          )
                         ])))
                     .toList(),
                 onChanged: (int? discount) {

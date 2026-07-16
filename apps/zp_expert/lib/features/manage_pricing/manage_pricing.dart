@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/widgets/gradient_page.dart';
+import '../../shared/widgets/top_scroll_fade.dart';
 import 'data/models/pricing_model.dart';
 import 'data/provider/pricing_provider.dart';
 import 'widgets/loyal_user_note.dart';
@@ -25,17 +26,19 @@ class ManagePricingPage extends ConsumerWidget {
             PricingHeader(onBackTap: () => Navigator.of(context).pop()),
             const SizedBox(height: 20),
             Expanded(
-              child: pricingAsync.when(
-                data: (List<PricingPlan> plans) =>
-                    _PricingContent(plans: plans),
-                loading: () => const _PricingLoadingContent(),
-                error: (Object _, StackTrace __) => Center(
-                    child: TextButton(
-                        onPressed: () {
-                          ref.invalidate(pricingProvider);
-                        },
-                        child: const Text('Retry',
-                            style: TextStyle(color: Colors.white)))),
+              child: TopScrollFade(
+                child: pricingAsync.when(
+                  data: (List<PricingPlan> plans) =>
+                      _PricingContent(plans: plans),
+                  loading: () => const _PricingLoadingContent(),
+                  error: (Object _, StackTrace __) => Center(
+                      child: TextButton(
+                          onPressed: () {
+                            ref.invalidate(pricingProvider);
+                          },
+                          child: const Text('Retry',
+                              style: TextStyle(color: Colors.white)))),
+                ),
               ),
             ),
           ]),

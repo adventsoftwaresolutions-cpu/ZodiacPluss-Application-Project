@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../shared/widgets/gradient_page.dart';
+import '../../shared/widgets/top_scroll_fade.dart';
 import 'widgets/faq_header.dart';
 import 'widgets/faq_list.dart';
 
@@ -27,7 +28,7 @@ class FaqPage extends StatelessWidget {
               ),
               const SizedBox(height: 28),
               const Expanded(
-                child: FaqList(),
+                child: TopScrollFade(child: FaqList()),
               ),
             ],
           ),

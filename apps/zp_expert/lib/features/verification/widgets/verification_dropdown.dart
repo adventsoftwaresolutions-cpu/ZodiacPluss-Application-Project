@@ -23,8 +23,7 @@ class VerificationDropdown<T> extends StatefulWidget {
       _VerificationDropdownState<T>();
 }
 
-class _VerificationDropdownState<T>
-    extends State<VerificationDropdown<T>> {
+class _VerificationDropdownState<T> extends State<VerificationDropdown<T>> {
   bool _focused = false;
 
   @override
@@ -40,9 +39,7 @@ class _VerificationDropdownState<T>
             color: Color(0xff374151),
           ),
         ),
-
         const SizedBox(height: 6),
-
         Focus(
           onFocusChange: (value) {
             setState(() => _focused = value);
@@ -63,51 +60,44 @@ class _VerificationDropdownState<T>
               boxShadow: [
                 BoxShadow(
                   color: _focused
-                      ? const Color(0xff18B6A8).withOpacity(.06)
-                      : Colors.black.withOpacity(.015),
+                      ? const Color(0xff18B6A8).withValues(alpha: .06)
+                      : Colors.black.withValues(alpha: .015),
                   blurRadius: _focused ? 12 : 6,
                   offset: const Offset(0, 2),
                 ),
               ],
             ),
             child: DropdownButtonFormField<T>(
-              value: widget.value,
+              key: ValueKey<T?>(widget.value),
+              initialValue: widget.value,
               items: widget.items,
               onChanged: widget.onChanged,
               isExpanded: true,
-
               style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
                 color: Color(0xff111827),
               ),
-
               icon: const Icon(
                 Icons.keyboard_arrow_down_rounded,
                 size: 18,
                 color: Color(0xff9CA3AF),
               ),
-
               decoration: InputDecoration(
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
                 disabledBorder: InputBorder.none,
-
                 isDense: true,
-
                 hintText: widget.hint,
-
                 hintStyle: const TextStyle(
                   fontSize: 12,
                   color: Color(0xff9CA3AF),
                 ),
-
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 8,
                 ),
-
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(7),
                   child: Container(
@@ -124,7 +114,6 @@ class _VerificationDropdownState<T>
                     ),
                   ),
                 ),
-
                 prefixIconConstraints: const BoxConstraints(
                   minWidth: 36,
                   minHeight: 36,

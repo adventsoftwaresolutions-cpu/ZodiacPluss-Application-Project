@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../navigation/app_routes.dart';
 
 class LogoutButton extends StatelessWidget {
   const LogoutButton({super.key});
@@ -9,9 +12,7 @@ class LogoutButton extends StatelessWidget {
       width: double.infinity,
       height: 52,
       child: FilledButton(
-        onPressed: () {
-          // TODO: Logout
-        },
+        onPressed: () => context.go(ExpertRoutes.auth),
         child: const Text("Log Out"),
       ),
     );

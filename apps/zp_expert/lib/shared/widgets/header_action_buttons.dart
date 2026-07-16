@@ -9,6 +9,7 @@ class HeaderActionButtons extends StatelessWidget {
     this.diameter = 35,
     this.iconSize = 18,
     this.spacing = 10,
+    this.direction = Axis.horizontal,
   });
 
   final VoidCallback onNotificationTap;
@@ -16,10 +17,12 @@ class HeaderActionButtons extends StatelessWidget {
   final double diameter;
   final double iconSize;
   final double spacing;
+  final Axis direction;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Flex(
+      direction: direction,
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         _ActionIconButton(
@@ -28,7 +31,10 @@ class HeaderActionButtons extends StatelessWidget {
           iconSize: iconSize,
           onTap: onNotificationTap,
         ),
-        SizedBox(width: spacing),
+        SizedBox(
+          width: direction == Axis.horizontal ? spacing : 0,
+          height: direction == Axis.vertical ? spacing : 0,
+        ),
         _ActionIconButton(
           assetPath: 'assets/icons/chat.svg',
           diameter: diameter,

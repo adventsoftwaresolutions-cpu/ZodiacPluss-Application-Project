@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../shared/constants/app_assets.dart';
+
 class VerificationHeader extends StatelessWidget {
-  const VerificationHeader({super.key});
+  const VerificationHeader({required this.onBack, super.key});
+
+  final VoidCallback onBack;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +21,7 @@ class VerificationHeader extends StatelessWidget {
             children: [
               InkWell(
                 borderRadius: BorderRadius.circular(12),
-                onTap: () => Navigator.pop(context),
+                onTap: onBack,
                 child: Container(
                   width: 40,
                   height: 40,
@@ -35,11 +39,9 @@ class VerificationHeader extends StatelessWidget {
                   ),
                 ),
               ),
-
               const SizedBox(height: 18),
-
               Text(
-                "Complete Verification",
+                'Complete your profile',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.titleLarge?.copyWith(
@@ -48,30 +50,23 @@ class VerificationHeader extends StatelessWidget {
                   color: const Color(0xff111827),
                 ),
               ),
-
               const SizedBox(height: 6),
-
-              SizedBox(
-                width: 360,
-                child: Text(
-                  "Almost there! Please complete your professional information to verify your profile.",
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    fontSize: 12,
-                    color: const Color(0xff6B7280),
-                    height: 1.45,
-                  ),
+              Text(
+                'A few quick steps to help clients discover the right expert.',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  fontSize: 12,
+                  color: const Color(0xff6B7280),
+                  height: 1.45,
                 ),
               ),
             ],
           ),
         ),
-
         const SizedBox(width: 18),
-
         Padding(
           padding: const EdgeInsets.only(top: 2),
           child: SvgPicture.asset(
-            "assets/icons/shield.svg",
+            AppAssets.shieldIcon,
             width: 64,
             height: 64,
             fit: BoxFit.contain,

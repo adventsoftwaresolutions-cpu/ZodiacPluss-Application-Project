@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../navigation/app_routes.dart';
 import '../../shared/widgets/gradient_page.dart';
+import '../../shared/widgets/top_scroll_fade.dart';
 import 'data/models/client_lists.dart';
 import 'data/models/client_model.dart';
 import 'data/provider/clients_provider.dart';
@@ -38,38 +39,40 @@ class _ClientsPageState extends ConsumerState<ClientsPage> {
       child: SafeArea(
         top: true,
         bottom: false,
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: <Widget>[
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate(<Widget>[
-                  ClientsHeader(
-                    onBackTap: () => Navigator.of(context).maybePop(),
-                    onNotificationTap: () {},
-                    onChatTap: () {},
-                  ),
-                  const SizedBox(height: 28),
-                  ClientSearchField(
-                    controller: _searchController,
-                    onChanged: (value) => setState(() => _query = value),
-                  ),
-                  const SizedBox(height: 16),
-                  clientsAsync.when(
-                    data: _buildClientContent,
-                    loading: () => const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 48),
-                      child: Center(child: CircularProgressIndicator()),
+        child: TopScrollFade(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: <Widget>[
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate(<Widget>[
+                    ClientsHeader(
+                      onBackTap: () => Navigator.of(context).maybePop(),
+                      onNotificationTap: () {},
+                      onChatTap: () {},
                     ),
-                    error: (error, stackTrace) => _LoadError(
-                      onRetry: () => ref.invalidate(clientsProvider),
+                    const SizedBox(height: 28),
+                    ClientSearchField(
+                      controller: _searchController,
+                      onChanged: (value) => setState(() => _query = value),
                     ),
-                  ),
-                ]),
+                    const SizedBox(height: 16),
+                    clientsAsync.when(
+                      data: _buildClientContent,
+                      loading: () => const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 48),
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                      error: (error, stackTrace) => _LoadError(
+                        onRetry: () => ref.invalidate(clientsProvider),
+                      ),
+                    ),
+                  ]),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

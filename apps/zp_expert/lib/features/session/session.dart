@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../shared/widgets/gradient_page.dart';
+import '../../shared/widgets/top_scroll_fade.dart';
 import 'widgets/session_history_header.dart';
 import 'widgets/session_history_list.dart';
 
@@ -20,9 +21,13 @@ class SessionScreen extends StatelessWidget {
                 onBackTap: () => Navigator.of(context).maybePop(),
                 onNotificationTap: () {},
                 onChatTap: () {},
+                showBackButton: false,
+                showSubtitle: false,
               ),
               const SizedBox(height: 28),
-              const Expanded(child: SessionHistoryList()),
+              const Expanded(
+                child: TopScrollFade(child: SessionHistoryList()),
+              ),
             ],
           ),
         ),

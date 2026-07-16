@@ -27,10 +27,10 @@ class FaqHeader extends StatelessWidget {
 
         const SizedBox(width: 16),
 
-        Expanded(
+        const Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const <Widget>[
+            children: <Widget>[
               Text(
                 'FAQ',
                 style: TextStyle(

@@ -33,14 +33,11 @@ class _UploadZoneState extends State<UploadZone> {
           height: 180,
           width: double.infinity,
           decoration: BoxDecoration(
-            color: hovering
-                ? const Color(0xffF6FFFD)
-                : Colors.white,
+            color: hovering ? const Color(0xffF6FFFD) : Colors.white,
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
-              color: hovering
-                  ? const Color(0xff17B3A7)
-                  : const Color(0xffDCE4EA),
+              color:
+                  hovering ? const Color(0xff17B3A7) : const Color(0xffDCE4EA),
               width: 1.4,
             ),
           ),
@@ -61,9 +58,7 @@ class _UploadZoneState extends State<UploadZone> {
                   size: 28,
                 ),
               ),
-
               const SizedBox(height: 18),
-
               Text(
                 widget.title,
                 style: const TextStyle(
@@ -71,9 +66,7 @@ class _UploadZoneState extends State<UploadZone> {
                   fontSize: 15,
                 ),
               ),
-
               const SizedBox(height: 8),
-
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(

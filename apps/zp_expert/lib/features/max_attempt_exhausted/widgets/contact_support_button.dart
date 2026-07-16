@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../navigation/app_routes.dart';
 
 class ContactSupportButton extends StatelessWidget {
   const ContactSupportButton({super.key});
@@ -19,9 +22,7 @@ class ContactSupportButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(14),
           ),
         ),
-        onPressed: () {
-          // TODO: Navigate to support/help page
-        },
+        onPressed: () => context.push(ExpertRoutes.raiseTicket),
         child: const Text(
           'Contact Support',
           style: TextStyle(

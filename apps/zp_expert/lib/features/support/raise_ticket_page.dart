@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_radius.dart';
 import '../../themes/app_spacing.dart';
+import '../../navigation/app_routes.dart';
+import '../../shared/widgets/top_scroll_fade.dart';
 import 'data/ticket_model.dart';
 import 'data/ticket_provider.dart';
 import 'widgets/ticket_form_card.dart';
@@ -89,36 +91,39 @@ class _RaiseTicketPageState extends ConsumerState<RaiseTicketPage> {
                     _showMessage('Messages are not available yet.'),
               ),
               Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.md,
-                    AppSpacing.md,
-                    AppSpacing.md,
-                    AppSpacing.xl,
-                  ),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      children: <Widget>[
-                        TicketFormCard(
-                          categories: _categories,
-                          state: formState,
-                          subjectController: _subjectController,
-                          descriptionController: _descriptionController,
-                          onCategorySelected: controller.selectCategory,
-                          onAddAttachment: controller.addAttachment,
-                          onRemoveAttachment: controller.removeAttachment,
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        _SubmitButton(
-                          isSubmitting: formState.isSubmitting,
-                          onPressed: _submit,
-                        ),
-                        const SizedBox(height: AppSpacing.xl),
-                        TicketStatusCard(
-                          onTap: () => context.push('/ticket-status'),
-                        ),
-                      ],
+                child: TopScrollFade(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.md,
+                      AppSpacing.md,
+                      AppSpacing.md,
+                      AppSpacing.xl,
+                    ),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: <Widget>[
+                          TicketFormCard(
+                            categories: _categories,
+                            state: formState,
+                            subjectController: _subjectController,
+                            descriptionController: _descriptionController,
+                            onCategorySelected: controller.selectCategory,
+                            onAddAttachment: controller.addAttachment,
+                            onRemoveAttachment: controller.removeAttachment,
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          _SubmitButton(
+                            isSubmitting: formState.isSubmitting,
+                            onPressed: _submit,
+                          ),
+                          const SizedBox(height: AppSpacing.xl),
+                          TicketStatusCard(
+                            onTap: () =>
+                                context.push(ExpertRoutes.ticketStatus),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
