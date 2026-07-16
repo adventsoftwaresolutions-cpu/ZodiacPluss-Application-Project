@@ -84,22 +84,41 @@ class _PricingRow extends StatelessWidget {
                 style:
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
             const SizedBox(height: 2),
-            Row(
-              children: <Widget>[
-                Expanded(
-                    child: _LabelledField(
-                        label: 'Price per minute',
-                        child: _PriceControl(
-                            value: item.price,
-                            onChanged: (int value) => onChanged(value, null)))),
-                const SizedBox(width: 12),
-                Expanded(
-                    child: _LabelledField(
-                        label: 'Price per minute',
-                        child: _DiscountControl(
-                            value: item.discountPercent,
-                            onChanged: (int value) => onChanged(null, value)))),
-              ],
+            LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                final Widget priceField = _LabelledField(
+                  label: 'Price per minute',
+                  child: _PriceControl(
+                    value: item.price,
+                    onChanged: (int value) => onChanged(value, null),
+                  ),
+                );
+                final Widget discountField = _LabelledField(
+                  label: 'Discount offer',
+                  child: _DiscountControl(
+                    value: item.discountPercent,
+                    onChanged: (int value) => onChanged(null, value),
+                  ),
+                );
+
+                if (constraints.maxWidth < 280) {
+                  return Column(
+                    children: <Widget>[
+                      priceField,
+                      const SizedBox(height: 10),
+                      discountField,
+                    ],
+                  );
+                }
+
+                return Row(
+                  children: <Widget>[
+                    Expanded(child: priceField),
+                    const SizedBox(width: 12),
+                    Expanded(child: discountField),
+                  ],
+                );
+              },
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8, top: 3),
@@ -179,6 +198,7 @@ class _DiscountControl extends StatelessWidget {
         child: DropdownButtonHideUnderline(
             child: DropdownButton<int>(
                 isExpanded: true,
+                isDense: true,
                 value: value,
                 icon: const Icon(Icons.arrow_drop_down),
                 items: <int>[0, 10, 20, 30, 40, 50]
@@ -188,9 +208,17 @@ class _DiscountControl extends StatelessWidget {
                           const Icon(Icons.local_offer_outlined,
                               color: Color(0xFF008A98), size: 19),
                           const SizedBox(width: 5),
-                          Text(discount == 0 ? 'No offer' : '$discount% off',
+                          Expanded(
+                            child: Text(
+                              discount == 0 ? 'No offer' : '$discount% off',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w600))
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          )
                         ])))
                     .toList(),
                 onChanged: (int? discount) {

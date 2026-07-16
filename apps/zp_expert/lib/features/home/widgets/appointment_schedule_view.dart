@@ -51,8 +51,8 @@ class _AppointmentTile extends ConsumerWidget {
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child:
-                const Text('Cancel session', style: TextStyle(color: Colors.red)),
+            child: const Text('Cancel session',
+                style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -81,62 +81,35 @@ class _AppointmentTile extends ConsumerWidget {
             border: Border.all(color: const Color(0xFF2C6E6B)),
             borderRadius: BorderRadius.circular(14),
           ),
-          child: Row(
-            children: <Widget>[
-              SizedBox(
-                width: 64,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              final Widget details = _AppointmentDetails(
+                appointment: appointment,
+                date: date,
+              );
+              final Widget actions = _AppointmentActions(
+                onCancel: () => _confirmCancel(context, ref),
+              );
+
+              if (constraints.maxWidth < 300) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    Text(_formatTime(date),
-                        style: const TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.bold)),
-                    Text('${appointment.duration.inMinutes} min',
-                        style: const TextStyle(
-                            fontSize: 12, color: Color(0xFF5A6B8C))),
+                    details,
+                    const SizedBox(height: 8),
+                    Align(alignment: Alignment.centerRight, child: actions),
                   ],
-                ),
-              ),
-              CircleAvatar(
-                radius: 20,
-                backgroundImage: AssetImage(appointment.clientAvatarUrl),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(appointment.clientName,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold)),
-                    Text(appointment.sessionType.label,
-                        style: const TextStyle(
-                            fontSize: 12, color: Colors.black45)),
-                  ],
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                );
+              }
+
+              return Row(
                 children: <Widget>[
-                  const Text('Upcoming',
-                      style:
-                          TextStyle(fontSize: 12, color: Color(0xFF0D3B3E))),
-                  const SizedBox(height: 6),
-                  OutlinedButton.icon(
-                    onPressed: () => _confirmCancel(context, ref),
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.redAccent),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 6, vertical: 4),
-                    ),
-                    icon: const Icon(Icons.close, size: 12, color: Colors.red),
-                    label: const Text('Cancel',
-                        style: TextStyle(color: Colors.red, fontSize: 12)),
-                  ),
+                  Expanded(child: details),
+                  const SizedBox(width: 8),
+                  actions,
                 ],
-              ),
-            ],
+              );
+            },
           ),
         ),
       ],
@@ -144,10 +117,119 @@ class _AppointmentTile extends ConsumerWidget {
   }
 }
 
+class _AppointmentDetails extends StatelessWidget {
+  const _AppointmentDetails({
+    required this.appointment,
+    required this.date,
+  });
+
+  final AppointmentEntry appointment;
+  final DateTime date;
+
+  @override
+  Widget build(BuildContext context) => Row(
+        children: <Widget>[
+          SizedBox(
+            width: 64,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  _formatTime(date),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  '${appointment.duration.inMinutes} min',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF5A6B8C),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          CircleAvatar(
+            radius: 20,
+            backgroundImage: AssetImage(appointment.clientAvatarUrl),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  appointment.clientName,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  appointment.sessionType.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.black45,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+}
+
+class _AppointmentActions extends StatelessWidget {
+  const _AppointmentActions({required this.onCancel});
+
+  final VoidCallback onCancel;
+
+  @override
+  Widget build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          const Text(
+            'Upcoming',
+            style: TextStyle(fontSize: 12, color: Color(0xFF0D3B3E)),
+          ),
+          const SizedBox(height: 6),
+          OutlinedButton.icon(
+            onPressed: onCancel,
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: Colors.redAccent),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+            ),
+            icon: const Icon(Icons.close, size: 12, color: Colors.red),
+            label: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.red, fontSize: 12),
+            ),
+          ),
+        ],
+      );
+}
+
 String _formatDate(DateTime date) {
   const List<String> months = <String>[
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
   return '${date.day} ${months[date.month - 1]} ${date.year}';
 }

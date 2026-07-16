@@ -127,14 +127,18 @@ class ExpertProfileHeader extends StatelessWidget {
                                 ? const Color(0xFF2DB861)
                                 : Colors.grey),
                         const SizedBox(width: 6),
-                        Text(
-                          profile.isOnline
-                              ? 'Online · Available for sessions'
-                              : 'Offline',
-                          style: const TextStyle(
-                            color: Color(0xFF318D56),
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
+                        Expanded(
+                          child: Text(
+                            profile.isOnline
+                                ? 'Online · Available for sessions'
+                                : 'Offline',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Color(0xFF318D56),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ],

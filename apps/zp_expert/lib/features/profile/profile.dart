@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../shared/widgets/gradient_page.dart';
+import '../../shared/widgets/top_scroll_fade.dart';
 import 'widgets/profile_content.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -11,7 +12,7 @@ class ProfileScreen extends StatelessWidget {
     return const GradientPage(
       child: SafeArea(
         bottom: false,
-        child: ProfileContent(),
+        child: TopScrollFade(child: ProfileContent()),
       ),
     );
   }

@@ -35,9 +35,7 @@ class VerificationHeader extends StatelessWidget {
                   ),
                 ),
               ),
-
               const SizedBox(height: 18),
-
               Text(
                 "Complete Verification",
                 maxLines: 1,
@@ -48,26 +46,19 @@ class VerificationHeader extends StatelessWidget {
                   color: const Color(0xff111827),
                 ),
               ),
-
               const SizedBox(height: 6),
-
-              SizedBox(
-                width: 360,
-                child: Text(
-                  "Almost there! Please complete your professional information to verify your profile.",
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    fontSize: 12,
-                    color: const Color(0xff6B7280),
-                    height: 1.45,
-                  ),
+              Text(
+                "Almost there! Please complete your professional information to verify your profile.",
+                style: theme.textTheme.bodySmall?.copyWith(
+                  fontSize: 12,
+                  color: const Color(0xff6B7280),
+                  height: 1.45,
                 ),
               ),
             ],
           ),
         ),
-
         const SizedBox(width: 18),
-
         Padding(
           padding: const EdgeInsets.only(top: 2),
           child: SvgPicture.asset(

@@ -186,87 +186,117 @@ class _DayRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Opacity(
         opacity: opacity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
+        child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            final Widget timeFields = Row(
+              children: <Widget>[
+                Expanded(
+                  child: _LabelledTimeField(
+                    label: 'From',
+                    value: day.from.formatted,
+                    enabled: day.isEnabled,
+                    onTap: () => _pick(context, day.from, onFromChanged),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _LabelledTimeField(
+                    label: 'To',
+                    value: day.to.formatted,
+                    enabled: day.isEnabled,
+                    onTap: () => _pick(context, day.to, onToChanged),
+                  ),
+                ),
+              ],
+            );
+            final Widget toggle = Switch(
+              value: day.isEnabled,
+              activeThumbColor: Theme.of(context).colorScheme.primary,
+              onChanged: onToggle,
+            );
+
+            if (constraints.maxWidth < 320) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Expanded(child: _DayLabel(day.weekday.label)),
+                      toggle,
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  timeFields,
+                ],
+              );
+            }
+
+            return Row(
               children: <Widget>[
                 SizedBox(
                   width: 90,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 14),
-                    child: Text(
-                      day.weekday.label,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF0D3B3E),
-                      ),
-                    ),
+                    padding: const EdgeInsets.only(top: 18),
+                    child: _DayLabel(day.weekday.label),
                   ),
                 ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.only(left: 2, bottom: 4),
-                        child: Text(
-                          'From',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.black54,
-                          ),
-                        ),
-                      ),
-                      _TimeField(
-                        value: day.from.formatted,
-                        enabled: day.isEnabled,
-                        onTap: () =>
-                            _pick(context, day.from, onFromChanged),
-                      ),
-                    ],
-                  ),
-                ),
+                Expanded(child: timeFields),
                 const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.only(left: 2, bottom: 4),
-                        child: Text(
-                          'To',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.black54,
-                          ),
-                        ),
-                      ),
-                      _TimeField(
-                        value: day.to.formatted,
-                        enabled: day.isEnabled,
-                        onTap: () => _pick(context, day.to, onToChanged),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Padding(
-                  padding: const EdgeInsets.only(top: 15),
-                  child: Switch(
-                    value: day.isEnabled,
-                    activeColor: Theme.of(context).colorScheme.primary,
-                    onChanged: onToggle,
-                  ),
-                ),
+                toggle,
               ],
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
   }
+}
+
+class _DayLabel extends StatelessWidget {
+  const _DayLabel(this.label);
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) => Text(
+        label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF0D3B3E),
+        ),
+      );
+}
+
+class _LabelledTimeField extends StatelessWidget {
+  const _LabelledTimeField({
+    required this.label,
+    required this.value,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  final String label;
+  final String value;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(left: 2, bottom: 4),
+            child: Text(
+              label,
+              style: const TextStyle(fontSize: 11, color: Colors.black54),
+            ),
+          ),
+          _TimeField(value: value, enabled: enabled, onTap: onTap),
+        ],
+      );
 }
 
 class _TimeField extends StatelessWidget {

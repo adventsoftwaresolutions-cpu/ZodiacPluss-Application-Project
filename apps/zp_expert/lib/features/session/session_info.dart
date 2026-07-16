@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/widgets/gradient_page.dart';
+import '../../shared/widgets/top_scroll_fade.dart';
 import 'data/provider/session_history_provider.dart';
 import 'widgets/session_action_bar.dart';
 import 'widgets/session_history_header.dart';
@@ -37,7 +38,11 @@ class SessionInfoScreen extends ConsumerWidget {
                     onChatTap: () {},
                   ),
                   const SizedBox(height: 24),
-                  Expanded(child: SessionInfoContent(sessionId: sessionId)),
+                  Expanded(
+                    child: TopScrollFade(
+                      child: SessionInfoContent(sessionId: sessionId),
+                    ),
+                  ),
                 ],
               ),
             ),

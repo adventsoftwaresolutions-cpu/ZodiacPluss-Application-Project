@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../shared/widgets/gradient_page.dart';
+import '../../shared/widgets/top_scroll_fade.dart';
 import 'widgets/client_history_content.dart';
 import 'widgets/clients_header.dart';
 
@@ -26,7 +27,11 @@ class ClientHistoryPage extends StatelessWidget {
                 onChatTap: () {},
               ),
               const SizedBox(height: 24),
-              Expanded(child: ClientHistoryContent(clientId: clientId)),
+              Expanded(
+                child: TopScrollFade(
+                  child: ClientHistoryContent(clientId: clientId),
+                ),
+              ),
             ],
           ),
         ),

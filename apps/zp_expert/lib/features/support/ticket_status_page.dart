@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../themes/app_colors.dart';
 import '../../themes/app_spacing.dart';
 import '../../navigation/app_routes.dart';
+import '../../shared/widgets/top_scroll_fade.dart';
 import 'data/ticket_model.dart';
 import 'data/ticket_provider.dart';
 import 'data/ticket_repository.dart';
@@ -46,71 +47,74 @@ class TicketStatusPage extends ConsumerWidget {
                     _showMessage(context, 'Messages are not available yet.'),
               ),
               Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.md,
-                    AppSpacing.lg,
-                    AppSpacing.md,
-                    AppSpacing.xl,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      const Text(
-                        'My Tickets',
-                        style: TextStyle(
-                          color: AppColors.ticketText,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      TicketStatusFilters(
-                        selectedFilter: filter,
-                        onSelected:
-                            ref.read(ticketFilterProvider.notifier).select,
-                      ),
-                      const SizedBox(height: 22),
-                      tickets.when(
-                        data: (List<SupportTicket> ticketList) {
-                          final List<SupportTicket> visibleTickets =
-                              filter == TicketProgress.all
-                                  ? ticketList
-                                  : ticketList
-                                      .where((SupportTicket ticket) =>
-                                          ticket.progress == filter)
-                                      .toList();
-                          if (visibleTickets.isEmpty) {
-                            return const _EmptyTickets();
-                          }
-                          return Column(
-                            children: visibleTickets
-                                .map((SupportTicket ticket) => Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 16),
-                                      child: TicketUpdateCard(ticket: ticket),
-                                    ))
-                                .toList(),
-                          );
-                        },
-                        loading: () => const Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(32),
-                            child: CircularProgressIndicator(
-                                color: AppColors.primary),
+                child: TopScrollFade(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.md,
+                      AppSpacing.lg,
+                      AppSpacing.md,
+                      AppSpacing.xl,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        const Text(
+                          'My Tickets',
+                          style: TextStyle(
+                            color: AppColors.ticketText,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
-                        error: (Object error, StackTrace stackTrace) =>
-                            const _EmptyTickets(),
-                      ),
-                      const SizedBox(height: 8),
-                      TicketQuickHelp(
-                        onFaqTap: () => context.push(ExpertRoutes.faq),
-                        onContactTap: () => context.push(ExpertRoutes.contact),
-                        onRaiseTicketTap: () =>
-                            context.push(ExpertRoutes.raiseTicket),
-                      ),
-                    ],
+                        const SizedBox(height: 12),
+                        TicketStatusFilters(
+                          selectedFilter: filter,
+                          onSelected:
+                              ref.read(ticketFilterProvider.notifier).select,
+                        ),
+                        const SizedBox(height: 22),
+                        tickets.when(
+                          data: (List<SupportTicket> ticketList) {
+                            final List<SupportTicket> visibleTickets =
+                                filter == TicketProgress.all
+                                    ? ticketList
+                                    : ticketList
+                                        .where((SupportTicket ticket) =>
+                                            ticket.progress == filter)
+                                        .toList();
+                            if (visibleTickets.isEmpty) {
+                              return const _EmptyTickets();
+                            }
+                            return Column(
+                              children: visibleTickets
+                                  .map((SupportTicket ticket) => Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 16),
+                                        child: TicketUpdateCard(ticket: ticket),
+                                      ))
+                                  .toList(),
+                            );
+                          },
+                          loading: () => const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(32),
+                              child: CircularProgressIndicator(
+                                  color: AppColors.primary),
+                            ),
+                          ),
+                          error: (Object error, StackTrace stackTrace) =>
+                              const _EmptyTickets(),
+                        ),
+                        const SizedBox(height: 8),
+                        TicketQuickHelp(
+                          onFaqTap: () => context.push(ExpertRoutes.faq),
+                          onContactTap: () =>
+                              context.push(ExpertRoutes.contact),
+                          onRaiseTicketTap: () =>
+                              context.push(ExpertRoutes.raiseTicket),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
