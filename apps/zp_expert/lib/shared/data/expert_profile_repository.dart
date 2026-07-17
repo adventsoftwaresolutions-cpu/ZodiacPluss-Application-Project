@@ -16,7 +16,7 @@ class MockExpertProfileRepository implements ExpertProfileRepository {
     return const ExpertProfile(
       id: 'expert_001',
       name: 'Shreya',
-      role: ExpertRole.psychologist,
+      role: ExpertRole.astrologer, //Other option is ExpertRole.astrologer
       avatarUrl: 'assets/images/dp.jpg',
       isVerified: true,
     );

@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../navigation/app_routes.dart';
 import '../../shared/widgets/gradient_page.dart';
-import '../../shared/widgets/top_scroll_fade.dart';
 import '../session/widgets/session_history_header.dart';
-import 'widgets/reviews_content.dart';
+import 'widgets/chat_inbox_content.dart';
 
-class ReviewsPage extends StatelessWidget {
-  const ReviewsPage({super.key});
+class ChatInboxPage extends StatelessWidget {
+  const ChatInboxPage({super.key});
 
   @override
   Widget build(BuildContext context) => GradientPage(
@@ -19,16 +16,15 @@ class ReviewsPage extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 SessionHistoryHeader(
-                  title: 'Reviews',
-                  subtitle: 'Feedback shared by your clients',
+                  title: 'Client Chats',
+                  subtitle: 'Continue conversations with past clients',
                   onBackTap: () => Navigator.of(context).maybePop(),
                   onNotificationTap: () {},
-                  onChatTap: () => context.push(ExpertRoutes.chats),
+                  onChatTap: () {},
+                  showActionButtons: false,
                 ),
-                const SizedBox(height: 24),
-                const Expanded(
-                  child: TopScrollFade(child: ReviewsContent()),
-                ),
+                const SizedBox(height: 20),
+                const Expanded(child: ChatInboxContent()),
               ],
             ),
           ),

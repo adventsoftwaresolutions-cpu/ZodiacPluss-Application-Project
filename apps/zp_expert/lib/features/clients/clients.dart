@@ -50,7 +50,7 @@ class _ClientsPageState extends ConsumerState<ClientsPage> {
                     ClientsHeader(
                       onBackTap: () => Navigator.of(context).maybePop(),
                       onNotificationTap: () {},
-                      onChatTap: () {},
+                      onChatTap: () => context.push(ExpertRoutes.chats),
                     ),
                     const SizedBox(height: 28),
                     ClientSearchField(

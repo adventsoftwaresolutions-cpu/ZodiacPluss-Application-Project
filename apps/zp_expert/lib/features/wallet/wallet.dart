@@ -65,7 +65,7 @@ class _WalletPageState extends ConsumerState<WalletPage> {
                 sliver: SliverToBoxAdapter(
                   child: WalletHeader(
                     onNotificationTap: () {}, // TODO: wire notification route
-                    onChatTap: () {}, // TODO: wire chat route
+                    onChatTap: () => context.push(ExpertRoutes.chats),
                   ),
                 ),
               ),

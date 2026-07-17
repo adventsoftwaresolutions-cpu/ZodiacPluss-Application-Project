@@ -1,0 +1,36 @@
+import 'package:flutter/material.dart';
+
+import '../data/models/call_room_model.dart';
+
+class CallStatusText extends StatelessWidget {
+  const CallStatusText({required this.session, super.key});
+
+  final CallSessionState session;
+
+  @override
+  Widget build(BuildContext context) {
+    final String status = switch (session.phase) {
+      CallSessionPhase.waitingForClient =>
+        'Waiting for client · ${_clock(session.waitingSeconds)}',
+      CallSessionPhase.connected => _clock(session.elapsedSeconds),
+      CallSessionPhase.ended => session.endedAutomatically
+          ? 'Room closed · client did not join'
+          : 'Call ended',
+    };
+    return Text(
+      status,
+      key: const ValueKey<String>('call-status-text'),
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: .78),
+        fontWeight: FontWeight.w600,
+      ),
+    );
+  }
+
+  String _clock(int seconds) {
+    final int minutes = seconds ~/ 60;
+    final int remainder = seconds % 60;
+    return '$minutes:${remainder.toString().padLeft(2, '0')}';
+  }
+}

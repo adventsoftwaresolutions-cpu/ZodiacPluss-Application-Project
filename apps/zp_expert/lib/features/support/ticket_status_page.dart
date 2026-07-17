@@ -43,8 +43,7 @@ class TicketStatusPage extends ConsumerWidget {
                 onBackTap: () => context.pop(),
                 onNotificationTap: () => _showMessage(
                     context, 'Notifications are not available yet.'),
-                onChatTap: () =>
-                    _showMessage(context, 'Messages are not available yet.'),
+                onChatTap: () => context.push(ExpertRoutes.chats),
               ),
               Expanded(
                 child: TopScrollFade(

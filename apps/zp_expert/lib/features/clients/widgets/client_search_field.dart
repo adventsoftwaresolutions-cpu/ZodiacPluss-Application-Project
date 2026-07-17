@@ -7,10 +7,12 @@ class ClientSearchField extends StatelessWidget {
     required this.controller,
     required this.onChanged,
     super.key,
+    this.hintText = 'Search patients by name or number',
   });
 
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
+  final String hintText;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,7 @@ class ClientSearchField extends StatelessWidget {
       textInputAction: TextInputAction.search,
       style: const TextStyle(fontSize: 14),
       decoration: InputDecoration(
-        hintText: 'Search patients by name or number',
+        hintText: hintText,
         hintStyle: const TextStyle(color: Colors.black45, fontSize: 13),
         prefixIcon:
             const Icon(Icons.search_rounded, color: Colors.black45, size: 26),
