@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../../shared/data/expert_profile.dart';
+
 enum CallRoomType { audio, video }
 
 extension CallRoomTypeLabel on CallRoomType {
@@ -64,6 +66,7 @@ enum CallSessionPhase { waitingForClient, connected, ended }
 class CallSessionState {
   const CallSessionState({
     required this.room,
+    required this.expertRole,
     required this.phase,
     this.waitingSeconds = 60,
     this.elapsedSeconds = 0,
@@ -74,6 +77,7 @@ class CallSessionState {
   });
 
   final CallRoomModel room;
+  final ExpertRole expertRole;
   final CallSessionPhase phase;
   final int waitingSeconds;
   final int elapsedSeconds;
@@ -93,6 +97,7 @@ class CallSessionState {
   }) =>
       CallSessionState(
         room: room,
+        expertRole: expertRole,
         phase: phase ?? this.phase,
         waitingSeconds: waitingSeconds ?? this.waitingSeconds,
         elapsedSeconds: elapsedSeconds ?? this.elapsedSeconds,

@@ -7,6 +7,7 @@ import 'package:zp_expert/features/call_room/data/provider/call_room_provider.da
 import 'package:zp_expert/features/call_room/data/repository/call_room_repository.dart';
 import 'package:zp_expert/features/call_room/widgets/call_room_content.dart';
 import 'package:zp_expert/shared/data/expert_profile.dart';
+import 'package:zp_expert/shared/data/expert_profile_repository.dart';
 
 void main() {
   test('joining a room removes it from the incoming paid-room queue', () async {
@@ -15,6 +16,7 @@ void main() {
     final ProviderContainer container = ProviderContainer(
       overrides: <Override>[
         callRoomRepositoryProvider.overrideWithValue(repository),
+        expertProfileProvider.overrideWith((Ref ref) async => _profile()),
       ],
     );
     addTearDown(container.dispose);
@@ -41,6 +43,7 @@ void main() {
           body: CallRoomContent(
             session: CallSessionState(
               room: audioRoom,
+              expertRole: ExpertRole.psychologist,
               phase: CallSessionPhase.connected,
             ),
             onToggleMute: () {},
@@ -74,6 +77,7 @@ void main() {
                 type: CallRoomType.video,
                 clientPresent: false,
               ),
+              expertRole: ExpertRole.psychologist,
               phase: CallSessionPhase.waitingForClient,
             ),
             onToggleMute: () {},
@@ -94,6 +98,27 @@ void main() {
     expect(find.byKey(const ValueKey<String>('local-video-preview')),
         findsOneWidget);
     expect(find.text('Waiting for client · 1:00'), findsOneWidget);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: CallRoomContent(
+            session: CallSessionState(
+              room: audioRoom,
+              expertRole: ExpertRole.astrologer,
+              phase: CallSessionPhase.connected,
+            ),
+            onToggleMute: () {},
+            onToggleSpeaker: () {},
+            onToggleVideo: () {},
+            onMessage: () {},
+            onEndCall: () {},
+            onLeave: () {},
+          ),
+        ),
+      ),
+    );
+    expect(find.textContaining('min paid'), findsNothing);
   });
 
   testWidgets('empty room automatically ends after one minute',
@@ -104,6 +129,7 @@ void main() {
       ProviderScope(
         overrides: <Override>[
           callRoomRepositoryProvider.overrideWithValue(repository),
+          expertProfileProvider.overrideWith((Ref ref) async => _profile()),
         ],
         child: const MaterialApp(home: CallRoomPage(roomId: 'room-1')),
       ),
@@ -121,6 +147,14 @@ void main() {
     expect(repository.leftRoomId, 'room-1');
   });
 }
+
+ExpertProfile _profile() => const ExpertProfile(
+      id: 'expert-1',
+      name: 'Expert',
+      role: ExpertRole.psychologist,
+      avatarUrl: '',
+      isVerified: true,
+    );
 
 CallRoomModel _room({
   required CallRoomType type,

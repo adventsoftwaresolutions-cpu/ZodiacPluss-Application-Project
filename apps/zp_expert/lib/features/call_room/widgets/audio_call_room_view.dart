@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../shared/data/expert_profile.dart';
 import '../data/models/call_room_model.dart';
 import 'call_controls.dart';
 import 'call_participant_avatar.dart';
@@ -48,7 +49,7 @@ class AudioCallRoomView extends StatelessWidget {
           children: <Widget>[
             _CallRoomTopBar(
               title: 'Audio consultation',
-              paidMinutes: session.room.paidMinutes,
+              session: session,
             ),
             const Spacer(),
             CallParticipantAvatar(name: session.room.clientName),
@@ -86,10 +87,10 @@ class AudioCallRoomView extends StatelessWidget {
 }
 
 class _CallRoomTopBar extends StatelessWidget {
-  const _CallRoomTopBar({required this.title, required this.paidMinutes});
+  const _CallRoomTopBar({required this.title, required this.session});
 
   final String title;
-  final int paidMinutes;
+  final CallSessionState session;
 
   @override
   Widget build(BuildContext context) => Row(
@@ -106,22 +107,25 @@ class _CallRoomTopBar extends StatelessWidget {
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color:
-                  Theme.of(context).colorScheme.surface.withValues(alpha: .16),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              '$paidMinutes min paid',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimary,
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
+          if (session.expertRole == ExpertRole.psychologist)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: Theme.of(context)
+                    .colorScheme
+                    .surface
+                    .withValues(alpha: .16),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                '${session.room.paidMinutes} min paid',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
-          ),
         ],
       );
 }

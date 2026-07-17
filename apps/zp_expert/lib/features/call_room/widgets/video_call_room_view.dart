@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../shared/data/expert_profile.dart';
 import '../data/models/call_room_model.dart';
 import 'call_controls.dart';
 import 'call_participant_avatar.dart';
@@ -147,14 +148,15 @@ class _VideoRoomHeader extends StatelessWidget {
               ),
             ),
           ),
-          Text(
-            '${session.room.paidMinutes} min paid',
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onPrimary,
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
+          if (session.expertRole == ExpertRole.psychologist)
+            Text(
+              '${session.room.paidMinutes} min paid',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary,
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+              ),
             ),
-          ),
         ],
       );
 }

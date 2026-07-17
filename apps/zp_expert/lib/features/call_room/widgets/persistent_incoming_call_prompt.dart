@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../navigation/app_routes.dart';
+import '../../../shared/data/expert_profile.dart';
+import '../../../shared/data/expert_profile_repository.dart';
 import '../data/models/call_room_model.dart';
 import '../data/provider/call_room_provider.dart';
 
@@ -13,6 +15,7 @@ class PersistentIncomingCallPrompt extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<List<CallRoomModel>> rooms =
         ref.watch(incomingCallRoomsProvider);
+    final ExpertRole? role = ref.watch(expertProfileProvider).valueOrNull?.role;
     final List<CallRoomModel> ready =
         rooms.valueOrNull ?? const <CallRoomModel>[];
     if (ready.isEmpty) return const SizedBox.shrink();
@@ -43,7 +46,8 @@ class PersistentIncomingCallPrompt extends ConsumerWidget {
                       style: const TextStyle(fontWeight: FontWeight.w800),
                     ),
                     Text(
-                      '${room.type.label} · ${room.paidMinutes} min paid'
+                      '${room.type.label}'
+                      '${role == ExpertRole.psychologist ? ' · ${room.paidMinutes} min paid' : ''}'
                       '${ready.length > 1 ? ' · +${ready.length - 1} waiting' : ''}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

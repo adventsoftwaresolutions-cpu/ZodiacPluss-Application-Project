@@ -44,11 +44,13 @@ class CallSessionController
   Future<CallSessionState> build(String roomId) async {
     ref.onDispose(() => _timer?.cancel());
     final CallRoomRepository repository = ref.watch(callRoomRepositoryProvider);
+    final ExpertProfile profile = await ref.watch(expertProfileProvider.future);
     final CallRoomModel room = await repository.fetchRoom(roomId);
     await repository.joinRoom(roomId);
     ref.read(incomingCallRoomsProvider.notifier).claimRoom(roomId);
     final CallSessionState initial = CallSessionState(
       room: room,
+      expertRole: profile.role,
       phase: room.clientPresent
           ? CallSessionPhase.connected
           : CallSessionPhase.waitingForClient,

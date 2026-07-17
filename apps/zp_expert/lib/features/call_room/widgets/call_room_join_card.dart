@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 
 import '../../../themes/app_radius.dart';
+import '../../../shared/data/expert_profile.dart';
 import '../data/models/call_room_model.dart';
 
 class CallRoomJoinCard extends StatelessWidget {
   const CallRoomJoinCard({
     required this.room,
+    required this.expertRole,
     required this.onJoin,
     this.compact = false,
     super.key,
   });
 
   final CallRoomModel room;
+  final ExpertRole expertRole;
   final VoidCallback onJoin;
   final bool compact;
 
@@ -51,12 +54,18 @@ class CallRoomJoinCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  compact ? 'Paid room ready' : '${room.type.label} room ready',
+                  expertRole == ExpertRole.psychologist
+                      ? (compact
+                          ? 'Paid room ready'
+                          : '${room.type.label} room ready')
+                      : '${room.type.label} room ready',
                   style: const TextStyle(fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '${room.clientName} · ${room.paidMinutes} min',
+                  expertRole == ExpertRole.psychologist
+                      ? '${room.clientName} · ${room.paidMinutes} min'
+                      : room.clientName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodySmall,

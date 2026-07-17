@@ -91,6 +91,7 @@ class _ChatConversationContentState extends State<ChatConversationContent> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: CallRoomJoinCard(
                 room: widget.callRoom!,
+                expertRole: widget.conversation.expertRole,
                 onJoin: widget.onJoinCallRoom!,
                 compact: true,
               ),
