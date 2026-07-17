@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../shared/widgets/gradient_page.dart';
 import '../../themes/app_spacing.dart';
-import 'widgets/kundali_chart_panel.dart';
+import 'widgets/kundali_content.dart';
 import 'widgets/kundali_header.dart';
 import 'widgets/kundali_primary_navigation.dart';
 
@@ -46,7 +46,7 @@ class KundaliPage extends StatelessWidget {
                           constraints: const BoxConstraints(maxWidth: 720),
                           child: const Padding(
                             padding: EdgeInsets.only(top: AppSpacing.sm),
-                            child: KundaliChartsBody(),
+                            child: KundaliContent(),
                           ),
                         ),
                       ),

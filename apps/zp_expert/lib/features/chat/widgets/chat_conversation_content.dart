@@ -16,6 +16,7 @@ class ChatConversationContent extends StatefulWidget {
   const ChatConversationContent({
     required this.conversation,
     required this.controller,
+    required this.onViewKundali,
     this.promptSessionSummary = false,
     this.callRoom,
     this.onJoinCallRoom,
@@ -24,6 +25,7 @@ class ChatConversationContent extends StatefulWidget {
 
   final ChatConversationModel conversation;
   final ChatConversationController controller;
+  final VoidCallback onViewKundali;
   final bool promptSessionSummary;
   final CallRoomModel? callRoom;
   final VoidCallback? onJoinCallRoom;
@@ -103,6 +105,7 @@ class _ChatConversationContentState extends State<ChatConversationContent> {
             child: ChatConversationBanner(
               conversation: widget.conversation,
               onFillSummary: () => _openSummaryForm(),
+              onViewKundali: widget.onViewKundali,
             ),
           ),
           const SizedBox(height: 8),

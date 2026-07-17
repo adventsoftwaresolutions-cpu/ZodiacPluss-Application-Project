@@ -39,7 +39,7 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: ExpertRoutes.kundali,
+  initialLocation: '/home',
   routes: <RouteBase>[
     GoRoute(
       path: ExpertRoutes.managePricing,

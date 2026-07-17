@@ -52,6 +52,84 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('opens the horizontally scrollable planets page', (tester) async {
+    await tester.pumpWidget(
+      const ProviderScope(
+        child: MaterialApp(home: KundaliPage()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Planets'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Planetary Strengths'), findsOneWidget);
+    expect(find.text('Naksh Lord'), findsOneWidget);
+    expect(find.text('House'), findsOneWidget);
+    expect(find.textContaining('not full Shadbala'), findsOneWidget);
+    expect(find.byType(SingleChildScrollView), findsAtLeastNWidgets(2));
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('opens timing with current periods and Sade Sati',
+      (tester) async {
+    await tester.pumpWidget(
+      const ProviderScope(
+        child: MaterialApp(home: KundaliPage()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Timing'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Current Dasha'), findsOneWidget);
+    expect(find.text('Venus Mahadasha'), findsAtLeastNWidgets(1));
+    expect(find.text('Jupiter Antardasha'), findsAtLeastNWidgets(1));
+    expect(find.text('Mahadasha Timeline'), findsOneWidget);
+    expect(find.text('Sade Sati'), findsOneWidget);
+    expect(find.text('Rising phase'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('opens supported Dosha analysis and calculation details',
+      (tester) async {
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      const ProviderScope(
+        child: MaterialApp(home: KundaliPage()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Doshas'));
+    await tester.binding.setSurfaceSize(const Size(390, 844));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Dosha Analysis'), findsOneWidget);
+    expect(find.text('Mangal Dosha'), findsOneWidget);
+    expect(find.text('Kaal Sarp Dosha'), findsOneWidget);
+    expect(find.text('Papa Samyam'), findsOneWidget);
+    expect(find.text('Calculated total'), findsOneWidget);
+    expect(find.text('Mild'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('dosha-detected-count')),
+        matching: find.text('1'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+        find.textContaining('Other doshas are not inferred'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await tester.ensureVisible(find.text('Calculation details'));
+    await tester.tap(find.text('Calculation details'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('maturity age'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('animates the Kundali structure before revealing its SVG',
       (tester) async {
     const svg = '''

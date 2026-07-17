@@ -200,8 +200,8 @@ class StubKundaliChartRepository implements KundaliChartRepository {
   </g>
   <g font-family="sans-serif" text-anchor="middle" font-size="17" font-weight="600" fill="#202420">
     <text x="250" y="226">8</text><text x="218" y="256">11</text><text x="282" y="256">5</text><text x="250" y="288">2</text>
-    <text x="126" y="112">9</text><text x="98" y="140">10</text><text x="402" y="112">7</text><text x="430" y="140">6</text>
-    <text x="98" y="382">12</text><text x="126" y="410">1</text><text x="430" y="382">4</text><text x="402" y="410">3</text>
+    <text x="126" y="112">9</text><text x="98" y="140">10</text><text x="374" y="112">7</text><text x="402" y="140">6</text>
+    <text x="98" y="382">12</text><text x="126" y="410">1</text><text x="402" y="382">4</text><text x="374" y="410">3</text>
   </g>
 </svg>''';
 

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zp_expert/features/chat/chat_conversation.dart';
 import 'package:zp_expert/features/chat/data/models/chat_conversation_model.dart';
 import 'package:zp_expert/features/chat/data/models/session_summary_model.dart';
 import 'package:zp_expert/features/chat/data/provider/chat_conversation_provider.dart';
 import 'package:zp_expert/features/chat/data/repository/chat_conversation_repository.dart';
+import 'package:zp_expert/features/kundali/kundali.dart';
+import 'package:zp_expert/navigation/app_routes.dart';
 import 'package:zp_expert/shared/data/expert_profile.dart';
 import 'package:zp_expert/shared/data/expert_profile_repository.dart';
 
@@ -92,7 +95,7 @@ void main() {
     );
   });
 
-  testWidgets('astrologer sees a visual-only Kundali button',
+  testWidgets('astrologer opens Kundali from the chat banner',
       (WidgetTester tester) async {
     _configurePhone(tester);
     await tester.pumpWidget(
@@ -110,11 +113,8 @@ void main() {
     await tester.tap(find.text('View Kundali'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Client One’s Kundali'), findsNothing);
-    expect(find.byKey(const ValueKey<String>('chat-message-field')),
-        findsOneWidget);
-    expect(find.byKey(const ValueKey<String>('attach-document-button')),
-        findsOneWidget);
+    expect(find.text('Kundali'), findsOneWidget);
+    expect(find.text('Planet Short Forms'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -178,27 +178,44 @@ Widget _testApp({
   required ChatConversationRepository repository,
   bool promptSessionSummary = false,
   String threadId = 'thread-1',
-}) =>
-    ProviderScope(
-      overrides: <Override>[
-        expertProfileProvider.overrideWith(
-          (Ref ref) async => ExpertProfile(
-            id: 'expert-1',
-            name: 'Expert',
-            role: role,
-            avatarUrl: '',
-            isVerified: true,
-          ),
-        ),
-        chatConversationRepositoryProvider.overrideWithValue(repository),
-      ],
-      child: MaterialApp(
-        home: ChatConversationPage(
+}) {
+  final GoRouter router = GoRouter(
+    initialLocation: '/',
+    routes: <RouteBase>[
+      GoRoute(
+        path: '/',
+        builder: (BuildContext context, GoRouterState state) =>
+            ChatConversationPage(
           threadId: threadId,
           promptSessionSummary: promptSessionSummary,
         ),
       ),
-    );
+      GoRoute(
+        path: ExpertRoutes.kundali,
+        builder: (BuildContext context, GoRouterState state) =>
+            const KundaliPage(),
+      ),
+    ],
+  );
+
+  return ProviderScope(
+    overrides: <Override>[
+      expertProfileProvider.overrideWith(
+        (Ref ref) async => ExpertProfile(
+          id: 'expert-1',
+          name: 'Expert',
+          role: role,
+          avatarUrl: '',
+          isVerified: true,
+        ),
+      ),
+      chatConversationRepositoryProvider.overrideWithValue(repository),
+    ],
+    child: MaterialApp.router(
+      routerConfig: router,
+    ),
+  );
+}
 
 class _ConversationRepository implements ChatConversationRepository {
   String? savedPresentingConcern;

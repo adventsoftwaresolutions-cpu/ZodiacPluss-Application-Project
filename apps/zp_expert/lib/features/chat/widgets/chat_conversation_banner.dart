@@ -8,11 +8,13 @@ class ChatConversationBanner extends StatelessWidget {
   const ChatConversationBanner({
     required this.conversation,
     required this.onFillSummary,
+    required this.onViewKundali,
     super.key,
   });
 
   final ChatConversationModel conversation;
   final VoidCallback onFillSummary;
+  final VoidCallback onViewKundali;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,7 @@ class ChatConversationBanner extends StatelessWidget {
           icon: Icons.auto_awesome_outlined,
           title: 'View Kundali',
           subtitle: 'View client Kundali and details',
-          onTap: null,
+          onTap: onViewKundali,
         ),
     };
 
