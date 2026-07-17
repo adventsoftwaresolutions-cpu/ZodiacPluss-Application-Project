@@ -52,7 +52,10 @@ class AudioCallRoomView extends StatelessWidget {
               session: session,
             ),
             const Spacer(),
-            CallParticipantAvatar(name: session.room.clientName),
+            CallParticipantAvatar(
+              name: session.room.clientName,
+              animate: session.phase != CallSessionPhase.ended,
+            ),
             const SizedBox(height: 22),
             Text(
               session.room.clientName,
@@ -62,12 +65,18 @@ class AudioCallRoomView extends StatelessWidget {
                   ),
             ),
             const SizedBox(height: 8),
+            _AudioWaveform(active: session.phase != CallSessionPhase.ended),
+            const SizedBox(height: 8),
             CallStatusText(session: session),
             const Spacer(),
             if (session.phase == CallSessionPhase.ended)
-              FilledButton.tonal(
+              FilledButton(
                 key: const ValueKey<String>('leave-ended-call-button'),
                 onPressed: onLeave,
+                style: FilledButton.styleFrom(
+                  backgroundColor: colors.primary,
+                  foregroundColor: colors.onPrimary,
+                ),
                 child: const Text('Back to app'),
               )
             else
@@ -84,6 +93,72 @@ class AudioCallRoomView extends StatelessWidget {
       ),
     );
   }
+}
+
+class _AudioWaveform extends StatefulWidget {
+  const _AudioWaveform({required this.active});
+
+  final bool active;
+
+  @override
+  State<_AudioWaveform> createState() => _AudioWaveformState();
+}
+
+class _AudioWaveformState extends State<_AudioWaveform>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    );
+    if (widget.active) _controller.repeat(reverse: true);
+  }
+
+  @override
+  void didUpdateWidget(covariant _AudioWaveform oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.active == widget.active) return;
+    if (widget.active) {
+      _controller.repeat(reverse: true);
+    } else {
+      _controller.stop();
+      _controller.value = 0;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+        animation: _controller,
+        builder: (BuildContext context, Widget? child) => Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: List<Widget>.generate(5, (int index) {
+            final double phase = (_controller.value + index * .17) % 1;
+            return Container(
+              width: 3,
+              height: 7 + (phase * 15),
+              margin: const EdgeInsets.symmetric(horizontal: 2),
+              decoration: BoxDecoration(
+                color: Theme.of(context)
+                    .colorScheme
+                    .onPrimary
+                    .withValues(alpha: .75),
+                borderRadius: BorderRadius.circular(3),
+              ),
+            );
+          }),
+        ),
+      );
 }
 
 class _CallRoomTopBar extends StatelessWidget {

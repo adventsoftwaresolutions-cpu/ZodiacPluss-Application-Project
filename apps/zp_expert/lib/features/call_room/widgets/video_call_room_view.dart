@@ -59,11 +59,15 @@ class VideoCallRoomView extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(12, 14, 12, 12),
               child: session.phase == CallSessionPhase.ended
                   ? Center(
-                      child: FilledButton.tonal(
+                      child: FilledButton(
                         key: const ValueKey<String>(
                           'leave-ended-call-button',
                         ),
                         onPressed: onLeave,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: colors.primary,
+                          foregroundColor: colors.onPrimary,
+                        ),
                         child: const Text('Back to app'),
                       ),
                     )
@@ -91,8 +95,10 @@ class _RemoteVideoPlaceholder extends StatelessWidget {
   final CallSessionState session;
 
   @override
-  Widget build(BuildContext context) => DecoratedBox(
+  Widget build(BuildContext context) => AnimatedContainer(
         key: const ValueKey<String>('remote-video-surface'),
+        duration: const Duration(milliseconds: 420),
+        curve: Curves.easeOutCubic,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -111,7 +117,11 @@ class _RemoteVideoPlaceholder extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              CallParticipantAvatar(name: session.room.clientName, radius: 54),
+              CallParticipantAvatar(
+                name: session.room.clientName,
+                radius: 54,
+                animate: session.phase != CallSessionPhase.ended,
+              ),
               const SizedBox(height: 16),
               Text(
                 session.room.clientName,
@@ -180,25 +190,32 @@ class _LocalVideoPreview extends StatelessWidget {
           ),
         ),
         alignment: Alignment.center,
-        child: isVideoOn
-            ? Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Icon(Icons.person_rounded,
-                      color: Theme.of(context).colorScheme.onPrimary),
-                  const SizedBox(height: 5),
-                  Text(
-                    'You',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      fontSize: 11,
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 220),
+          switchInCurve: Curves.easeOutBack,
+          switchOutCurve: Curves.easeIn,
+          child: isVideoOn
+              ? Column(
+                  key: const ValueKey<String>('local-camera-on'),
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Icon(Icons.person_rounded,
+                        color: Theme.of(context).colorScheme.onPrimary),
+                    const SizedBox(height: 5),
+                    Text(
+                      'You',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontSize: 11,
+                      ),
                     ),
-                  ),
-                ],
-              )
-            : Icon(
-                Icons.videocam_off_rounded,
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
+                  ],
+                )
+              : Icon(
+                  Icons.videocam_off_rounded,
+                  key: const ValueKey<String>('local-camera-off'),
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+        ),
       );
 }

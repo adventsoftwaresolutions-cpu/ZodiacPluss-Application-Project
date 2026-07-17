@@ -10,6 +10,19 @@ import 'package:zp_expert/shared/data/expert_profile.dart';
 import 'package:zp_expert/shared/data/expert_profile_repository.dart';
 
 void main() {
+  test('stub exposes at most one ready room for each expert role', () async {
+    final StubCallRoomRepository repository = StubCallRoomRepository();
+
+    expect(
+      await repository.fetchReadyRooms(ExpertRole.psychologist),
+      hasLength(1),
+    );
+    expect(
+      await repository.fetchReadyRooms(ExpertRole.astrologer),
+      hasLength(1),
+    );
+  });
+
   test('joining a room removes it from the incoming paid-room queue', () async {
     final _ImmediateCallRoomRepository repository =
         _ImmediateCallRoomRepository(clientPresent: true);
@@ -29,6 +42,25 @@ void main() {
     expect(session.phase, CallSessionPhase.connected);
     expect(container.read(incomingCallRoomsProvider).valueOrNull, isEmpty);
     expect(repository.joinedRoomId, 'room-1');
+  });
+
+  test('call controller rejects joining a second active room', () async {
+    final _ImmediateCallRoomRepository repository =
+        _ImmediateCallRoomRepository(clientPresent: true);
+    final ProviderContainer container = ProviderContainer(
+      overrides: <Override>[
+        callRoomRepositoryProvider.overrideWithValue(repository),
+        expertProfileProvider.overrideWith((Ref ref) async => _profile()),
+      ],
+    );
+    addTearDown(container.dispose);
+    container.read(activeCallRoomIdProvider.notifier).state = 'room-active';
+
+    await expectLater(
+      container.read(callSessionProvider('room-1').future),
+      throwsA(isA<StateError>()),
+    );
+    expect(repository.joinedRoomId, isNull);
   });
 
   testWidgets('audio and video rooms expose the correct controls',

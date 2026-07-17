@@ -26,6 +26,7 @@ import '../../features/reviews/reviews.dart';
 import '../../features/chat/chat.dart';
 import '../../features/chat/chat_conversation.dart';
 import '../../features/call_room/call_room.dart';
+import '../../features/kundali/kundali.dart';
 
 final List<NavItem> expertNavItems = <NavItem>[
   const NavItem(icon: Icons.home_outlined, selectedIcon: Icons.home),
@@ -38,7 +39,7 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: '/home',
+  initialLocation: ExpertRoutes.kundali,
   routes: <RouteBase>[
     GoRoute(
       path: ExpertRoutes.managePricing,
@@ -101,6 +102,11 @@ final GoRouter expertRouter = GoRouter(
       path: ExpertRoutes.clients,
       builder: (BuildContext context, GoRouterState state) =>
           const ClientsPage(),
+    ),
+    GoRoute(
+      path: ExpertRoutes.kundali,
+      builder: (BuildContext context, GoRouterState state) =>
+          const KundaliPage(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state,

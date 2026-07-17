@@ -34,6 +34,18 @@ class AppAssets {
   static const String flagIcon = 'assets/icons/flag.svg';
   static const String cautionIcon = 'assets/icons/caution.svg';
   static const String profileIcon = 'assets/icons/profile.svg';
+  static const String kundaliSun = 'assets/icons/kundali/sun.svg';
+  static const String kundaliMoon = 'assets/icons/kundali/moon.svg';
+  static const String kundaliMars = 'assets/icons/kundali/mars.svg';
+  static const String kundaliMercury = 'assets/icons/kundali/mercury.svg';
+  static const String kundaliJupiter = 'assets/icons/kundali/jupiter.svg';
+  static const String kundaliVenus = 'assets/icons/kundali/venus.svg';
+  static const String kundaliSaturn = 'assets/icons/kundali/saturn.svg';
+  static const String kundaliRahu = 'assets/icons/kundali/rahu.svg';
+  static const String kundaliKetu = 'assets/icons/kundali/ketu.svg';
+  static const String kundaliUranus = 'assets/icons/kundali/uranus.svg';
+  static const String kundaliNeptune = 'assets/icons/kundali/neptune.svg';
+  static const String kundaliPluto = 'assets/icons/kundali/pluto.svg';
 
   // Images
   static const String clientAvatarOne = 'assets/images/riya.jpg';
@@ -46,5 +58,6 @@ class AppAssets {
 
   // Animations
   static const String walletAnimation = 'assets/animation/wallet.lottie';
-  static const String paperPlaneAnimation = 'assets/animation/paperPlane_flying.lottie';
+  static const String paperPlaneAnimation =
+      'assets/animation/paperPlane_flying.lottie';
 }

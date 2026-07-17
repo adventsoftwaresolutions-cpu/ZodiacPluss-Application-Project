@@ -17,13 +17,19 @@ class CallStatusText extends StatelessWidget {
           ? 'Room closed · client did not join'
           : 'Call ended',
     };
-    return Text(
-      status,
-      key: const ValueKey<String>('call-status-text'),
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: .78),
-        fontWeight: FontWeight.w600,
+    return SizedBox(
+      height: 20,
+      child: Center(
+        child: Text(
+          status,
+          key: const ValueKey<String>('call-status-text'),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color:
+                Theme.of(context).colorScheme.onPrimary.withValues(alpha: .78),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
     );
   }

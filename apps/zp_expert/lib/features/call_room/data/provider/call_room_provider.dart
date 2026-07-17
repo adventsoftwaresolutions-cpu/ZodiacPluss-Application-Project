@@ -10,6 +10,11 @@ import '../../../../shared/data/expert_profile_repository.dart';
 final Provider<CallRoomRepository> callRoomRepositoryProvider =
     Provider<CallRoomRepository>((Ref ref) => StubCallRoomRepository());
 
+/// A local guard that mirrors the backend rule: one expert can occupy only
+/// one live consultation room at a time.
+final StateProvider<String?> activeCallRoomIdProvider =
+    StateProvider<String?>((Ref ref) => null);
+
 final AsyncNotifierProvider<IncomingCallRoomsController, List<CallRoomModel>>
     incomingCallRoomsProvider =
     AsyncNotifierProvider<IncomingCallRoomsController, List<CallRoomModel>>(
@@ -25,9 +30,7 @@ class IncomingCallRoomsController extends AsyncNotifier<List<CallRoomModel>> {
   void claimRoom(String roomId) {
     final List<CallRoomModel>? current = state.valueOrNull;
     if (current == null) return;
-    state = AsyncData<List<CallRoomModel>>(
-      current.where((CallRoomModel room) => room.id != roomId).toList(),
-    );
+    state = const AsyncData<List<CallRoomModel>>(<CallRoomModel>[]);
   }
 }
 
@@ -45,8 +48,18 @@ class CallSessionController
     ref.onDispose(() => _timer?.cancel());
     final CallRoomRepository repository = ref.watch(callRoomRepositoryProvider);
     final ExpertProfile profile = await ref.watch(expertProfileProvider.future);
+    final String? activeRoomId = ref.read(activeCallRoomIdProvider);
+    if (activeRoomId != null && activeRoomId != roomId) {
+      throw StateError('An active call room already exists.');
+    }
     final CallRoomModel room = await repository.fetchRoom(roomId);
-    await repository.joinRoom(roomId);
+    ref.read(activeCallRoomIdProvider.notifier).state = roomId;
+    try {
+      await repository.joinRoom(roomId);
+    } catch (_) {
+      ref.read(activeCallRoomIdProvider.notifier).state = null;
+      rethrow;
+    }
     ref.read(incomingCallRoomsProvider.notifier).claimRoom(roomId);
     final CallSessionState initial = CallSessionState(
       room: room,
@@ -122,6 +135,9 @@ class CallSessionController
     if (current == null || current.phase == CallSessionPhase.ended) return;
     _timer?.cancel();
     await ref.read(callRoomRepositoryProvider).leaveRoom(current.room.id);
+    if (ref.read(activeCallRoomIdProvider) == current.room.id) {
+      ref.read(activeCallRoomIdProvider.notifier).state = null;
+    }
     state = AsyncData<CallSessionState>(
       current.copyWith(
         phase: CallSessionPhase.ended,

@@ -18,31 +18,22 @@ abstract class CallRoomRepository {
 }
 
 class StubCallRoomRepository implements CallRoomRepository {
+  String? _activeRoomId;
+
   List<CallRoomModel> _rooms(ExpertRole expertRole) {
     final DateTime now = DateTime.now();
     if (expertRole == ExpertRole.astrologer) {
       return <CallRoomModel>[
-        CallRoomModel(
-          id: 'room-video-aarav',
-          threadId: 'thread-astro-1',
-          clientId: 'client-201',
-          clientName: 'Aarav Malhotra',
-          type: CallRoomType.video,
-          paidMinutes: 20,
-          clientPresent: false,
-          readyAt: now.subtract(const Duration(minutes: 1)),
-          queuePosition: 1,
-        ),
         CallRoomModel(
           id: 'room-audio-ishita',
           threadId: 'thread-astro-2',
           clientId: 'client-202',
           clientName: 'Ishita Kapoor',
           type: CallRoomType.audio,
-          paidMinutes: 15,
+          paidMinutes: 0,
           clientPresent: true,
-          readyAt: now,
-          queuePosition: 2,
+          readyAt: now.subtract(const Duration(minutes: 1)),
+          queuePosition: 1,
         ),
       ];
     }
@@ -57,17 +48,6 @@ class StubCallRoomRepository implements CallRoomRepository {
         clientPresent: false,
         readyAt: now.subtract(const Duration(minutes: 1)),
         queuePosition: 1,
-      ),
-      CallRoomModel(
-        id: 'room-audio-kabir',
-        threadId: 'thread-psy-2',
-        clientId: 'client-102',
-        clientName: 'Kabir Shah',
-        type: CallRoomType.audio,
-        paidMinutes: 15,
-        clientPresent: true,
-        readyAt: now,
-        queuePosition: 2,
       ),
     ];
   }
@@ -92,12 +72,17 @@ class StubCallRoomRepository implements CallRoomRepository {
 
   @override
   Future<void> joinRoom(String roomId) async {
+    if (_activeRoomId != null && _activeRoomId != roomId) {
+      throw StateError('An active call room already exists.');
+    }
     await Future<void>.delayed(const Duration(milliseconds: 220));
+    _activeRoomId = roomId;
   }
 
   @override
   Future<void> leaveRoom(String roomId) async {
     await Future<void>.delayed(const Duration(milliseconds: 120));
+    if (_activeRoomId == roomId) _activeRoomId = null;
   }
 
   @override
