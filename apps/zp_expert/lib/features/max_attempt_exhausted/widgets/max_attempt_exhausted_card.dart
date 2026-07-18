@@ -37,7 +37,7 @@ class MaxAttemptExhaustedCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(28),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(.05),
+                      color: Colors.black.withValues(alpha: .05),
                       blurRadius: 18,
                       offset: const Offset(0, 8),
                     ),

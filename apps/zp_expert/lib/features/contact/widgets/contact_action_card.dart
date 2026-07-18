@@ -29,7 +29,7 @@ class ContactActionCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(.04),
+                color: Colors.black.withValues(alpha: .04),
                 blurRadius: 8,
                 offset: const Offset(0, 3),
               ),
@@ -46,7 +46,7 @@ class ContactActionCard extends StatelessWidget {
                       height: 28,
                       width: 28,
                       decoration: BoxDecoration(
-                        color: colors.primary.withOpacity(.08),
+                        color: colors.primary.withValues(alpha: .08),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Center(
@@ -57,9 +57,7 @@ class ContactActionCard extends StatelessWidget {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 6),
-
                     Text(
                       action.title,
                       maxLines: 1,
@@ -69,9 +67,7 @@ class ContactActionCard extends StatelessWidget {
                         fontSize: 12,
                       ),
                     ),
-
                     const SizedBox(height: 2),
-
                     Text(
                       action.subtitle,
                       maxLines: 2,
@@ -82,9 +78,7 @@ class ContactActionCard extends StatelessWidget {
                         color: colors.onSurfaceVariant,
                       ),
                     ),
-
                     const Spacer(),
-
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Icon(

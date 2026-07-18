@@ -19,8 +19,7 @@ class _GoOfflineSheetContent extends StatefulWidget {
   const _GoOfflineSheetContent();
 
   @override
-  State<_GoOfflineSheetContent> createState() =>
-      _GoOfflineSheetContentState();
+  State<_GoOfflineSheetContent> createState() => _GoOfflineSheetContentState();
 }
 
 class _GoOfflineSheetContentState extends State<_GoOfflineSheetContent> {
@@ -119,7 +118,7 @@ class _GoOfflineSheetContentState extends State<_GoOfflineSheetContent> {
             ),
             const SizedBox(height: 4),
             const Text(
-              'We will switch your status to online automatically',
+              'You can switch back online at any time',
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black54, fontSize: 13),
             ),
@@ -214,8 +213,18 @@ class _GoOfflineSheetContentState extends State<_GoOfflineSheetContent> {
 
 String _monthName(int month) {
   const List<String> months = <String>[
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
   return months[month - 1];
 }

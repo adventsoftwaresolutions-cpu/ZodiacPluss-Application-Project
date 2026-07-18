@@ -32,7 +32,10 @@ class AnimatedNavbar extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(
-        AppSpacing.md, 0, AppSpacing.md, AppSpacing.md,
+        AppSpacing.md,
+        0,
+        AppSpacing.md,
+        AppSpacing.md,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppRadius.xl),
@@ -46,24 +49,25 @@ class AnimatedNavbar extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: <Color>[
-                  Theme.of(context).colorScheme.surface.withOpacity(0.46),
-                  Theme.of(context).colorScheme.surface.withOpacity(0.32),
+                  Theme.of(context).colorScheme.surface.withValues(alpha: 0.46),
+                  Theme.of(context).colorScheme.surface.withValues(alpha: 0.32),
                 ],
               ),
               borderRadius: BorderRadius.circular(AppRadius.xl),
               border: Border.all(
-                color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08),
+                color: (isDark ? Colors.white : Colors.black)
+                    .withValues(alpha: 0.08),
               ),
               // slight outer shadow for lift
               boxShadow: <BoxShadow>[
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
+                  color: Colors.black.withValues(alpha: 0.06),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
                 // a tiny negative spread shadow to fake inner depth (lightweight)
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.03),
+                  color: Colors.black.withValues(alpha: 0.03),
                   blurRadius: 6,
                   offset: const Offset(0, 1),
                   spreadRadius: -4,
@@ -74,55 +78,58 @@ class AnimatedNavbar extends StatelessWidget {
               children: <Widget>[
                 // main interactive area
                 LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                final double itemWidth = constraints.maxWidth / items.length;
-                return Stack(
-                  children: <Widget>[
-                    AnimatedPositioned(
-                      duration: const Duration(milliseconds: 280),
-                      curve: Curves.easeOutCubic,
-                      left: itemWidth * currentIndex +
-                          (itemWidth - _indicatorWidth) / 2,
-                      top: 6,
-                      child: Container(
-                        width: _indicatorWidth,
-                        height: _indicatorHeight,
-                        decoration: BoxDecoration(
-                          color: activeColor,
-                          borderRadius:
-                              BorderRadius.circular(_indicatorHeight / 2),
-                        ),
-                      ),
-                    ),
-                    Row(
-                      children: List<Widget>.generate(items.length, (int i) {
-                        final bool selected = i == currentIndex;
-                        final NavItem item = items[i];
-                        return Expanded(
-                          child: InkWell(
-                            onTap: () => onTap(i),
-                            child: Center(
-                              child: Icon(
-                                selected ? item.selectedIcon : item.icon,
-                                color: selected ? activeColor : inactiveColor,
-                                size: 24,
-                                shadows: selected
-                                    ? null
-                                    : const <Shadow>[
-                                        Shadow(
-                                          color: Colors.black38,
-                                          blurRadius: 4,
-                                        ),
-                                      ],
-                              ),
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    final double itemWidth =
+                        constraints.maxWidth / items.length;
+                    return Stack(
+                      children: <Widget>[
+                        AnimatedPositioned(
+                          duration: const Duration(milliseconds: 280),
+                          curve: Curves.easeOutCubic,
+                          left: itemWidth * currentIndex +
+                              (itemWidth - _indicatorWidth) / 2,
+                          top: 6,
+                          child: Container(
+                            width: _indicatorWidth,
+                            height: _indicatorHeight,
+                            decoration: BoxDecoration(
+                              color: activeColor,
+                              borderRadius:
+                                  BorderRadius.circular(_indicatorHeight / 2),
                             ),
                           ),
-                        );
-                      }),
-                    ),
-                  ],
-                );
-              },
+                        ),
+                        Row(
+                          children:
+                              List<Widget>.generate(items.length, (int i) {
+                            final bool selected = i == currentIndex;
+                            final NavItem item = items[i];
+                            return Expanded(
+                              child: InkWell(
+                                onTap: () => onTap(i),
+                                child: Center(
+                                  child: Icon(
+                                    selected ? item.selectedIcon : item.icon,
+                                    color:
+                                        selected ? activeColor : inactiveColor,
+                                    size: 24,
+                                    shadows: selected
+                                        ? null
+                                        : const <Shadow>[
+                                            Shadow(
+                                              color: Colors.black38,
+                                              blurRadius: 4,
+                                            ),
+                                          ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
+                        ),
+                      ],
+                    );
+                  },
                 ),
                 // subtle top sheen for glassy highlight
                 Positioned(
@@ -138,8 +145,10 @@ class AnimatedNavbar extends StatelessWidget {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: <Color>[
-                            Colors.white.withOpacity(isDark ? 0.03 : 0.18),
-                            Colors.white.withOpacity(isDark ? 0.01 : 0.06),
+                            Colors.white
+                                .withValues(alpha: isDark ? 0.03 : 0.18),
+                            Colors.white
+                                .withValues(alpha: isDark ? 0.01 : 0.06),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(AppRadius.xl),

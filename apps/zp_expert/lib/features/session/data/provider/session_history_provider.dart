@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/session_history_model.dart';
 import '../repository/session_history_repository.dart';
+import '../../../../shared/data/expert_profile.dart';
+import '../../../../shared/data/expert_profile_repository.dart';
 
 final sessionHistoryRepositoryProvider = Provider<SessionHistoryRepository>(
   (ref) => StubSessionHistoryRepository(),
@@ -12,8 +14,12 @@ final sessionHistoryProvider = FutureProvider<List<SessionHistoryModel>>(
 );
 
 final sessionDetailProvider = FutureProvider.family<SessionDetailModel, String>(
-  (ref, sessionId) =>
-      ref.read(sessionHistoryRepositoryProvider).getSessionDetail(sessionId),
+  (ref, sessionId) async {
+    final ExpertProfile expert = await ref.watch(expertProfileProvider.future);
+    return ref
+        .read(sessionHistoryRepositoryProvider)
+        .getSessionDetail(sessionId, expert);
+  },
 );
 
 final blockedClientsProvider =

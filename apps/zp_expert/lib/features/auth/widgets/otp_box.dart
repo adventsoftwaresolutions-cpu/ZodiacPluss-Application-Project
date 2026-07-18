@@ -43,15 +43,13 @@ class _OtpBoxState extends State<OtpBox> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: _focused
-              ? colors.primary
-              : Colors.grey.shade300,
+          color: _focused ? colors.primary : Colors.grey.shade300,
           width: _focused ? 2 : 1,
         ),
         boxShadow: [
           if (_focused)
             BoxShadow(
-              color: colors.primary.withOpacity(.18),
+              color: colors.primary.withValues(alpha: .18),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),

@@ -27,7 +27,7 @@ class ContactInfoTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(.03),
+            color: Colors.black.withValues(alpha: .03),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -39,7 +39,7 @@ class ContactInfoTile extends StatelessWidget {
             height: 38,
             width: 38,
             decoration: BoxDecoration(
-              color: colors.primary.withOpacity(.08),
+              color: colors.primary.withValues(alpha: .08),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
@@ -48,9 +48,7 @@ class ContactInfoTile extends StatelessWidget {
               color: colors.primary,
             ),
           ),
-
           const SizedBox(width: 12),
-
           Expanded(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -63,9 +61,7 @@ class ContactInfoTile extends StatelessWidget {
                     fontSize: 13,
                   ),
                 ),
-
                 const SizedBox(height: 2),
-
                 Text(
                   info.value,
                   maxLines: 1,
@@ -78,7 +74,6 @@ class ContactInfoTile extends StatelessWidget {
               ],
             ),
           ),
-
           InkWell(
             borderRadius: BorderRadius.circular(8),
             onTap: () async {
@@ -99,7 +94,7 @@ class ContactInfoTile extends StatelessWidget {
               height: 32,
               width: 32,
               decoration: BoxDecoration(
-                color: colors.primary.withOpacity(.08),
+                color: colors.primary.withValues(alpha: .08),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(

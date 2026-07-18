@@ -54,11 +54,13 @@ class CallRoomJoinCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  expertRole == ExpertRole.psychologist
-                      ? (compact
-                          ? 'Paid room ready'
-                          : '${room.type.label} room ready')
-                      : '${room.type.label} room ready',
+                  room.isLive
+                      ? 'Consultation in progress'
+                      : expertRole == ExpertRole.psychologist
+                          ? (compact
+                              ? 'Paid room ready'
+                              : '${room.type.label} room ready')
+                          : '${room.type.label} room ready',
                   style: const TextStyle(fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 2),
@@ -78,7 +80,7 @@ class CallRoomJoinCard extends StatelessWidget {
             key: ValueKey<String>('join-room-button-${room.id}'),
             onPressed: onJoin,
             icon: const Icon(Icons.login_rounded, size: 17),
-            label: const Text('Join'),
+            label: Text(room.isLive ? 'Rejoin' : 'Join'),
           ),
         ],
       ),

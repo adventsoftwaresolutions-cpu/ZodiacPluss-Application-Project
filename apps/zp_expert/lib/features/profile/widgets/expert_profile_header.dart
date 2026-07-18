@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 
-import '../data/models/expert_profile_model.dart';
+import '../../../shared/data/expert_profile.dart';
+import '../../home/data/availability_status.dart';
 
 class ExpertProfileHeader extends StatelessWidget {
   const ExpertProfileHeader({
     required this.profile,
+    required this.availability,
     required this.onEditBasicInfo,
     required this.onPhotoTap,
     super.key,
   });
 
-  final ExpertProfileModel profile;
+  final ExpertProfile profile;
+  final AvailabilityStatus availability;
   final VoidCallback onEditBasicInfo;
   final VoidCallback onPhotoTap;
 
@@ -55,7 +58,7 @@ class ExpertProfileHeader extends StatelessWidget {
                     ),
                     child: CircleAvatar(
                       radius: 43,
-                      backgroundImage: AssetImage(profile.avatarPath),
+                      backgroundImage: AssetImage(profile.avatarUrl),
                     ),
                   ),
                   Positioned(
@@ -110,7 +113,7 @@ class ExpertProfileHeader extends StatelessWidget {
                         borderRadius: BorderRadius.circular(7),
                       ),
                       child: Text(
-                        profile.role,
+                        profile.role.label,
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           fontWeight: FontWeight.w600,
@@ -123,19 +126,21 @@ class ExpertProfileHeader extends StatelessWidget {
                       children: <Widget>[
                         Icon(Icons.circle,
                             size: 10,
-                            color: profile.isOnline
+                            color: availability.isOnline
                                 ? const Color(0xFF2DB861)
                                 : Colors.grey),
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
-                            profile.isOnline
+                            availability.isOnline
                                 ? 'Online · Available for sessions'
                                 : 'Offline',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: Color(0xFF318D56),
+                            style: TextStyle(
+                              color: availability.isOnline
+                                  ? const Color(0xFF318D56)
+                                  : Colors.grey,
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                             ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../shared/data/expert_profile.dart';
 import '../data/models/call_room_model.dart';
 import 'call_controls.dart';
 import 'call_participant_avatar.dart';
@@ -182,7 +181,7 @@ class _CallRoomTopBar extends StatelessWidget {
               ),
             ),
           ),
-          if (session.expertRole == ExpertRole.psychologist)
+          if (session.room.paidMinutes > 0)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(

@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../navigation/app_routes.dart';
-import '../../../shared/data/expert_profile.dart';
-import '../../../shared/data/expert_profile_repository.dart';
 import '../data/models/call_room_model.dart';
 import '../data/provider/call_room_provider.dart';
 
@@ -15,7 +13,6 @@ class PersistentIncomingCallPrompt extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<List<CallRoomModel>> rooms =
         ref.watch(incomingCallRoomsProvider);
-    final ExpertRole? role = ref.watch(expertProfileProvider).valueOrNull?.role;
     final List<CallRoomModel> ready =
         rooms.valueOrNull ?? const <CallRoomModel>[];
     if (ready.isEmpty) return const SizedBox.shrink();
@@ -40,14 +37,16 @@ class PersistentIncomingCallPrompt extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      '${room.clientName} is ready',
+                      room.isLive
+                          ? '${room.clientName} call is active'
+                          : '${room.clientName} is ready',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontWeight: FontWeight.w800),
                     ),
                     Text(
                       '${room.type.label}'
-                      '${role == ExpertRole.psychologist ? ' · ${room.paidMinutes} min paid' : ''}'
+                      '${room.paidMinutes > 0 ? ' · ${room.paidMinutes} min funded' : ''}'
                       '${ready.length > 1 ? ' · +${ready.length - 1} waiting' : ''}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -57,12 +56,34 @@ class PersistentIncomingCallPrompt extends ConsumerWidget {
                 ),
               ),
               const SizedBox(width: 8),
+              if (!room.isLive)
+                IconButton(
+                  tooltip: 'Decline consultation',
+                  onPressed: () async {
+                    try {
+                      await ref
+                          .read(incomingCallRoomsProvider.notifier)
+                          .declineRoom(room.id);
+                    } catch (_) {
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Unable to decline this consultation.'),
+                        ),
+                      );
+                    }
+                  },
+                  icon: Icon(
+                    Icons.call_end_rounded,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
               FilledButton(
                 key: const ValueKey<String>('persistent-join-room-button'),
                 onPressed: () => context.push(
                   ExpertRoutes.callRoomFor(room.id),
                 ),
-                child: const Text('Join room'),
+                child: Text(room.isLive ? 'Rejoin room' : 'Join room'),
               ),
             ],
           ),

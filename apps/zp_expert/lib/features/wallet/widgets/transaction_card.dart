@@ -20,7 +20,8 @@ class _TransactionCardState extends State<TransactionCard> {
   Widget build(BuildContext context) {
     final TransactionModel txn = widget.transaction;
     final bool credit = txn.isCredit;
-    final Color directionColor = credit ? Colors.green.shade700 : Colors.red.shade400;
+    final Color directionColor =
+        credit ? Colors.green.shade700 : Colors.red.shade400;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +36,7 @@ class _TransactionCardState extends State<TransactionCard> {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: directionColor.withOpacity(0.12),
+                    color: directionColor.withValues(alpha: 0.12),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
@@ -51,7 +52,8 @@ class _TransactionCardState extends State<TransactionCard> {
                     children: <Widget>[
                       Text(
                         txn.title,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                        style: const TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w700),
                       ),
                       const SizedBox(height: 2),
                       Text(
@@ -64,8 +66,11 @@ class _TransactionCardState extends State<TransactionCard> {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        DateFormat("d-MMM-yyyy, h:mma").format(txn.timestamp).toLowerCase(),
-                        style: const TextStyle(fontSize: 11.5, color: Colors.black45),
+                        DateFormat("d-MMM-yyyy, h:mma")
+                            .format(txn.timestamp)
+                            .toLowerCase(),
+                        style: const TextStyle(
+                            fontSize: 11.5, color: Colors.black45),
                       ),
                     ],
                   ),
@@ -89,7 +94,8 @@ class _TransactionCardState extends State<TransactionCard> {
                       color: Color(0xFFDCEAE8),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.keyboard_arrow_down, size: 18, color: Color(0xFF2B5A55)),
+                    child: const Icon(Icons.keyboard_arrow_down,
+                        size: 18, color: Color(0xFF2B5A55)),
                   ),
                 ),
               ],
@@ -99,7 +105,9 @@ class _TransactionCardState extends State<TransactionCard> {
         AnimatedSize(
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeInOut,
-          child: _expanded ? _buildBreakdown(txn) : const SizedBox(width: double.infinity),
+          child: _expanded
+              ? _buildBreakdown(txn)
+              : const SizedBox(width: double.infinity),
         ),
         const Divider(height: 1),
       ],
@@ -120,16 +128,21 @@ class _TransactionCardState extends State<TransactionCard> {
         children: <Widget>[
           TransactionDetailRow(label: 'Gross amount', amount: txn.grossAmount),
           TransactionDetailRow(label: 'Tax', amount: txn.tax, isNegative: true),
-          TransactionDetailRow(label: 'Platform fee', amount: txn.platformFee, isNegative: true),
+          TransactionDetailRow(
+              label: 'Platform fee', amount: txn.platformFee, isNegative: true),
           TransactionDetailRow(label: 'Bonus', amount: txn.bonus),
           const Divider(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              const Text('Net amount', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
+              const Text('Net amount',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
               Text(
                 formatCompactINR(txn.netAmount.abs()),
-                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Color(0xFF2B5A55)),
+                style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF2B5A55)),
               ),
             ],
           ),
@@ -141,7 +154,8 @@ class _TransactionCardState extends State<TransactionCard> {
                 // TODO: implement receipt download/export (deferred per instruction)
               },
               icon: const Icon(Icons.download, size: 16),
-              label: const Text('Download Receipt', style: TextStyle(fontSize: 12)),
+              label: const Text('Download Receipt',
+                  style: TextStyle(fontSize: 12)),
             ),
           ),
         ],

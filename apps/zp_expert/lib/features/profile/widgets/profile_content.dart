@@ -3,8 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../navigation/app_routes.dart';
-import '../data/models/expert_profile_model.dart';
-import '../data/provider/expert_profile_provider.dart';
+import '../../../shared/data/expert_profile.dart';
+import '../../../shared/data/expert_profile_repository.dart';
+import '../../home/data/availability_controller.dart';
+import '../../home/data/availability_status.dart';
+import '../data/provider/profile_change_request_provider.dart';
 import 'about_me_card.dart';
 import 'achievements_card.dart';
 import 'basic_info_sheet.dart';
@@ -22,22 +25,26 @@ class ProfileContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<ExpertProfileModel> profileAsync =
-        ref.watch(expertProfilePageProvider);
+    final AsyncValue<ExpertProfile> profileAsync =
+        ref.watch(expertProfileProvider);
+    final AvailabilityStatus availability =
+        ref.watch(availabilityControllerProvider);
     return profileAsync.when(
       loading: () => const ProfileLoadingSkeleton(),
       error: (Object error, StackTrace stackTrace) => _ProfileError(
-        onRetry: () => ref.invalidate(expertProfilePageProvider),
+        onRetry: () => ref.invalidate(expertProfileProvider),
       ),
-      data: (ExpertProfileModel profile) => _ProfileList(profile: profile),
+      data: (ExpertProfile profile) =>
+          _ProfileList(profile: profile, availability: availability),
     );
   }
 }
 
 class _ProfileList extends ConsumerWidget {
-  const _ProfileList({required this.profile});
+  const _ProfileList({required this.profile, required this.availability});
 
-  final ExpertProfileModel profile;
+  final ExpertProfile profile;
+  final AvailabilityStatus availability;
 
   Future<void> _submitRequest(
     BuildContext context,
@@ -92,6 +99,7 @@ class _ProfileList extends ConsumerWidget {
             index: 0,
             child: ExpertProfileHeader(
               profile: profile,
+              availability: availability,
               onEditBasicInfo: () => _editBasicInfo(context, ref),
               onPhotoTap: () => _requestPhotoChange(context, ref),
             ),

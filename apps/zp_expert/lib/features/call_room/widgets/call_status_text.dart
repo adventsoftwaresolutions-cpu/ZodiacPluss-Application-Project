@@ -11,7 +11,7 @@ class CallStatusText extends StatelessWidget {
   Widget build(BuildContext context) {
     final String status = switch (session.phase) {
       CallSessionPhase.waitingForClient =>
-        'Waiting for client · ${_clock(session.waitingSeconds)}',
+        'Waiting for client · ${_clock(session.elapsedSeconds)}',
       CallSessionPhase.connected => _clock(session.elapsedSeconds),
       CallSessionPhase.ended => session.endedAutomatically
           ? 'Room closed · client did not join'

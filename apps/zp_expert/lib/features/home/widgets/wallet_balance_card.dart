@@ -150,7 +150,8 @@ class _PressableButtonState extends State<_PressableButton> {
     final double translateY = _pressed ? 2.0 : 0.0;
     final double blur = _pressed ? 4.0 : 10.0;
     final Offset offset = Offset(0, _pressed ? 1 : 4);
-    final Color shadowColor = Colors.black.withOpacity(_pressed ? 0.06 : 0.12);
+    final Color shadowColor =
+        Colors.black.withValues(alpha: _pressed ? 0.06 : 0.12);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 140),

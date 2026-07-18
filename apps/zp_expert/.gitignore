@@ -27,11 +27,35 @@ migrate_working_dir/
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
+.flutter-plugins
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
 /build/
 /coverage/
+
+# Local environment and secrets. Commit only a redacted .env.example file.
+.env
+.env.*
+!.env.example
+
+# Android signing keys and local signing configuration
+*.jks
+*.keystore
+/android/key.properties
+
+# Apple signing/provisioning files
+*.p12
+*.mobileprovision
+
+# Firebase configuration should be supplied securely per environment.
+/android/app/google-services.json
+/ios/Runner/GoogleService-Info.plist
+
+# Local tool and test output
+.vscode/settings.json
+test-results/
+coverage/lcov.info
 
 # Symbolication related
 app.*.symbols

@@ -1,20 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../models/expert_profile_model.dart';
-import '../repository/expert_profile_repository.dart';
+import '../models/profile_change_request.dart';
+import '../repository/profile_change_request_repository.dart';
 
-final expertProfilePageRepositoryProvider =
-    Provider<ExpertProfilePageRepository>(
-  (Ref ref) => StubExpertProfilePageRepository(),
+final Provider<ProfileChangeRequestRepository>
+    profileChangeRequestRepositoryProvider =
+    Provider<ProfileChangeRequestRepository>(
+  (Ref ref) => StubProfileChangeRequestRepository(),
 );
 
-final expertProfilePageProvider = FutureProvider<ExpertProfileModel>((Ref ref) {
-  return ref.read(expertProfilePageRepositoryProvider).fetchProfile();
-});
-
-final profileChangeRequestProvider =
+final AsyncNotifierProvider<ProfileChangeRequestNotifier, ProfileChangeRequest?>
+    profileChangeRequestProvider =
     AsyncNotifierProvider<ProfileChangeRequestNotifier, ProfileChangeRequest?>(
-        ProfileChangeRequestNotifier.new);
+  ProfileChangeRequestNotifier.new,
+);
 
 class ProfileChangeRequestNotifier
     extends AsyncNotifier<ProfileChangeRequest?> {
@@ -27,7 +26,7 @@ class ProfileChangeRequestNotifier
   }) async {
     state = const AsyncLoading<ProfileChangeRequest?>();
     final ProfileChangeRequest request = await ref
-        .read(expertProfilePageRepositoryProvider)
+        .read(profileChangeRequestRepositoryProvider)
         .submitChangeRequest(section: section, payload: payload);
     state = AsyncData<ProfileChangeRequest?>(request);
     return request;

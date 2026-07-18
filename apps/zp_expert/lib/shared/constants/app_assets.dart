@@ -51,6 +51,7 @@ class AppAssets {
   static const String clientAvatarOne = 'assets/images/riya.jpg';
   static const String clientAvatarTwo = 'assets/images/ikcha.jpg';
   static const String clientAvatarThree = 'assets/images/dp.jpg';
+  static const String expertAvatar = clientAvatarThree;
   static const String certificate = 'assets/images/certificate.jpg';
   static const String certificate1 = 'assets/images/certificate1.jpg';
   static const String certificate2 = 'assets/images/certificate2.jpg';

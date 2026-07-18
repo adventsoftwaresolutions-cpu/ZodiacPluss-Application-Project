@@ -15,8 +15,6 @@ class FaqHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -24,9 +22,7 @@ class FaqHeader extends StatelessWidget {
           icon: Icons.arrow_back_ios_new_rounded,
           onTap: onBackTap,
         ),
-
         const SizedBox(width: 16),
-
         const Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,14 +45,11 @@ class FaqHeader extends StatelessWidget {
             ],
           ),
         ),
-
         _SvgCircleButton(
           assetPath: 'assets/icons/notification.svg',
           onTap: onNotificationTap,
         ),
-
         const SizedBox(width: 10),
-
         _SvgCircleButton(
           assetPath: 'assets/icons/chat.svg',
           onTap: onChatTap,
