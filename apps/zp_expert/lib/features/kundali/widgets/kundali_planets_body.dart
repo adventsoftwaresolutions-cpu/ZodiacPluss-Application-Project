@@ -1,0 +1,65 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../themes/app_spacing.dart';
+import '../data/provider/kundali_planets_provider.dart';
+import 'kundali_planet_strengths.dart';
+import 'kundali_planets_loading.dart';
+import 'kundali_planets_table.dart';
+
+class KundaliPlanetsBody extends ConsumerWidget {
+  const KundaliPlanetsBody({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final planets = ref.watch(kundaliPlanetsProvider);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 0, 12, AppSpacing.lg),
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 260),
+        child: planets.when(
+          data: (data) => Column(
+            key: const ValueKey('kundali-planets-data'),
+            children: [
+              KundaliPlanetsTable(positions: data.positions),
+              const SizedBox(height: 12),
+              KundaliPlanetStrengths(strengths: data.strongestPlanets),
+            ],
+          ),
+          loading: () => const KundaliPlanetsLoading(
+            key: ValueKey('kundali-planets-loading'),
+          ),
+          error: (error, stackTrace) => _PlanetsError(
+            key: const ValueKey('kundali-planets-error'),
+            onRetry: () => ref.invalidate(kundaliPlanetsProvider),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PlanetsError extends StatelessWidget {
+  const _PlanetsError({super.key, required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 300,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.public_off_outlined, size: 36),
+            const SizedBox(height: AppSpacing.sm),
+            const Text('Unable to load planetary positions.'),
+            TextButton(onPressed: onRetry, child: const Text('Try again')),
+          ],
+        ),
+      ),
+    );
+  }
+}

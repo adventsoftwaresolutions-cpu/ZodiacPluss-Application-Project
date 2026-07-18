@@ -13,6 +13,7 @@ class SessionHistoryHeader extends StatelessWidget {
     this.subtitle = 'All session details',
     this.showBackButton = true,
     this.showSubtitle = true,
+    this.showActionButtons = true,
   });
 
   final VoidCallback onBackTap;
@@ -22,6 +23,7 @@ class SessionHistoryHeader extends StatelessWidget {
   final String subtitle;
   final bool showBackButton;
   final bool showSubtitle;
+  final bool showActionButtons;
 
   @override
   Widget build(BuildContext context) {
@@ -74,13 +76,14 @@ class SessionHistoryHeader extends StatelessWidget {
             ],
           ),
         ),
-        HeaderActionButtons(
-          diameter: showBackButton ? 44 : 35,
-          iconSize: showBackButton ? 22 : 18,
-          spacing: 10,
-          onNotificationTap: onNotificationTap,
-          onChatTap: onChatTap,
-        ),
+        if (showActionButtons)
+          HeaderActionButtons(
+            diameter: showBackButton ? 44 : 35,
+            iconSize: showBackButton ? 22 : 18,
+            spacing: 10,
+            onNotificationTap: onNotificationTap,
+            onChatTap: onChatTap,
+          ),
       ],
     );
   }

@@ -87,8 +87,7 @@ class _RaiseTicketPageState extends ConsumerState<RaiseTicketPage> {
                 onBackTap: () => context.pop(),
                 onNotificationTap: () =>
                     _showMessage('Notifications are not available yet.'),
-                onChatTap: () =>
-                    _showMessage('Messages are not available yet.'),
+                onChatTap: () => context.push(ExpertRoutes.chats),
               ),
               Expanded(
                 child: TopScrollFade(

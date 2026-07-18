@@ -11,8 +11,12 @@ abstract final class ExpertRoutes {
   static const String sessionHistory = '/session';
   static const String sessionInfo = '$sessionHistory/:sessionId';
   static const String clients = '/clients';
+  static const String kundali = '/kundali';
   static const String managePricing = '/manage-pricing';
   static const String reviews = '/reviews';
+  static const String chats = '/chats';
+  static const String chatConversation = '$chats/:threadId';
+  static const String callRoom = '/call-room/:roomId';
   static const String clientHistory = '$clients/:clientId';
   static const String raiseTicket = '/raise-ticket';
   static const String ticketStatus = '/ticket-status';
@@ -23,4 +27,14 @@ abstract final class ExpertRoutes {
       '$sessionHistory/$sessionId';
 
   static String clientHistoryFor(String clientId) => '$clients/$clientId';
+
+  static String chatConversationFor(
+    String threadId, {
+    bool promptSessionSummary = false,
+  }) {
+    final String location = '$chats/$threadId';
+    return promptSessionSummary ? '$location?promptSummary=true' : location;
+  }
+
+  static String callRoomFor(String roomId) => '/call-room/$roomId';
 }

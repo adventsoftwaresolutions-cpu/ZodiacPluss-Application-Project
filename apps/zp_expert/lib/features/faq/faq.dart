@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../navigation/app_routes.dart';
 import '../../shared/widgets/gradient_page.dart';
 import '../../shared/widgets/top_scroll_fade.dart';
 import 'widgets/faq_header.dart';
@@ -24,7 +26,7 @@ class FaqPage extends StatelessWidget {
               FaqHeader(
                 onBackTap: () => Navigator.pop(context),
                 onNotificationTap: () {},
-                onChatTap: () {},
+                onChatTap: () => context.push(ExpertRoutes.chats),
               ),
               const SizedBox(height: 28),
               const Expanded(

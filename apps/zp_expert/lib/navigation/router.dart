@@ -23,6 +23,10 @@ import '../../features/clients/clients.dart';
 import '../../features/clients/client_history.dart';
 import '../../features/manage_pricing/manage_pricing.dart';
 import '../../features/reviews/reviews.dart';
+import '../../features/chat/chat.dart';
+import '../../features/chat/chat_conversation.dart';
+import '../../features/call_room/call_room.dart';
+import '../../features/kundali/kundali.dart';
 
 final List<NavItem> expertNavItems = <NavItem>[
   const NavItem(icon: Icons.home_outlined, selectedIcon: Icons.home),
@@ -35,7 +39,7 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: '/auth',
+  initialLocation: '/home',
   routes: <RouteBase>[
     GoRoute(
       path: ExpertRoutes.managePricing,
@@ -46,6 +50,26 @@ final GoRouter expertRouter = GoRouter(
       path: ExpertRoutes.reviews,
       builder: (BuildContext context, GoRouterState state) =>
           const ReviewsPage(),
+    ),
+    GoRoute(
+      path: ExpertRoutes.chats,
+      builder: (BuildContext context, GoRouterState state) =>
+          const ChatInboxPage(),
+    ),
+    GoRoute(
+      path: ExpertRoutes.chatConversation,
+      builder: (BuildContext context, GoRouterState state) =>
+          ChatConversationPage(
+        threadId: state.pathParameters['threadId']!,
+        promptSessionSummary:
+            state.uri.queryParameters['promptSummary'] == 'true',
+      ),
+    ),
+    GoRoute(
+      path: ExpertRoutes.callRoom,
+      builder: (BuildContext context, GoRouterState state) => CallRoomPage(
+        roomId: state.pathParameters['roomId']!,
+      ),
     ),
     GoRoute(
       path: ExpertRoutes.sessionInfo,
@@ -78,6 +102,11 @@ final GoRouter expertRouter = GoRouter(
       path: ExpertRoutes.clients,
       builder: (BuildContext context, GoRouterState state) =>
           const ClientsPage(),
+    ),
+    GoRoute(
+      path: ExpertRoutes.kundali,
+      builder: (BuildContext context, GoRouterState state) =>
+          const KundaliPage(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state,

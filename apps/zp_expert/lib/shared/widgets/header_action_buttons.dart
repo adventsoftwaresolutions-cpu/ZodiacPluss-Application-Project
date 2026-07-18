@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../constants/app_assets.dart';
+
 class HeaderActionButtons extends StatelessWidget {
   const HeaderActionButtons({
     required this.onNotificationTap,
@@ -26,7 +28,8 @@ class HeaderActionButtons extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         _ActionIconButton(
-          assetPath: 'assets/icons/notification.svg',
+          assetPath: AppAssets.notificationIcon,
+          tooltip: 'Notifications',
           diameter: diameter,
           iconSize: iconSize,
           onTap: onNotificationTap,
@@ -36,7 +39,8 @@ class HeaderActionButtons extends StatelessWidget {
           height: direction == Axis.vertical ? spacing : 0,
         ),
         _ActionIconButton(
-          assetPath: 'assets/icons/chat.svg',
+          assetPath: AppAssets.chatIcon,
+          tooltip: 'Client chats',
           diameter: diameter,
           iconSize: iconSize,
           onTap: onChatTap,
@@ -49,12 +53,14 @@ class HeaderActionButtons extends StatelessWidget {
 class _ActionIconButton extends StatelessWidget {
   const _ActionIconButton({
     required this.assetPath,
+    required this.tooltip,
     required this.diameter,
     required this.iconSize,
     required this.onTap,
   });
 
   final String assetPath;
+  final String tooltip;
   final double diameter;
   final double iconSize;
   final VoidCallback onTap;
@@ -63,21 +69,24 @@ class _ActionIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
 
-    return Material(
-      color: colors.surface,
-      shape: const CircleBorder(),
-      elevation: 1,
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onTap,
-        child: SizedBox(
-          width: diameter,
-          height: diameter,
-          child: Center(
-            child: SvgPicture.asset(
-              assetPath,
-              width: iconSize,
-              height: iconSize,
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: colors.surface,
+        shape: const CircleBorder(),
+        elevation: 1,
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onTap,
+          child: SizedBox(
+            width: diameter,
+            height: diameter,
+            child: Center(
+              child: SvgPicture.asset(
+                assetPath,
+                width: iconSize,
+                height: iconSize,
+              ),
             ),
           ),
         ),

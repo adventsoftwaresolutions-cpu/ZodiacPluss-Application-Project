@@ -65,7 +65,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     isVerified: profile.isVerified,
                     status: status,
                     onNotificationTap: () {},
-                    onChatTap: () {},
+                    onChatTap: () => context.push(ExpertRoutes.chats),
                   ),
                   loading: () => const ProfileGreetingHeaderSkeleton(),
                   error: (Object e, StackTrace s) => const SizedBox.shrink(),
