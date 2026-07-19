@@ -53,6 +53,8 @@ class AppAssets {
   static const String kundaliUranus = 'assets/icons/kundali/uranus.svg';
   static const String kundaliNeptune = 'assets/icons/kundali/neptune.svg';
   static const String kundaliPluto = 'assets/icons/kundali/pluto.svg';
+  static const String splashLotus = 'assets/icons/splash/lotus.svg';
+  static const String splashMoonPhase = 'assets/icons/splash/moon_phase.svg';
 
   // Images
   static const String clientAvatarOne = 'assets/images/riya.jpg';
@@ -72,4 +74,5 @@ class AppAssets {
   static const String walletAnimation = 'assets/animation/wallet.lottie';
   static const String paperPlaneAnimation =
       'assets/animation/paperPlane_flying.lottie';
+  static const String splashLogoAnimation = 'assets/animation/zp_logo.lottie';
 }

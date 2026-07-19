@@ -14,8 +14,10 @@ import 'package:zp_expert/features/manage_pricing/data/models/pricing_model.dart
 import 'package:zp_expert/features/manage_pricing/widgets/pricing_header.dart';
 import 'package:zp_expert/features/manage_pricing/widgets/pricing_plan_card.dart';
 import 'package:zp_expert/features/profile/widgets/profile_media_cards.dart';
+import 'package:zp_expert/features/profile/widgets/expert_profile_header.dart';
 import 'package:zp_expert/features/wallet/widgets/stat_card.dart';
 import 'package:zp_expert/features/wallet/widgets/stats_row.dart';
+import 'package:zp_expert/shared/data/expert_profile.dart';
 import 'package:zp_expert/themes/app_colors.dart';
 
 void main() {
@@ -29,8 +31,6 @@ void main() {
         avatarUrl: 'assets/images/dp.jpg',
         isVerified: true,
         status: AvailabilityStatus.online(),
-        onNotificationTap: () {},
-        onChatTap: () {},
       ),
     );
 
@@ -298,6 +298,29 @@ void main() {
 
     expect(narrowActionSize, const Size(104, 56));
     expect(wideActionSize, const Size(128, 64));
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('profile preview remains aligned without narrow overflow',
+      (WidgetTester tester) async {
+    await _pumpNarrow(
+      tester,
+      ExpertProfileHeader(
+        profile: const ExpertProfile(
+          id: 'expert-1',
+          name: 'Dr. Priya Sharma',
+          role: ExpertRole.psychologist,
+          avatarUrl: 'assets/images/dp.jpg',
+          isVerified: true,
+        ),
+        availability: AvailabilityStatus.online(),
+        onEditBasicInfo: () {},
+        onPhotoTap: () {},
+      ),
+    );
+
+    expect(find.text('Preview'), findsOneWidget);
+    expect(find.text('Expert Profile'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 

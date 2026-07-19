@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../features/faq/faq.dart';
+import '../../features/splash/splash.dart';
 import '../../features/verification_pending/verification_pending.dart';
 import '../../features/auth/auth.dart';
 import '../../features/max_attempt_exhausted/max_attempt_exhausted.dart';
@@ -52,8 +53,13 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: '/auth',
+  initialLocation: ExpertRoutes.splash,
   routes: <RouteBase>[
+    GoRoute(
+      path: ExpertRoutes.splash,
+      builder: (BuildContext context, GoRouterState state) =>
+          const SplashPage(),
+    ),
     GoRoute(
       path: ExpertRoutes.managePricing,
       builder: (BuildContext context, GoRouterState state) =>

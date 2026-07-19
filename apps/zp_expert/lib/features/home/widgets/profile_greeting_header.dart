@@ -1,7 +1,6 @@
 // widgets/profile_greeting_header.dart
 import 'package:flutter/material.dart';
 import '../data/availability_status.dart';
-import '../../../shared/widgets/header_action_buttons.dart';
 import '../../../shared/widgets/shimmer_box.dart';
 
 class ProfileGreetingHeader extends StatelessWidget {
@@ -11,8 +10,6 @@ class ProfileGreetingHeader extends StatelessWidget {
     required this.avatarUrl,
     required this.isVerified,
     required this.status,
-    required this.onNotificationTap,
-    required this.onChatTap,
     super.key,
   });
 
@@ -21,15 +18,12 @@ class ProfileGreetingHeader extends StatelessWidget {
   final String avatarUrl;
   final bool isVerified;
   final AvailabilityStatus status;
-  final VoidCallback onNotificationTap;
-  final VoidCallback onChatTap;
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         final bool compact = constraints.maxWidth < 360;
-        final bool veryNarrow = constraints.maxWidth < 300;
 
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,15 +42,6 @@ class ProfileGreetingHeader extends StatelessWidget {
                 status: status,
                 nameFontSize: compact ? 22 : 26,
               ),
-            ),
-            SizedBox(width: compact ? 6 : 8),
-            HeaderActionButtons(
-              diameter: compact ? 32 : 35,
-              iconSize: compact ? 16 : 18,
-              spacing: compact ? 6 : 10,
-              direction: veryNarrow ? Axis.vertical : Axis.horizontal,
-              onNotificationTap: onNotificationTap,
-              onChatTap: onChatTap,
             ),
           ],
         );
@@ -269,9 +254,7 @@ class ProfileGreetingHeaderSkeleton extends StatelessWidget {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         final bool compact = constraints.maxWidth < 360;
-        final bool veryNarrow = constraints.maxWidth < 300;
         final double avatarSize = compact ? 74 : 90;
-        final double actionSize = compact ? 32 : 35;
 
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -283,27 +266,6 @@ class ProfileGreetingHeaderSkeleton extends StatelessWidget {
             ),
             SizedBox(width: compact ? 10 : 16),
             const Expanded(child: _ProfileSummarySkeleton()),
-            SizedBox(width: compact ? 6 : 8),
-            Flex(
-              direction: veryNarrow ? Axis.vertical : Axis.horizontal,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                ShimmerBox(
-                  width: actionSize,
-                  height: actionSize,
-                  borderRadius: actionSize / 2,
-                ),
-                SizedBox(
-                  width: veryNarrow ? 0 : (compact ? 6 : 10),
-                  height: veryNarrow ? 6 : 0,
-                ),
-                ShimmerBox(
-                  width: actionSize,
-                  height: actionSize,
-                  borderRadius: actionSize / 2,
-                ),
-              ],
-            ),
           ],
         );
       },

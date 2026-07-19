@@ -106,7 +106,7 @@ class _GoOfflineSheetContentState extends State<_GoOfflineSheetContent> {
                 ),
                 IconButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.cancel, color: Color(0xFF2C6E6B)),
+                  icon: Icon(Icons.cancel, color: Theme.of(context).primaryColor),
                 ),
               ],
             ),
@@ -191,7 +191,7 @@ class _GoOfflineSheetContentState extends State<_GoOfflineSheetContent> {
                     ? null
                     : () => Navigator.of(context).pop(returnTime),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2C6E6B),
+                  backgroundColor: Theme.of(context).primaryColor,
                   disabledBackgroundColor: Colors.grey.shade300,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(

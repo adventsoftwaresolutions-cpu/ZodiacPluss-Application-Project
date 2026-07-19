@@ -1,4 +1,5 @@
 abstract final class ExpertRoutes {
+  static const String splash = '/splash';
   static const String auth = '/auth';
   static const String verification = '/verification';
   static const String verificationPending = '/verification-pending';

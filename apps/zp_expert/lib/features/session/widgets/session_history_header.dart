@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../shared/widgets/header_action_buttons.dart';
-import '../../../themes/app_colors.dart';
+import '../../../shared/widgets/glass_top_bar.dart';
 
 class SessionHistoryHeader extends StatelessWidget {
   const SessionHistoryHeader({
@@ -26,65 +25,12 @@ class SessionHistoryHeader extends StatelessWidget {
   final bool showActionButtons;
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        if (showBackButton) ...<Widget>[
-          Material(
-            color: Theme.of(context).colorScheme.surface,
-            elevation: 1,
-            shape: const CircleBorder(),
-            child: InkWell(
-              onTap: onBackTap,
-              customBorder: const CircleBorder(),
-              child: const SizedBox(
-                width: 44,
-                height: 44,
-                child: Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  color: AppColors.primary,
-                  size: 19,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-        ],
-        Expanded(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                title,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                    ),
-              ),
-              if (showSubtitle) ...<Widget>[
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    height: 1.2,
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-        if (showActionButtons)
-          HeaderActionButtons(
-            diameter: showBackButton ? 44 : 35,
-            iconSize: showBackButton ? 22 : 18,
-            spacing: 10,
-            onNotificationTap: onNotificationTap,
-            onChatTap: onChatTap,
-          ),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => GlassTopBar(
+        title: title,
+        subtitle: showSubtitle ? subtitle : null,
+        onBackTap: showBackButton ? onBackTap : null,
+        onNotificationTap: onNotificationTap,
+        onChatTap: onChatTap,
+        showActionButtons: showActionButtons,
+      );
 }
