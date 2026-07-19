@@ -35,7 +35,7 @@ class VerificationHeader extends StatelessWidget {
               ),
               const SizedBox(height: 18),
               Text(
-                'Complete your profile',
+                'Apply to become an expert',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.titleLarge?.copyWith(

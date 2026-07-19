@@ -14,6 +14,9 @@ import 'package:zp_expert/features/manage_pricing/data/models/pricing_model.dart
 import 'package:zp_expert/features/manage_pricing/widgets/pricing_header.dart';
 import 'package:zp_expert/features/manage_pricing/widgets/pricing_plan_card.dart';
 import 'package:zp_expert/features/profile/widgets/profile_media_cards.dart';
+import 'package:zp_expert/features/wallet/widgets/stat_card.dart';
+import 'package:zp_expert/features/wallet/widgets/stats_row.dart';
+import 'package:zp_expert/themes/app_colors.dart';
 
 void main() {
   testWidgets('home header fits a narrow screen with enlarged text',
@@ -63,6 +66,71 @@ void main() {
       ],
     );
 
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('performance metrics use distinct semantic icon accents',
+      (WidgetTester tester) async {
+    await _pumpNarrow(
+      tester,
+      PerformanceCard(
+        onSessionHistoryTap: () {},
+        onTransactionHistoryTap: () {},
+        onReviewsTap: () {},
+      ),
+      overrides: <Override>[
+        performanceStatsProvider.overrideWith(
+          (Ref ref) async => const PerformanceStats(
+            earningsToday: 5840,
+            averageRating: 4.8,
+            responseTime: Duration(minutes: 2, seconds: 25),
+            missedSessions: 12,
+            cancelledSessions: 3,
+          ),
+        ),
+      ],
+    );
+
+    expect(
+      tester
+          .widget<Icon>(find.byIcon(Icons.account_balance_wallet_rounded))
+          .color,
+      AppColors.callGlowBlue,
+    );
+    expect(
+      tester.widget<Icon>(find.byIcon(Icons.history_rounded)).color,
+      AppColors.callGlowViolet,
+    );
+    expect(
+      tester.widget<Icon>(find.byIcon(Icons.star_rounded)).color,
+      AppColors.warning,
+    );
+    expect(
+      tester.widget<Icon>(find.byIcon(Icons.cancel_outlined)).color,
+      AppColors.error,
+    );
+  });
+
+  testWidgets('wallet stat cards wrap labels and share the tallest height',
+      (WidgetTester tester) async {
+    await _pumpNarrow(
+      tester,
+      const StatsRow(
+        totalWithdraw: 6000,
+        sessionsCompleted: 12,
+        avgEarningPerSession: 538,
+      ),
+    );
+
+    final List<Size> cardSizes = List<Size>.generate(
+      3,
+      (int index) => tester.getSize(find.byType(StatCard).at(index)),
+    );
+    final Size totalWithdrawLabelSize =
+        tester.getSize(find.text('Total Withdraw'));
+
+    expect(totalWithdrawLabelSize.height, greaterThan(13));
+    expect(cardSizes.map((Size size) => size.height).toSet(), hasLength(1));
     expect(tester.takeException(), isNull);
   });
 

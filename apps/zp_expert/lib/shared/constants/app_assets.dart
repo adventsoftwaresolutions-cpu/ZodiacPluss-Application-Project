@@ -66,6 +66,8 @@ class AppAssets {
 
   // Animations
   static const String navIconAnimation = 'assets/animation/navicon.riv';
+  static const String verificationStepsAnimation =
+      'assets/animation/Steps.lottie';
   static const String yogaAnimation = 'assets/animation/yoga.lottie';
   static const String walletAnimation = 'assets/animation/wallet.lottie';
   static const String paperPlaneAnimation =

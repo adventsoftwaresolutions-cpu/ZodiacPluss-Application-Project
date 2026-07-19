@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:zp_expert/features/verification/data/provider/verification_form_provider.dart';
 import 'package:zp_expert/features/verification/verification.dart';
 import 'package:zp_expert/features/verification/widgets/astrology_background_card.dart';
@@ -41,13 +42,32 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Step 1 of 4'), findsOneWidget);
+    expect(find.text('Apply to become an expert'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey<String>('verification-step-lottie')),
+      findsOneWidget,
+    );
     expect(find.text('Start with a friendly photo'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     await tester.tap(find.text('Continue'));
     await tester.pumpAndSettle();
+    final LottieBuilder stepLottie = tester.widget<LottieBuilder>(
+      find.byKey(const ValueKey<String>('verification-step-lottie')),
+    );
+    expect(stepLottie.controller!.value, closeTo(.25, .001));
     expect(find.text('Choose your expert path'), findsOneWidget);
     expect(tester.takeException(), isNull);
+
+    await tester.tap(
+      find.byKey(const ValueKey<String>('verification-step-target-0')),
+    );
+    await tester.pumpAndSettle();
+    expect(stepLottie.controller!.value, closeTo(0, .001));
+    expect(find.text('Step 1 of 4'), findsOneWidget);
+
+    await tester.tap(find.text('Continue'));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text('Astrologer'));
     await tester.pump();

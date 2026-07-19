@@ -5,15 +5,16 @@ class StatsRowSkeleton extends StatelessWidget {
   const StatsRowSkeleton({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const Row(
-      children: <Widget>[
-        Expanded(child: StatCardSkeleton()),
-        SizedBox(width: 12),
-        Expanded(child: StatCardSkeleton()),
-        SizedBox(width: 12),
-        Expanded(child: StatCardSkeleton()),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => const IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Expanded(child: StatCardSkeleton()),
+            SizedBox(width: 12),
+            Expanded(child: StatCardSkeleton()),
+            SizedBox(width: 12),
+            Expanded(child: StatCardSkeleton()),
+          ],
+        ),
+      );
 }

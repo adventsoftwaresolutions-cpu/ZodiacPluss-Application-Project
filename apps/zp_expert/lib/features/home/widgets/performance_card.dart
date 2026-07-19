@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:zp_expert/themes/app_colors.dart';
 import 'performance_card_skeleton.dart';
 import '../data/performance_repository.dart';
 import '../data/performance_stats.dart';
@@ -86,6 +87,7 @@ class _StatsRows extends StatelessWidget {
       children: <Widget>[
         _PerformanceRow(
           icon: Icons.account_balance_wallet_rounded,
+          accentColor: AppColors.callGlowBlue,
           title: 'Earnings Today',
           subtitle: 'Total Earnings till now',
           trailing: Text(
@@ -99,12 +101,17 @@ class _StatsRows extends StatelessWidget {
         ),
         _PerformanceRow(
           icon: Icons.history_rounded,
+          accentColor: AppColors.callGlowViolet,
           title: 'Session History',
           subtitle: 'Total sessions completed',
-          trailing: _ArrowButton(onTap: onSessionHistoryTap),
+          trailing: _ArrowButton(
+            accentColor: AppColors.callGlowViolet,
+            onTap: onSessionHistoryTap,
+          ),
         ),
         _PerformanceRow(
           icon: Icons.star_rounded,
+          accentColor: AppColors.warning,
           title: 'Average Rating',
           subtitle: 'Rating from clients',
           trailing: Text(
@@ -118,6 +125,7 @@ class _StatsRows extends StatelessWidget {
         ),
         _PerformanceRow(
           icon: Icons.access_time_rounded,
+          accentColor: AppColors.primaryVariant,
           title: 'Response Time',
           subtitle: 'Average response time',
           trailing: Text(
@@ -131,18 +139,27 @@ class _StatsRows extends StatelessWidget {
         ),
         _PerformanceRow(
           icon: Icons.swap_horiz_rounded,
+          accentColor: AppColors.callGlowRose,
           title: 'Transaction History',
           subtitle: 'All transaction history and invoice',
-          trailing: _ArrowButton(onTap: onTransactionHistoryTap),
+          trailing: _ArrowButton(
+            accentColor: AppColors.callGlowRose,
+            onTap: onTransactionHistoryTap,
+          ),
         ),
         _PerformanceRow(
           icon: Icons.chat_bubble_outline_rounded,
+          accentColor: AppColors.info,
           title: 'Reviews',
           subtitle: 'All your session reviews',
-          trailing: _ArrowButton(onTap: onReviewsTap),
+          trailing: _ArrowButton(
+            accentColor: AppColors.info,
+            onTap: onReviewsTap,
+          ),
         ),
         _PerformanceRow(
           icon: Icons.call_missed_rounded,
+          accentColor: AppColors.warning,
           title: 'Missed Session',
           subtitle: 'Your total missed session',
           trailing: Text(
@@ -156,6 +173,7 @@ class _StatsRows extends StatelessWidget {
         ),
         _PerformanceRow(
           icon: Icons.cancel_outlined,
+          accentColor: AppColors.error,
           title: 'Cancel Session',
           subtitle: 'Your total cancel session',
           trailing: Text(
@@ -182,6 +200,7 @@ String _formatDuration(Duration duration) {
 class _PerformanceRow extends StatelessWidget {
   const _PerformanceRow({
     required this.icon,
+    required this.accentColor,
     required this.title,
     required this.subtitle,
     required this.trailing,
@@ -189,6 +208,7 @@ class _PerformanceRow extends StatelessWidget {
   });
 
   final IconData icon;
+  final Color accentColor;
   final String title;
   final String subtitle;
   final Widget trailing;
@@ -204,6 +224,7 @@ class _PerformanceRow extends StatelessWidget {
             builder: (BuildContext context, BoxConstraints constraints) {
               final Widget details = _PerformanceDetails(
                 icon: icon,
+                accentColor: accentColor,
                 title: title,
                 subtitle: subtitle,
               );
@@ -238,11 +259,13 @@ class _PerformanceRow extends StatelessWidget {
 class _PerformanceDetails extends StatelessWidget {
   const _PerformanceDetails({
     required this.icon,
+    required this.accentColor,
     required this.title,
     required this.subtitle,
   });
 
   final IconData icon;
+  final Color accentColor;
   final String title;
   final String subtitle;
 
@@ -253,13 +276,16 @@ class _PerformanceDetails extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: const Color(0xFFDCEAE8),
+              color: Color.alphaBlend(
+                accentColor.withValues(alpha: 0.14),
+                Colors.white,
+              ),
               borderRadius: BorderRadius.circular(14),
             ),
             alignment: Alignment.center,
             child: Icon(
               icon,
-              color: Theme.of(context).colorScheme.primary,
+              color: accentColor,
               size: 22,
             ),
           ),
@@ -293,14 +319,18 @@ class _PerformanceDetails extends StatelessWidget {
 }
 
 class _ArrowButton extends StatelessWidget {
-  const _ArrowButton({required this.onTap});
+  const _ArrowButton({required this.accentColor, required this.onTap});
 
+  final Color accentColor;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: const Color(0xFFDCEAE8),
+      color: Color.alphaBlend(
+        accentColor.withValues(alpha: 0.14),
+        Colors.white,
+      ),
       shape: const CircleBorder(),
       child: InkWell(
         onTap: onTap,
@@ -310,7 +340,7 @@ class _ArrowButton extends StatelessWidget {
           child: Icon(
             Icons.arrow_forward_rounded,
             size: 18,
-            color: Theme.of(context).colorScheme.primary,
+            color: accentColor,
           ),
         ),
       ),
