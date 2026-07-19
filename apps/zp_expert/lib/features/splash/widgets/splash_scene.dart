@@ -22,7 +22,7 @@ class SplashScene extends StatefulWidget {
 class _SplashSceneState extends State<SplashScene>
     with SingleTickerProviderStateMixin {
   // Adjust this value to control how long the splash stays on screen.
-  static const Duration _duration = Duration(milliseconds: 1500);
+  static const Duration _duration = Duration(milliseconds: 1650);
 
   late final AnimationController _controller;
   late final Animation<double> _logoEntrance;
@@ -34,16 +34,12 @@ class _SplashSceneState extends State<SplashScene>
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this, duration: _duration)
-      ..addStatusListener(_handleStatus);
+      ..addStatusListener(_handleStatus)
+      ..forward();
     _logoEntrance = _interval(0, .34, Curves.easeOutBack);
     _nameEntrance = _interval(0, .4, Curves.easeOutCubic);
     _moonEntrance = _interval(0, .46, Curves.easeOutCubic);
     _lotusBloom = _interval(0, .62, Curves.easeOutCubic);
-    WidgetsBinding.instance.addPostFrameCallback(_startAnimation);
-  }
-
-  void _startAnimation(Duration _) {
-    if (mounted) _controller.forward();
   }
 
   Animation<double> _interval(double begin, double end, Curve curve) =>
@@ -124,7 +120,7 @@ class _SplashLayout extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          RepaintBoundary(child: SplashStarField(animation: controller)),
+          SplashStarField(animation: controller),
           Positioned(
             top: size.height * .23,
             left: 20,
@@ -184,35 +180,31 @@ class _BrandSequence extends StatelessWidget {
           _FadeSlide(
             animation: nameEntrance,
             offset: const Offset(0, .28),
-            child: RepaintBoundary(
-              child: SvgPicture.asset(
-                AppAssets.logoName,
-                key: const ValueKey<String>('splash-brand-name'),
-                width: (logoSize * .96).clamp(155, 195).toDouble(),
-              ),
+            child: SvgPicture.asset(
+              AppAssets.logoName,
+              key: const ValueKey<String>('splash-brand-name'),
+              width: (logoSize * .96).clamp(155, 195).toDouble(),
             ),
           ),
           const SizedBox(height: 26),
           _FadeSlide(
             animation: moonEntrance,
             offset: const Offset(0, .4),
-            child: RepaintBoundary(
-              child: ImageFiltered(
-                key: const ValueKey<String>('splash-moon-blur'),
-                imageFilter: ImageFilter.blur(
-                  sigmaX: SplashVisualTuning.moonPhaseBlurSigma,
-                  sigmaY: SplashVisualTuning.moonPhaseBlurSigma,
-                ),
-                child: Opacity(
-                  opacity: .68,
-                  child: SvgPicture.asset(
-                    AppAssets.splashMoonPhase,
-                    key: const ValueKey<String>('splash-moon-phase'),
-                    width: (logoSize * .8).clamp(130, 165).toDouble(),
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.primaryVariant,
-                      BlendMode.srcIn,
-                    ),
+            child: ImageFiltered(
+              key: const ValueKey<String>('splash-moon-blur'),
+              imageFilter: ImageFilter.blur(
+                sigmaX: SplashVisualTuning.moonPhaseBlurSigma,
+                sigmaY: SplashVisualTuning.moonPhaseBlurSigma,
+              ),
+              child: Opacity(
+                opacity: .68,
+                child: SvgPicture.asset(
+                  AppAssets.splashMoonPhase,
+                  key: const ValueKey<String>('splash-moon-phase'),
+                  width: (logoSize * .8).clamp(130, 165).toDouble(),
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.primaryVariant,
+                    BlendMode.srcIn,
                   ),
                 ),
               ),
