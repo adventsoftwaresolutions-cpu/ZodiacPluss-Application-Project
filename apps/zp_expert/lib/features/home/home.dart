@@ -11,8 +11,8 @@ import 'package:zp_expert/shared/widgets/top_scroll_fade.dart';
 import 'package:zp_expert/startup_timing.dart';
 import '../../shared/widgets/gradient_page.dart';
 import 'widgets/profile_greeting_header.dart';
-import 'widgets/wallet_balance_card.dart';
 import 'widgets/availability_toggle_card.dart';
+import 'widgets/availability_status_visual.dart';
 import 'data/availability_controller.dart';
 import '../../navigation/app_routes.dart';
 import 'package:go_router/go_router.dart';
@@ -86,8 +86,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                   child: Column(
                     children: <Widget>[
-                      WalletBalanceCard(
-                        onCheckStatus: () => context.go(ExpertRoutes.wallet),
+                      AvailabilityStatusVisual(
+                        isOnline: status.isOnline,
+                        onCheckWalletStatus: () =>
+                            context.go(ExpertRoutes.wallet),
                       ),
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 14),

@@ -47,6 +47,8 @@ class WalletBalanceCard extends ConsumerWidget {
                 children: <Widget>[
                   Text(
                     'Wallet Balance',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style:
                         TextStyle(fontSize: titleFont, color: Colors.black54),
                   ),
@@ -54,6 +56,8 @@ class WalletBalanceCard extends ConsumerWidget {
                   balance.when(
                     data: (double value) => Text(
                       formatCompactINR(value),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: balanceFont,
                         fontWeight: FontWeight.bold,
@@ -178,7 +182,11 @@ class _PressableButtonState extends State<_PressableButton> {
           onTapCancel: () => _setPressed(false),
           child: Padding(
             padding: widget.padding,
-            child: Center(child: widget.child),
+            child: Center(
+              widthFactor: 1,
+              heightFactor: 1,
+              child: widget.child,
+            ),
           ),
         ),
       ),

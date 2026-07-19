@@ -71,47 +71,59 @@ class IntroCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 14),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 2,
-                  child: AspectRatio(
-                    aspectRatio: 1.55,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: <Widget>[
-                          Image.asset(
-                            AppAssets.clientAvatarOne,
-                            fit: BoxFit.cover,
+            LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                final double actionWidth =
+                    (constraints.maxWidth * .36).clamp(104, 128).toDouble();
+                final double actionHeight =
+                    (actionWidth * .5).clamp(56, 68).toDouble();
+                return Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: AspectRatio(
+                        aspectRatio: 1.55,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: <Widget>[
+                              Image.asset(
+                                AppAssets.clientAvatarOne,
+                                fit: BoxFit.cover,
+                              ),
+                              Container(
+                                color: Colors.black.withValues(alpha: .08),
+                              ),
+                              Center(
+                                child: IconButton.filled(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.play_arrow_rounded),
+                                ),
+                              ),
+                            ],
                           ),
-                          Container(color: Colors.black.withValues(alpha: .08)),
-                          Center(
-                            child: IconButton.filled(
-                              onPressed: () {},
-                              icon: const Icon(Icons.play_arrow_rounded),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  flex: 2,
-                  child: OutlinedButton.icon(
-                    onPressed: () => _chooseUpload(context),
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(78),
-                      side: const BorderSide(color: Colors.black26),
+                    const SizedBox(width: 14),
+                    SizedBox(
+                      key: const ValueKey<String>('intro-upload-action'),
+                      width: actionWidth,
+                      height: actionHeight,
+                      child: OutlinedButton.icon(
+                        onPressed: () => _chooseUpload(context),
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: Size.zero,
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          side: const BorderSide(color: Colors.black26),
+                        ),
+                        icon: const Icon(Icons.upload_rounded, size: 18),
+                        label: Text(hasIntro ? 'Replace' : 'Upload'),
+                      ),
                     ),
-                    icon: const Icon(Icons.upload_rounded),
-                    label: Text(hasIntro ? 'Replace' : 'Upload'),
-                  ),
-                ),
-              ],
+                  ],
+                );
+              },
             ),
           ],
         ),
