@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../themes/app_radius.dart';
 import '../../../shared/data/expert_profile.dart';
 import '../data/models/call_room_model.dart';
+import 'call_invitation_effects.dart';
 
 class CallRoomJoinCard extends StatelessWidget {
   const CallRoomJoinCard({
@@ -21,23 +22,24 @@ class CallRoomJoinCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    return Container(
-      key: ValueKey<String>('join-room-card-${room.id}'),
-      padding: EdgeInsets.all(compact ? 10 : 13),
-      decoration: BoxDecoration(
-        color: colors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: colors.primary.withValues(alpha: .28)),
-        boxShadow: const <BoxShadow>[
-          BoxShadow(
-            color: Color(0x14000000),
-            blurRadius: 12,
-            offset: Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Row(
-        children: <Widget>[
+    return RevolvingCallBorder(
+      borderRadius: AppRadius.lg,
+      child: Container(
+        key: ValueKey<String>('join-room-card-${room.id}'),
+        padding: EdgeInsets.all(compact ? 10 : 13),
+        decoration: BoxDecoration(
+          color: colors.surface,
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          border: Border.all(color: colors.primary.withValues(alpha: .2)),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: colors.shadow.withValues(alpha: .12),
+              blurRadius: 12,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Row(children: <Widget>[
           CircleAvatar(
             backgroundColor: colors.primary.withValues(alpha: .12),
             foregroundColor: colors.primary,
@@ -54,11 +56,13 @@ class CallRoomJoinCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  expertRole == ExpertRole.psychologist
-                      ? (compact
-                          ? 'Paid room ready'
-                          : '${room.type.label} room ready')
-                      : '${room.type.label} room ready',
+                  room.isLive
+                      ? 'Consultation in progress'
+                      : expertRole == ExpertRole.psychologist
+                          ? (compact
+                              ? 'Paid room ready'
+                              : '${room.type.label} room ready')
+                          : '${room.type.label} room ready',
                   style: const TextStyle(fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 2),
@@ -74,13 +78,12 @@ class CallRoomJoinCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          FilledButton.icon(
+          AttentionJoinButton(
             key: ValueKey<String>('join-room-button-${room.id}'),
             onPressed: onJoin,
-            icon: const Icon(Icons.login_rounded, size: 17),
-            label: const Text('Join'),
+            label: room.isLive ? 'Rejoin' : 'Join',
           ),
-        ],
+        ]),
       ),
     );
   }

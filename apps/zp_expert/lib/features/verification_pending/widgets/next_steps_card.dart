@@ -41,7 +41,7 @@ class NextStepsCard extends StatelessWidget {
         vertical: 18,
       ),
       decoration: BoxDecoration(
-        color: colors.surfaceContainerHighest.withOpacity(.35),
+        color: colors.surfaceContainerHighest.withValues(alpha: .35),
         borderRadius: BorderRadius.circular(18),
       ),
       child: Column(

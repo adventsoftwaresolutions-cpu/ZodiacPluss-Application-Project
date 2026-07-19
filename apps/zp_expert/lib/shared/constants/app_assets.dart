@@ -51,12 +51,14 @@ class AppAssets {
   static const String clientAvatarOne = 'assets/images/riya.jpg';
   static const String clientAvatarTwo = 'assets/images/ikcha.jpg';
   static const String clientAvatarThree = 'assets/images/dp.jpg';
+  static const String expertAvatar = clientAvatarThree;
   static const String certificate = 'assets/images/certificate.jpg';
   static const String certificate1 = 'assets/images/certificate1.jpg';
   static const String certificate2 = 'assets/images/certificate2.jpg';
   static const String certificate3 = 'assets/images/certificate3.jpg';
 
   // Animations
+  static const String navIconAnimation = 'assets/animation/navicon.riv';
   static const String walletAnimation = 'assets/animation/wallet.lottie';
   static const String paperPlaneAnimation =
       'assets/animation/paperPlane_flying.lottie';

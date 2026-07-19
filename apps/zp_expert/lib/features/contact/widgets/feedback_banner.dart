@@ -15,10 +15,10 @@ class FeedbackBanner extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: colors.primary.withOpacity(.08),
+        color: colors.primary.withValues(alpha: .08),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: colors.primary.withOpacity(.12),
+          color: colors.primary.withValues(alpha: .12),
         ),
       ),
       child: Row(
@@ -27,7 +27,7 @@ class FeedbackBanner extends StatelessWidget {
             height: 42,
             width: 42,
             decoration: BoxDecoration(
-              color: colors.primary.withOpacity(.12),
+              color: colors.primary.withValues(alpha: .12),
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -38,9 +38,7 @@ class FeedbackBanner extends StatelessWidget {
               ),
             ),
           ),
-
           const SizedBox(width: 12),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,7 +61,6 @@ class FeedbackBanner extends StatelessWidget {
               ],
             ),
           ),
-
           FilledButton(
             onPressed: () {},
             style: FilledButton.styleFrom(

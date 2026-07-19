@@ -1,35 +1,38 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'availability_status.dart';
+import '../../../shared/data/expert_session_repository.dart';
+import '../../../shared/network/expert_api_client.dart';
 
 abstract class AvailabilityRepository {
-  Future<AvailabilityStatus> fetchStatus();
-  Future<void> setOnline();
-  Future<void> setOffline(DateTime returnTime);
+  Future<void> setAvailability({required bool online});
 }
 
-/// In-memory placeholder. Swap this out for a Supabase/Node-backed
-/// implementation later — nothing outside this file needs to change
-/// when that happens, since AvailabilityController only depends on
-/// the abstract AvailabilityRepository contract.
-class MockAvailabilityRepository implements AvailabilityRepository {
-  AvailabilityStatus _status = AvailabilityStatus.online();
+class ApiAvailabilityRepository implements AvailabilityRepository {
+  const ApiAvailabilityRepository({
+    required ExpertApiClient api,
+    required ExpertSessionRepository sessions,
+  })  : _api = api,
+        _sessions = sessions;
+
+  final ExpertApiClient _api;
+  final ExpertSessionRepository _sessions;
 
   @override
-  Future<AvailabilityStatus> fetchStatus() async => _status;
-
-  @override
-  Future<void> setOnline() async {
-    _status = _status.copyWith(isOnline: true, clearOfflineUntil: true);
-  }
-
-  @override
-  Future<void> setOffline(DateTime returnTime) async {
-    _status = AvailabilityStatus(isOnline: false, offlineUntil: returnTime);
+  Future<void> setAvailability({required bool online}) {
+    return _sessions.authenticated<void>((String accessToken) async {
+      await _api.patch(
+        '/api/v1/experts/me/availability',
+        accessToken: accessToken,
+        body: <String, dynamic>{'online': online},
+      );
+    });
   }
 }
 
 final Provider<AvailabilityRepository> availabilityRepositoryProvider =
-    Provider<AvailabilityRepository>(
-  (Ref ref) => MockAvailabilityRepository(),
-);
+    Provider<AvailabilityRepository>((Ref ref) {
+  return ApiAvailabilityRepository(
+    api: ref.watch(expertApiClientProvider),
+    sessions: ref.watch(expertSessionRepositoryProvider),
+  );
+});

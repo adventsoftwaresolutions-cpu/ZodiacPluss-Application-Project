@@ -1,59 +1,150 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../../../shared/widgets/shimmer_box.dart';
 
-class ProfileLoadingSkeleton extends StatelessWidget {
+class ProfileLoadingSkeleton extends StatefulWidget {
   const ProfileLoadingSkeleton({super.key});
+
+  @override
+  State<ProfileLoadingSkeleton> createState() => _ProfileLoadingSkeletonState();
+}
+
+class _ProfileLoadingSkeletonState extends State<ProfileLoadingSkeleton>
+    with SingleTickerProviderStateMixin {
+  static const int _entryCount = 6;
+
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 920),
+    )..forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) => ListView(
         physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(20, 18, 20, 120),
-        children: const <Widget>[
-          Row(
-            children: <Widget>[
-              ShimmerBox(width: 44, height: 44, borderRadius: 22),
-              SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    ShimmerBox(width: 164, height: 24),
-                    SizedBox(height: 7),
-                    ShimmerBox(width: 205, height: 14),
-                  ],
-                ),
-              ),
-              ShimmerBox(width: 78, height: 36),
-            ],
+        children: <Widget>[
+          _AnimatedProfileSkeletonEntry(
+            animation: _entryAnimation(0),
+            child: const _ProfileTitleSkeleton(),
           ),
-          SizedBox(height: 28),
-          Row(
-            children: <Widget>[
-              ShimmerBox(width: 92, height: 92, borderRadius: 46),
-              SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    ShimmerBox(width: 112, height: 24),
-                    SizedBox(height: 8),
-                    ShimmerBox(width: 84, height: 20),
-                    SizedBox(height: 8),
-                    ShimmerBox(width: 180, height: 14),
-                  ],
-                ),
-              ),
-            ],
+          const SizedBox(height: 28),
+          _AnimatedProfileSkeletonEntry(
+            animation: _entryAnimation(1),
+            child: const _ProfileHeaderSkeleton(),
           ),
-          SizedBox(height: 24),
-          _CardSkeleton(height: 142),
-          SizedBox(height: 16),
-          _CardSkeleton(height: 210),
-          SizedBox(height: 16),
-          _CardSkeleton(height: 142),
-          SizedBox(height: 16),
-          _CardSkeleton(height: 190),
+          const SizedBox(height: 24),
+          _AnimatedProfileSkeletonEntry(
+            animation: _entryAnimation(2),
+            child: const _CardSkeleton(height: 142),
+          ),
+          const SizedBox(height: 16),
+          _AnimatedProfileSkeletonEntry(
+            animation: _entryAnimation(3),
+            child: const _CardSkeleton(height: 210),
+          ),
+          const SizedBox(height: 16),
+          _AnimatedProfileSkeletonEntry(
+            animation: _entryAnimation(4),
+            child: const _CardSkeleton(height: 142),
+          ),
+          const SizedBox(height: 16),
+          _AnimatedProfileSkeletonEntry(
+            animation: _entryAnimation(5),
+            child: const _CardSkeleton(height: 190),
+          ),
+        ],
+      );
+
+  Animation<double> _entryAnimation(int index) {
+    const double segment = .34;
+    final double start = index / (_entryCount - 1) * (1 - segment);
+    final double end = math.min(1, start + segment);
+    return CurvedAnimation(
+      parent: _controller,
+      curve: Interval(start, end, curve: Curves.easeOutCubic),
+    );
+  }
+}
+
+class _AnimatedProfileSkeletonEntry extends StatelessWidget {
+  const _AnimatedProfileSkeletonEntry({
+    required this.animation,
+    required this.child,
+  });
+
+  final Animation<double> animation;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => FadeTransition(
+        opacity: animation,
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, .08),
+            end: Offset.zero,
+          ).animate(animation),
+          child: child,
+        ),
+      );
+}
+
+class _ProfileTitleSkeleton extends StatelessWidget {
+  const _ProfileTitleSkeleton();
+
+  @override
+  Widget build(BuildContext context) => const Row(
+        children: <Widget>[
+          ShimmerBox(width: 44, height: 44, borderRadius: 22),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                ShimmerBox(width: 164, height: 24),
+                SizedBox(height: 7),
+                ShimmerBox(width: 205, height: 14),
+              ],
+            ),
+          ),
+          ShimmerBox(width: 78, height: 36),
+        ],
+      );
+}
+
+class _ProfileHeaderSkeleton extends StatelessWidget {
+  const _ProfileHeaderSkeleton();
+
+  @override
+  Widget build(BuildContext context) => const Row(
+        children: <Widget>[
+          ShimmerBox(width: 92, height: 92, borderRadius: 46),
+          SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                ShimmerBox(width: 112, height: 24),
+                SizedBox(height: 8),
+                ShimmerBox(width: 84, height: 20),
+                SizedBox(height: 8),
+                ShimmerBox(width: 180, height: 14),
+              ],
+            ),
+          ),
         ],
       );
 }

@@ -10,8 +10,7 @@ class AvailabilityToggleCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AvailabilityStatus status =
-        ref.watch(availabilityControllerProvider);
+    final AvailabilityStatus status = ref.watch(availabilityControllerProvider);
     final AvailabilityController controller =
         ref.read(availabilityControllerProvider.notifier);
 
@@ -28,7 +27,9 @@ class AvailabilityToggleCard extends ConsumerWidget {
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
             transitionBuilder: (Widget child, Animation<double> anim) {
-              return ScaleTransition(scale: anim, child: FadeTransition(opacity: anim, child: child));
+              return ScaleTransition(
+                  scale: anim,
+                  child: FadeTransition(opacity: anim, child: child));
             },
             child: Icon(
               Icons.circle,
@@ -48,7 +49,9 @@ class AvailabilityToggleCard extends ConsumerWidget {
                 duration: const Duration(milliseconds: 300),
                 transitionBuilder: (Widget child, Animation<double> anim) {
                   return SlideTransition(
-                    position: Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(anim),
+                    position: Tween<Offset>(
+                            begin: const Offset(0, 0.1), end: Offset.zero)
+                        .animate(anim),
                     child: FadeTransition(opacity: anim, child: child),
                   );
                 },
@@ -72,8 +75,11 @@ class AvailabilityToggleCard extends ConsumerWidget {
                   status.isOnline
                       ? 'You are visible to clients'
                       : 'Back at ${_formatTime(status.offlineUntil)}',
-                  key: ValueKey<int?>(status.offlineUntil?.millisecondsSinceEpoch),
-                  style: TextStyle(color: status.isOnline ? Colors.black54 : Colors.red, fontSize: 13),
+                  key: ValueKey<int?>(
+                      status.offlineUntil?.millisecondsSinceEpoch),
+                  style: TextStyle(
+                      color: status.isOnline ? Colors.black54 : Colors.red,
+                      fontSize: 13),
                 ),
               ),
             ],
@@ -81,21 +87,40 @@ class AvailabilityToggleCard extends ConsumerWidget {
         ),
         Switch(
           value: status.isOnline,
-            activeThumbColor: const Color(0xFF2C6E6B),
-            activeTrackColor: const Color(0xFF2C6E6B).withValues(alpha: 0.5),
-          onChanged: (bool goingOnline) async {
-            if (goingOnline) {
-              await controller.goOnline();
-              return;
-            }
-            // Intercept: do NOT flip state until the user confirms a
-            // return time. If they cancel, the Switch simply doesn't
-            // rebuild, since `status` in the provider never changed.
-            final DateTime? returnTime = await showGoOfflineSheet(context);
-            if (returnTime != null) {
-              await controller.goOffline(returnTime);
-            }
-          },
+          activeThumbColor: const Color(0xFF2C6E6B),
+          activeTrackColor: const Color(0xFF2C6E6B).withValues(alpha: 0.5),
+          onChanged: status.isUpdating
+              ? null
+              : (bool goingOnline) async {
+                  if (goingOnline) {
+                    try {
+                      await controller.goOnline();
+                    } catch (_) {
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Unable to go online. Try again.')),
+                      );
+                    }
+                    return;
+                  }
+                  // Intercept: do NOT flip state until the user confirms a
+                  // return time. If they cancel, the Switch simply doesn't
+                  // rebuild, since `status` in the provider never changed.
+                  final DateTime? returnTime =
+                      await showGoOfflineSheet(context);
+                  if (returnTime != null) {
+                    try {
+                      await controller.goOffline(returnTime);
+                    } catch (_) {
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Unable to go offline. Try again.')),
+                      );
+                    }
+                  }
+                },
         ),
       ],
     );

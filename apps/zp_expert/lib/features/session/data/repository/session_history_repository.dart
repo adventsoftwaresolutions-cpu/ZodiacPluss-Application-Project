@@ -1,9 +1,13 @@
 import '../../../../shared/dev/stimulated_latency.dart';
+import '../../../../shared/data/expert_profile.dart';
 import '../models/session_history_model.dart';
 
 abstract interface class SessionHistoryRepository {
   Future<List<SessionHistoryModel>> getSessionHistory();
-  Future<SessionDetailModel> getSessionDetail(String sessionId);
+  Future<SessionDetailModel> getSessionDetail(
+    String sessionId,
+    ExpertProfile expert,
+  );
   Future<void> blockClient(String clientId);
 }
 
@@ -73,7 +77,10 @@ class StubSessionHistoryRepository implements SessionHistoryRepository {
   }
 
   @override
-  Future<SessionDetailModel> getSessionDetail(String sessionId) async {
+  Future<SessionDetailModel> getSessionDetail(
+    String sessionId,
+    ExpertProfile expert,
+  ) async {
     await simulateNetworkLatency(duration: const Duration(milliseconds: 650));
 
     final SessionHistoryModel session = switch (sessionId) {
@@ -115,11 +122,11 @@ class StubSessionHistoryRepository implements SessionHistoryRepository {
         role: 'Normal User',
         avatarAsset: 'assets/images/riya.jpg',
       ),
-      expert: const SessionPerson(
-        id: 'expert-astro-dev',
-        name: 'Astro Dev Sharma',
-        role: 'Psychologist',
-        avatarAsset: 'assets/images/dp.jpg',
+      expert: SessionPerson(
+        id: expert.id,
+        name: expert.name,
+        role: expert.role.label,
+        avatarAsset: expert.avatarUrl,
       ),
       status: 'Completed',
       grossAmount: 480,

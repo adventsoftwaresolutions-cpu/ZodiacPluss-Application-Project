@@ -31,7 +31,7 @@ class ContactSupportBanner extends StatelessWidget {
             height: 36,
             width: 36,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(.15),
+              color: Colors.white.withValues(alpha: .15),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Center(
@@ -46,9 +46,7 @@ class ContactSupportBanner extends StatelessWidget {
               ),
             ),
           ),
-
           const SizedBox(width: 10),
-
           Expanded(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -75,9 +73,7 @@ class ContactSupportBanner extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(width: 8),
-
           SizedBox(
             height: 30,
             child: FilledButton(

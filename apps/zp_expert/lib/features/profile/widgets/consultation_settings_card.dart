@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../data/models/expert_profile_model.dart';
+import '../../../shared/data/expert_profile.dart';
 import 'profile_section_card.dart';
 
 class ConsultationSettingsCard extends StatelessWidget {

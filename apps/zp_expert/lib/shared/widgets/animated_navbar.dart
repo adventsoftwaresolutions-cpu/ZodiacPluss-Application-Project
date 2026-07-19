@@ -5,6 +5,7 @@ import '../../themes/app_colors.dart';
 import '../../themes/app_radius.dart';
 import '../../themes/app_spacing.dart';
 import 'nav_item.dart';
+import 'rive_nav_icon.dart';
 
 class AnimatedNavbar extends StatelessWidget {
   const AnimatedNavbar({
@@ -32,7 +33,10 @@ class AnimatedNavbar extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(
-        AppSpacing.md, 0, AppSpacing.md, AppSpacing.md,
+        AppSpacing.md,
+        0,
+        AppSpacing.md,
+        AppSpacing.md,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppRadius.xl),
@@ -46,24 +50,25 @@ class AnimatedNavbar extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: <Color>[
-                  Theme.of(context).colorScheme.surface.withOpacity(0.46),
-                  Theme.of(context).colorScheme.surface.withOpacity(0.32),
+                  Theme.of(context).colorScheme.surface.withValues(alpha: 0.46),
+                  Theme.of(context).colorScheme.surface.withValues(alpha: 0.32),
                 ],
               ),
               borderRadius: BorderRadius.circular(AppRadius.xl),
               border: Border.all(
-                color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08),
+                color: (isDark ? Colors.white : Colors.black)
+                    .withValues(alpha: 0.08),
               ),
               // slight outer shadow for lift
               boxShadow: <BoxShadow>[
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
+                  color: Colors.black.withValues(alpha: 0.06),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
                 // a tiny negative spread shadow to fake inner depth (lightweight)
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.03),
+                  color: Colors.black.withValues(alpha: 0.03),
                   blurRadius: 6,
                   offset: const Offset(0, 1),
                   spreadRadius: -4,
@@ -74,55 +79,47 @@ class AnimatedNavbar extends StatelessWidget {
               children: <Widget>[
                 // main interactive area
                 LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                final double itemWidth = constraints.maxWidth / items.length;
-                return Stack(
-                  children: <Widget>[
-                    AnimatedPositioned(
-                      duration: const Duration(milliseconds: 280),
-                      curve: Curves.easeOutCubic,
-                      left: itemWidth * currentIndex +
-                          (itemWidth - _indicatorWidth) / 2,
-                      top: 6,
-                      child: Container(
-                        width: _indicatorWidth,
-                        height: _indicatorHeight,
-                        decoration: BoxDecoration(
-                          color: activeColor,
-                          borderRadius:
-                              BorderRadius.circular(_indicatorHeight / 2),
-                        ),
-                      ),
-                    ),
-                    Row(
-                      children: List<Widget>.generate(items.length, (int i) {
-                        final bool selected = i == currentIndex;
-                        final NavItem item = items[i];
-                        return Expanded(
-                          child: InkWell(
-                            onTap: () => onTap(i),
-                            child: Center(
-                              child: Icon(
-                                selected ? item.selectedIcon : item.icon,
-                                color: selected ? activeColor : inactiveColor,
-                                size: 24,
-                                shadows: selected
-                                    ? null
-                                    : const <Shadow>[
-                                        Shadow(
-                                          color: Colors.black38,
-                                          blurRadius: 4,
-                                        ),
-                                      ],
-                              ),
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    final double itemWidth =
+                        constraints.maxWidth / items.length;
+                    return Stack(
+                      children: <Widget>[
+                        AnimatedPositioned(
+                          duration: const Duration(milliseconds: 280),
+                          curve: Curves.easeOutCubic,
+                          left: itemWidth * currentIndex +
+                              (itemWidth - _indicatorWidth) / 2,
+                          top: 6,
+                          child: Container(
+                            width: _indicatorWidth,
+                            height: _indicatorHeight,
+                            decoration: BoxDecoration(
+                              color: activeColor,
+                              borderRadius:
+                                  BorderRadius.circular(_indicatorHeight / 2),
                             ),
                           ),
-                        );
-                      }),
-                    ),
-                  ],
-                );
-              },
+                        ),
+                        Row(
+                          children:
+                              List<Widget>.generate(items.length, (int i) {
+                            final bool selected = i == currentIndex;
+                            final NavItem item = items[i];
+                            return Expanded(
+                              child: _NavbarDestination(
+                                item: item,
+                                selected: selected,
+                                isDark: isDark,
+                                activeColor: activeColor,
+                                inactiveColor: inactiveColor,
+                                onTap: () => onTap(i),
+                              ),
+                            );
+                          }),
+                        ),
+                      ],
+                    );
+                  },
                 ),
                 // subtle top sheen for glassy highlight
                 Positioned(
@@ -138,8 +135,10 @@ class AnimatedNavbar extends StatelessWidget {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: <Color>[
-                            Colors.white.withOpacity(isDark ? 0.03 : 0.18),
-                            Colors.white.withOpacity(isDark ? 0.01 : 0.06),
+                            Colors.white
+                                .withValues(alpha: isDark ? 0.03 : 0.18),
+                            Colors.white
+                                .withValues(alpha: isDark ? 0.01 : 0.06),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(AppRadius.xl),
@@ -151,6 +150,101 @@ class AnimatedNavbar extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _NavbarDestination extends StatefulWidget {
+  const _NavbarDestination({
+    required this.item,
+    required this.selected,
+    required this.isDark,
+    required this.activeColor,
+    required this.inactiveColor,
+    required this.onTap,
+  });
+
+  final NavItem item;
+  final bool selected;
+  final bool isDark;
+  final Color activeColor;
+  final Color inactiveColor;
+  final VoidCallback onTap;
+
+  @override
+  State<_NavbarDestination> createState() => _NavbarDestinationState();
+}
+
+class _NavbarDestinationState extends State<_NavbarDestination> {
+  final RiveNavIconController _iconController = RiveNavIconController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      selected: widget.selected,
+      label: widget.item.semanticLabel,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        onTap: () {
+          _iconController.play();
+          widget.onTap();
+        },
+        child: Center(
+          child: _GlassNavIcon(
+            item: widget.item,
+            selected: widget.selected,
+            isDark: widget.isDark,
+            activeColor: widget.activeColor,
+            inactiveColor: widget.inactiveColor,
+            controller: _iconController,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _GlassNavIcon extends StatelessWidget {
+  const _GlassNavIcon({
+    required this.item,
+    required this.selected,
+    required this.isDark,
+    required this.activeColor,
+    required this.inactiveColor,
+    required this.controller,
+  });
+
+  final NavItem item;
+  final bool selected;
+  final bool isDark;
+  final Color activeColor;
+  final Color inactiveColor;
+  final RiveNavIconController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 280),
+      curve: Curves.easeOutCubic,
+      padding: const EdgeInsets.all(AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: selected
+            ? Colors.white.withValues(alpha: isDark ? 0.08 : 0.22)
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        border: Border.all(
+          color: selected
+              ? Colors.white.withValues(alpha: isDark ? 0.1 : 0.26)
+              : Colors.transparent,
+        ),
+      ),
+      child: RiveNavIcon(
+        artboard: item.artboard,
+        stateMachineName: item.stateMachineName,
+        color: selected ? activeColor : inactiveColor,
+        controller: controller,
       ),
     );
   }

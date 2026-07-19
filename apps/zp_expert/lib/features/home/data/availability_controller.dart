@@ -1,30 +1,67 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../shared/dev/stimulated_latency.dart';
+
 import 'availability_repository.dart';
 import 'availability_status.dart';
 
 final StateNotifierProvider<AvailabilityController, AvailabilityStatus>
     availabilityControllerProvider =
     StateNotifierProvider<AvailabilityController, AvailabilityStatus>(
-  (Ref ref) =>
-      AvailabilityController(ref.watch(availabilityRepositoryProvider)),
+  (Ref ref) {
+    final AvailabilityController controller = AvailabilityController(
+      ref.watch(availabilityRepositoryProvider),
+    );
+    controller.initializeOffline();
+    return controller;
+  },
 );
 
 class AvailabilityController extends StateNotifier<AvailabilityStatus> {
   AvailabilityController(this._repository)
-      : super(AvailabilityStatus.online());
+      : super(AvailabilityStatus.offline());
 
   final AvailabilityRepository _repository;
 
-  Future<void> goOnline() async {
-    await simulateNetworkLatency();
-    await _repository.setOnline();
-    state = state.copyWith(isOnline: true, clearOfflineUntil: true);
+  Future<void> initializeOffline() async {
+    state = state.copyWith(isOnline: false, isUpdating: true, clearError: true);
+    try {
+      await _repository.setAvailability(online: false);
+      state = state.copyWith(isOnline: false, isUpdating: false);
+    } catch (error) {
+      state = state.copyWith(
+        isOnline: false,
+        isUpdating: false,
+        errorMessage: error.toString(),
+      );
+    }
   }
 
-  Future<void> goOffline(DateTime returnTime) async {
-    await simulateNetworkLatency();
-    await _repository.setOffline(returnTime);
-    state = state.copyWith(isOnline: false, offlineUntil: returnTime);
+  Future<void> goOnline() => _setAvailability(online: true);
+
+  Future<void> goOffline(DateTime returnTime) => _setAvailability(
+        online: false,
+        offlineUntil: returnTime,
+      );
+
+  Future<void> _setAvailability({
+    required bool online,
+    DateTime? offlineUntil,
+  }) async {
+    if (state.isUpdating || state.isOnline == online) return;
+    state = state.copyWith(isUpdating: true, clearError: true);
+    try {
+      await _repository.setAvailability(online: online);
+      state = state.copyWith(
+        isOnline: online,
+        offlineUntil: offlineUntil,
+        clearOfflineUntil: online,
+        isUpdating: false,
+      );
+    } catch (error) {
+      state = state.copyWith(
+        isUpdating: false,
+        errorMessage: error.toString(),
+      );
+      rethrow;
+    }
   }
 }

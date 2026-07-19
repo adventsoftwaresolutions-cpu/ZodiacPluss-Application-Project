@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../data/models/expert_profile_model.dart';
+import '../../../shared/data/expert_profile.dart';
 
 Future<Map<String, dynamic>?> showBasicInfoSheet(
   BuildContext context, {
-  required ExpertProfileModel profile,
+  required ExpertProfile profile,
 }) {
   String name = profile.name;
   return showModalBottomSheet<Map<String, dynamic>>(

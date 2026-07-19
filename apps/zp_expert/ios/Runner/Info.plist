@@ -16,6 +16,17 @@
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>zp_expert</string>
+	<key>NSCameraUsageDescription</key>
+	<string>ZodiacPlus uses the camera for expert video consultations.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>ZodiacPlus uses the microphone for expert audio and video consultations.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>ZodiacPlus connects to the local consultation demo backend during development.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

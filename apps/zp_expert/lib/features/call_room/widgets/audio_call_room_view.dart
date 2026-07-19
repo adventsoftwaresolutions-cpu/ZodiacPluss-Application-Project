@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../shared/data/expert_profile.dart';
 import '../data/models/call_room_model.dart';
+import 'call_action_panel.dart';
 import 'call_controls.dart';
 import 'call_participant_avatar.dart';
 import 'call_status_text.dart';
@@ -34,65 +34,100 @@ class AudioCallRoomView extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: <Color>[
             colors.primary,
-            Color.lerp(colors.primary, Colors.black, .52)!,
+            Color.lerp(colors.primary, colors.secondary, .42)!,
+            Color.lerp(colors.primary, Colors.black, .7)!,
           ],
+          stops: const <double>[0, .44, 1],
         ),
       ),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          20,
-          MediaQuery.paddingOf(context).top + 20,
-          20,
-          MediaQuery.paddingOf(context).bottom + 28,
-        ),
-        child: Column(
-          children: <Widget>[
-            _CallRoomTopBar(
-              title: 'Audio consultation',
-              session: session,
+      child: Stack(
+        children: <Widget>[
+          const Positioned(
+            left: -90,
+            top: 130,
+            child: _AmbientGlow(diameter: 250),
+          ),
+          const Positioned(
+            right: -120,
+            bottom: 90,
+            child: _AmbientGlow(diameter: 300),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              20,
+              MediaQuery.paddingOf(context).top + 20,
+              20,
+              MediaQuery.paddingOf(context).bottom + 24,
             ),
-            const Spacer(),
-            CallParticipantAvatar(
-              name: session.room.clientName,
-              animate: session.phase != CallSessionPhase.ended,
-            ),
-            const SizedBox(height: 22),
-            Text(
-              session.room.clientName,
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: colors.onPrimary,
-                    fontWeight: FontWeight.w800,
-                  ),
-            ),
-            const SizedBox(height: 8),
-            _AudioWaveform(active: session.phase != CallSessionPhase.ended),
-            const SizedBox(height: 8),
-            CallStatusText(session: session),
-            const Spacer(),
-            if (session.phase == CallSessionPhase.ended)
-              FilledButton(
-                key: const ValueKey<String>('leave-ended-call-button'),
-                onPressed: onLeave,
-                style: FilledButton.styleFrom(
-                  backgroundColor: colors.primary,
-                  foregroundColor: colors.onPrimary,
+            child: Column(
+              children: <Widget>[
+                _CallRoomTopBar(
+                  title: 'Audio consultation',
+                  session: session,
                 ),
-                child: const Text('Back to app'),
-              )
-            else
-              CallControls(
-                isMuted: session.isMuted,
-                isSpeakerOn: session.isSpeakerOn,
-                onToggleMute: onToggleMute,
-                onToggleSpeaker: onToggleSpeaker,
-                onMessage: onMessage,
-                onEndCall: onEndCall,
-              ),
-          ],
-        ),
+                const Spacer(),
+                CallParticipantAvatar(
+                  name: session.room.clientName,
+                  animate: session.phase != CallSessionPhase.ended,
+                ),
+                const SizedBox(height: 22),
+                Text(
+                  session.room.clientName,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        color: colors.onPrimary,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -.4,
+                      ),
+                ),
+                const SizedBox(height: 10),
+                _AudioWaveform(
+                  active: session.phase != CallSessionPhase.ended,
+                ),
+                const SizedBox(height: 10),
+                CallStatusText(session: session),
+                const Spacer(),
+                CallActionPanel(
+                  ended: session.phase == CallSessionPhase.ended,
+                  onLeave: onLeave,
+                  controls: CallControls(
+                    isMuted: session.isMuted,
+                    isSpeakerOn: session.isSpeakerOn,
+                    onToggleMute: onToggleMute,
+                    onToggleSpeaker: onToggleSpeaker,
+                    onMessage: onMessage,
+                    onEndCall: onEndCall,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
+}
+
+class _AmbientGlow extends StatelessWidget {
+  const _AmbientGlow({required this.diameter});
+
+  final double diameter;
+
+  @override
+  Widget build(BuildContext context) => IgnorePointer(
+        child: Container(
+          width: diameter,
+          height: diameter,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: <Color>[
+                Theme.of(context).colorScheme.onPrimary.withValues(alpha: .11),
+                Colors.transparent,
+              ],
+            ),
+          ),
+        ),
+      );
 }
 
 class _AudioWaveform extends StatefulWidget {
@@ -168,39 +203,51 @@ class _CallRoomTopBar extends StatelessWidget {
   final CallSessionState session;
 
   @override
-  Widget build(BuildContext context) => Row(
-        children: <Widget>[
-          Icon(Icons.lock_rounded,
-              size: 17, color: Theme.of(context).colorScheme.onPrimary),
-          const SizedBox(width: 7),
-          Expanded(
-            child: Text(
-              title,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimary,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.scrim.withValues(alpha: .18),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color:
+                Theme.of(context).colorScheme.onPrimary.withValues(alpha: .14),
           ),
-          if (session.expertRole == ExpertRole.psychologist)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: Theme.of(context)
-                    .colorScheme
-                    .surface
-                    .withValues(alpha: .16),
-                borderRadius: BorderRadius.circular(20),
-              ),
+        ),
+        child: Row(
+          children: <Widget>[
+            Icon(Icons.lock_rounded,
+                size: 17, color: Theme.of(context).colorScheme.onPrimary),
+            const SizedBox(width: 7),
+            Expanded(
               child: Text(
-                '${session.room.paidMinutes} min paid',
+                title,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.onPrimary,
-                  fontSize: 11,
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ),
-        ],
+            if (session.room.paidMinutes > 0)
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .surface
+                      .withValues(alpha: .16),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  '${session.room.paidMinutes} min paid',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+          ],
+        ),
       );
 }
