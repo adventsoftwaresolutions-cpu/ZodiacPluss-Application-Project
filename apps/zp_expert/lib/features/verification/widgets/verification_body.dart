@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../navigation/app_routes.dart';
 import '../../../shared/data/expert_profile.dart';
 import '../../../shared/widgets/top_scroll_fade.dart';
 import '../data/provider/verification_form_provider.dart';
@@ -13,6 +15,7 @@ import 'qualification_card.dart';
 import 'specialization_card.dart';
 import 'submit_button.dart';
 import 'verification_header.dart';
+import 'verification_logout_button.dart';
 import 'verification_review_card.dart';
 import 'verification_step_indicator.dart';
 import 'verification_step_navigation.dart';
@@ -82,7 +85,7 @@ class _VerificationBodyState extends ConsumerState<VerificationBody>
                   padding: const EdgeInsets.fromLTRB(18, 16, 18, 10),
                   child: Column(
                     children: <Widget>[
-                      VerificationHeader(onBack: _back),
+                      VerificationHeader(onSkip: _skipToHome),
                       const SizedBox(height: 18),
                       VerificationStepIndicator(
                         currentStep: state.currentStep,
@@ -142,13 +145,20 @@ class _VerificationBodyState extends ConsumerState<VerificationBody>
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(18, 8, 18, 16),
-                  child: state.currentStep == 3
-                      ? _FinalStepNavigation(onBack: _back)
-                      : VerificationStepNavigation(
-                          currentStep: state.currentStep,
-                          onBack: _back,
-                          onContinue: _continue,
-                        ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      state.currentStep == 3
+                          ? _FinalStepNavigation(onBack: _back)
+                          : VerificationStepNavigation(
+                              currentStep: state.currentStep,
+                              onBack: _back,
+                              onContinue: _continue,
+                            ),
+                      const SizedBox(height: 4),
+                      const VerificationLogoutButton(),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -174,6 +184,11 @@ class _VerificationBodyState extends ConsumerState<VerificationBody>
       return;
     }
     _moveToStep(currentStep - 1);
+  }
+
+  void _skipToHome() {
+    FocusScope.of(context).unfocus();
+    context.go(ExpertRoutes.home);
   }
 
   void _goToPreviousStep(int step) {

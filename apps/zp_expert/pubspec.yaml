@@ -47,5 +47,6 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/icons/blob/
     - assets/icons/kundali/
     - assets/animation/

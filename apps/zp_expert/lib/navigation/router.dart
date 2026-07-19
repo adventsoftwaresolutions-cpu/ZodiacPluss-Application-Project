@@ -52,7 +52,7 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: '/home',
+  initialLocation: '/auth',
   routes: <RouteBase>[
     GoRoute(
       path: ExpertRoutes.managePricing,

@@ -34,6 +34,13 @@ class AppAssets {
   static const String flagIcon = 'assets/icons/flag.svg';
   static const String cautionIcon = 'assets/icons/caution.svg';
   static const String profileIcon = 'assets/icons/profile.svg';
+  static const String blob = 'assets/icons/blob/blob.svg';
+  static const String blobOne = 'assets/icons/blob/blob1.svg';
+  static const String blobTwo = 'assets/icons/blob/blob2.svg';
+  static const String blobThree = 'assets/icons/blob/blob3.svg';
+  static const String blobWave = 'assets/icons/blob/blobWave.svg';
+  static const String blobLeftTopCorner =
+      'assets/icons/blob/blob_left_top_corner.svg';
   static const String kundaliSun = 'assets/icons/kundali/sun.svg';
   static const String kundaliMoon = 'assets/icons/kundali/moon.svg';
   static const String kundaliMars = 'assets/icons/kundali/mars.svg';

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../shared/constants/app_assets.dart';
+
 class LoginLogo extends StatefulWidget {
   const LoginLogo({super.key});
 
@@ -57,12 +59,12 @@ class _LoginLogoState extends State<LoginLogo>
           mainAxisSize: MainAxisSize.min,
           children: [
             SvgPicture.asset(
-              'assets/icons/logo.svg',
+              AppAssets.logo,
               height: 90,
             ),
             const SizedBox(height: 18),
             SvgPicture.asset(
-              'assets/icons/name.svg',
+              AppAssets.logoName,
               height: 42,
             ),
           ],
