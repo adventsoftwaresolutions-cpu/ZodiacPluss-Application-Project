@@ -12,7 +12,8 @@ The app uses the same HTTP, SSE, and Agora flow as the web expert demo:
    `PATCH /api/v1/experts/me/availability` to move online or offline.
 3. The app listens to `GET /api/v1/events/stream` and reloads
    `GET /api/v1/experts/me/consultations/active` whenever the SSE connection is
-   established again.
+   established again. It also polls the active-consultations endpoint every two
+   seconds as a recovery path when an SSE event is delayed or unavailable.
 4. A `consultation.requested` event shows the persistent **Join room** action.
    The expert can join (accept) or decline the consultation.
 5. Joining accepts the consultation, requests short-lived Agora credentials,
@@ -23,16 +24,20 @@ The app uses the same HTTP, SSE, and Agora flow as the web expert demo:
 
 The API and worker must both be running. Confirm PostgreSQL and Redis readiness
 through the backend's `/health/ready` endpoint before testing a call.
+The worker is required for immediate SSE delivery, ring/balance timeouts, and
+automatic consultation recovery; REST polling in the app only provides a
+client-side fallback for discovering active rooms.
 
-## Configure the API URL
+## API URL
 
-The default API origin is `http://localhost:3000`. Override it at build/run time:
+The app connects to the deployed Render API by default:
 
-```bash
-flutter run --dart-define=ZP_API_BASE_URL=https://your-api.example.com
+```text
+https://zp-backend-3fxe.onrender.com
 ```
 
-For an Android emulator connected to a backend on the development machine, use:
+Override it only when testing a different backend. For an Android emulator
+connected to a backend on the development machine, use:
 
 ```bash
 flutter run --dart-define=ZP_API_BASE_URL=http://10.0.2.2:3000

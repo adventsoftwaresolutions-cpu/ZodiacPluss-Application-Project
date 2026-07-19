@@ -117,7 +117,7 @@ class ExpertApiClient {
           ..headers.addAll(headers)
           ..body = body == null ? '' : jsonEncode(body))
         .then(http.Response.fromStream)
-        .timeout(const Duration(seconds: 20));
+        .timeout(const Duration(seconds: 60));
     if (response.statusCode < 200 || response.statusCode >= 300) {
       throw _error(response.statusCode, response.body);
     }
@@ -155,7 +155,7 @@ class ExpertApiClient {
 
 const String _configuredBaseUrl = String.fromEnvironment(
   'ZP_API_BASE_URL',
-  defaultValue: 'http://localhost:3000',
+  defaultValue: 'https://zp-backend-3fxe.onrender.com',
 );
 
 final Provider<http.Client> httpClientProvider =

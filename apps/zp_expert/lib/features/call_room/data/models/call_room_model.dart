@@ -141,7 +141,7 @@ class ConsultationEvent {
   final CallRoomModel room;
 }
 
-enum CallSessionPhase { waitingForClient, connected, ended }
+enum CallSessionPhase { waitingForClient, connected, reconnecting, ended }
 
 @immutable
 class CallSessionState {

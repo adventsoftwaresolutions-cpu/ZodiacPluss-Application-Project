@@ -2,7 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../constants/app_assets.dart';
 import '../dev/stimulated_latency.dart';
+import 'expert_identity.dart';
 import 'expert_profile.dart';
+import 'expert_session.dart';
+import 'expert_session_repository.dart';
 
 abstract class ExpertProfileRepository {
   Future<ExpertProfile> fetchProfile();
@@ -14,7 +17,7 @@ class StubExpertProfileRepository implements ExpertProfileRepository {
     await simulateNetworkLatency();
     return const ExpertProfile(
       id: 'expert_001',
-      name: 'Shreya',
+      name: defaultExpertDisplayName,
       role: ExpertRole.astrologer,
       avatarUrl: AppAssets.expertAvatar,
       isVerified: true,
@@ -59,5 +62,12 @@ final Provider<ExpertProfileRepository> expertProfileRepositoryProvider =
 
 final FutureProvider<ExpertProfile> expertProfileProvider =
     FutureProvider<ExpertProfile>((Ref ref) {
-  return ref.watch(expertProfileRepositoryProvider).fetchProfile();
+  return _loadCurrentExpertProfile(ref);
 });
+
+Future<ExpertProfile> _loadCurrentExpertProfile(Ref ref) async {
+  final ExpertProfile localProfile =
+      await ref.watch(expertProfileRepositoryProvider).fetchProfile();
+  final ExpertSession session = await ref.watch(expertSessionProvider.future);
+  return localProfile.copyWith(name: session.displayName);
+}

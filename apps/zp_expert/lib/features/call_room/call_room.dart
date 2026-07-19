@@ -20,49 +20,67 @@ class CallRoomPage extends ConsumerWidget {
     final AsyncValue<CallSessionState> session =
         ref.watch(callSessionProvider(roomId));
     final CallMediaState media = ref.watch(callMediaProvider(roomId));
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        systemNavigationBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        systemNavigationBarIconBrightness: Brightness.light,
-      ),
-      child: Scaffold(
-        extendBody: true,
-        extendBodyBehindAppBar: true,
-        body: session.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (Object error, StackTrace stackTrace) => _CallRoomError(
-            message: _joinErrorMessage(error),
-            onRetry: () async {
-              await ref.read(callMediaProvider(roomId).notifier).leave();
-              ref.invalidate(callSessionProvider(roomId));
-            },
-            onBack: () async {
-              await ref.read(callMediaProvider(roomId).notifier).leave();
-              ref.invalidate(callSessionProvider(roomId));
-              if (context.mounted) context.pop();
-            },
-          ),
-          data: (CallSessionState data) => CallRoomContent(
-            session: data,
-            media: media,
-            onToggleMute: () =>
-                ref.read(callSessionProvider(roomId).notifier).toggleMute(),
-            onToggleSpeaker: () =>
-                ref.read(callSessionProvider(roomId).notifier).toggleSpeaker(),
-            onToggleVideo: () =>
-                ref.read(callSessionProvider(roomId).notifier).toggleVideo(),
-            onMessage: () => context.push(
-              ExpertRoutes.chatConversationFor(data.room.threadId),
+    final bool callHasFinished =
+        session.valueOrNull?.phase == CallSessionPhase.ended;
+    return PopScope<Object?>(
+      canPop: callHasFinished || session.hasError,
+      onPopInvokedWithResult: (bool didPop, Object? result) {
+        if (didPop) {
+          ref.invalidate(callSessionProvider(roomId));
+          ref.invalidate(callMediaProvider(roomId));
+          return;
+        }
+        if (session.valueOrNull != null) {
+          ref.read(callSessionProvider(roomId).notifier).endCall();
+        }
+      },
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          systemNavigationBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          systemNavigationBarIconBrightness: Brightness.light,
+        ),
+        child: Scaffold(
+          extendBody: true,
+          extendBodyBehindAppBar: true,
+          body: session.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (Object error, StackTrace stackTrace) => _CallRoomError(
+              message: _joinErrorMessage(error),
+              onRetry: () async {
+                await ref.read(callMediaProvider(roomId).notifier).leave();
+                ref.invalidate(callSessionProvider(roomId));
+              },
+              onBack: () async {
+                await ref.read(callMediaProvider(roomId).notifier).leave();
+                ref.invalidate(callSessionProvider(roomId));
+                ref.invalidate(callMediaProvider(roomId));
+                if (context.mounted) context.pop();
+              },
             ),
-            onEndCall: () =>
-                ref.read(callSessionProvider(roomId).notifier).endCall(),
-            onLeave: () async {
-              await ref.read(callMediaProvider(roomId).notifier).leave();
-              ref.invalidate(callSessionProvider(roomId));
-              if (context.mounted) context.pop();
-            },
+            data: (CallSessionState data) => CallRoomContent(
+              session: data,
+              media: media,
+              onToggleMute: () =>
+                  ref.read(callSessionProvider(roomId).notifier).toggleMute(),
+              onToggleSpeaker: () => ref
+                  .read(callSessionProvider(roomId).notifier)
+                  .toggleSpeaker(),
+              onToggleVideo: () =>
+                  ref.read(callSessionProvider(roomId).notifier).toggleVideo(),
+              onMessage: () => context.push(
+                ExpertRoutes.chatConversationFor(data.room.threadId),
+              ),
+              onEndCall: () =>
+                  ref.read(callSessionProvider(roomId).notifier).endCall(),
+              onLeave: () async {
+                await ref.read(callMediaProvider(roomId).notifier).leave();
+                ref.invalidate(callSessionProvider(roomId));
+                ref.invalidate(callMediaProvider(roomId));
+                if (context.mounted) context.pop();
+              },
+            ),
           ),
         ),
       ),

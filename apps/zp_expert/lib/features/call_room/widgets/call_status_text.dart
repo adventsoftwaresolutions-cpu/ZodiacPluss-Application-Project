@@ -13,9 +13,10 @@ class CallStatusText extends StatelessWidget {
       CallSessionPhase.waitingForClient =>
         'Waiting for client · ${_clock(session.elapsedSeconds)}',
       CallSessionPhase.connected => _clock(session.elapsedSeconds),
-      CallSessionPhase.ended => session.endedAutomatically
-          ? 'Room closed · client did not join'
-          : 'Call ended',
+      CallSessionPhase.reconnecting =>
+        'Reconnecting · ${_clock(session.elapsedSeconds)}',
+      CallSessionPhase.ended =>
+        session.endedAutomatically ? 'Call ended automatically' : 'Call ended',
     };
     return SizedBox(
       height: 20,

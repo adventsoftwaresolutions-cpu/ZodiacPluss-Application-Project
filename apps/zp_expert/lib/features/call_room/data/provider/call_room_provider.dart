@@ -25,6 +25,12 @@ final StateProvider<String?> activeCallRoomIdProvider =
 final StateProvider<ConsultationEvent?> latestConsultationEventProvider =
     StateProvider<ConsultationEvent?>((Ref ref) => null);
 
+final Provider<Duration> incomingCallPollIntervalProvider =
+    Provider<Duration>((Ref ref) => const Duration(seconds: 2));
+
+final Provider<Duration> remoteClientDisconnectGraceProvider =
+    Provider<Duration>((Ref ref) => const Duration(seconds: 5));
+
 final AsyncNotifierProvider<IncomingCallRoomsController, List<CallRoomModel>>
     incomingCallRoomsProvider =
     AsyncNotifierProvider<IncomingCallRoomsController, List<CallRoomModel>>(
@@ -32,7 +38,10 @@ final AsyncNotifierProvider<IncomingCallRoomsController, List<CallRoomModel>>
 );
 
 class IncomingCallRoomsController extends AsyncNotifier<List<CallRoomModel>> {
+  final Set<String> _dismissedRoomIds = <String>{};
   bool _disposed = false;
+  bool _refreshing = false;
+  Timer? _pollTimer;
   Timer? _reconnectTimer;
   Completer<void>? _reconnectCompleter;
 
@@ -41,12 +50,18 @@ class IncomingCallRoomsController extends AsyncNotifier<List<CallRoomModel>> {
     _disposed = false;
     ref.onDispose(() {
       _disposed = true;
+      _pollTimer?.cancel();
       _reconnectTimer?.cancel();
       final Completer<void>? completer = _reconnectCompleter;
       if (completer != null && !completer.isCompleted) completer.complete();
     });
     final CallRoomRepository repository = ref.watch(callRoomRepositoryProvider);
-    final List<CallRoomModel> active = await repository.fetchActiveRooms();
+    final List<CallRoomModel> active =
+        _visible(await repository.fetchActiveRooms());
+    _pollTimer = Timer.periodic(
+      ref.watch(incomingCallPollIntervalProvider),
+      (_) => unawaited(refresh()),
+    );
     unawaited(_listen(repository));
     return active;
   }
@@ -54,7 +69,8 @@ class IncomingCallRoomsController extends AsyncNotifier<List<CallRoomModel>> {
   Future<void> _listen(CallRoomRepository repository) async {
     while (!_disposed) {
       try {
-        final List<CallRoomModel> active = await repository.fetchActiveRooms();
+        final List<CallRoomModel> active =
+            _visible(await repository.fetchActiveRooms());
         if (_disposed) return;
         state = AsyncData<List<CallRoomModel>>(active);
         await for (final ConsultationEvent event in repository.watchEvents()) {
@@ -65,14 +81,17 @@ class IncomingCallRoomsController extends AsyncNotifier<List<CallRoomModel>> {
           current.removeWhere((CallRoomModel room) => room.id == event.room.id);
           if (event.type == ConsultationEventType.requested ||
               event.type == ConsultationEventType.live) {
-            current.add(event.room);
+            if (_isVisible(event.room)) {
+              current.add(event.room);
+            }
             current.sort((CallRoomModel a, CallRoomModel b) =>
                 a.readyAt.compareTo(b.readyAt));
           }
           state = AsyncData<List<CallRoomModel>>(current);
         }
-      } catch (_) {
+      } catch (error) {
         if (_disposed) return;
+        debugPrint('Consultation event stream disconnected: $error');
       }
       await _waitBeforeReconnect();
     }
@@ -86,6 +105,7 @@ class IncomingCallRoomsController extends AsyncNotifier<List<CallRoomModel>> {
   }
 
   void claimRoom(String roomId) {
+    _dismissedRoomIds.add(roomId);
     final List<CallRoomModel>? current = state.valueOrNull;
     if (current == null) return;
     state = AsyncData<List<CallRoomModel>>(
@@ -94,6 +114,7 @@ class IncomingCallRoomsController extends AsyncNotifier<List<CallRoomModel>> {
   }
 
   void upsertRoom(CallRoomModel room) {
+    _dismissedRoomIds.remove(room.id);
     final List<CallRoomModel> current =
         List<CallRoomModel>.from(state.valueOrNull ?? <CallRoomModel>[]);
     current.removeWhere((CallRoomModel item) => item.id == room.id);
@@ -105,18 +126,45 @@ class IncomingCallRoomsController extends AsyncNotifier<List<CallRoomModel>> {
   }
 
   Future<void> declineRoom(String roomId) async {
-    await ref.read(callRoomRepositoryProvider).declineRoom(roomId);
+    CallRoomModel? declinedRoom;
+    for (final CallRoomModel room in state.valueOrNull ?? <CallRoomModel>[]) {
+      if (room.id == roomId) declinedRoom = room;
+    }
     claimRoom(roomId);
+    try {
+      await ref.read(callRoomRepositoryProvider).declineRoom(roomId);
+    } catch (_) {
+      if (declinedRoom != null) upsertRoom(declinedRoom);
+      rethrow;
+    }
   }
 
   Future<void> refresh() async {
+    if (_disposed || _refreshing) return;
+    _refreshing = true;
     try {
-      final List<CallRoomModel> active =
-          await ref.read(callRoomRepositoryProvider).fetchActiveRooms();
+      final List<CallRoomModel> active = _visible(
+        await ref.read(callRoomRepositoryProvider).fetchActiveRooms(),
+      );
+      if (_disposed) return;
       state = AsyncData<List<CallRoomModel>>(active);
-    } catch (_) {
+    } catch (error) {
+      debugPrint('Unable to refresh active consultations: $error');
       // Keep the last known rooms visible while SSE reconnects.
+    } finally {
+      _refreshing = false;
     }
+  }
+
+  List<CallRoomModel> _visible(List<CallRoomModel> rooms) =>
+      rooms.where(_isVisible).toList();
+
+  bool _isVisible(CallRoomModel room) {
+    if (_dismissedRoomIds.contains(room.id)) return false;
+    final DateTime? expiresAt = room.requestExpiresAt;
+    return room.isLive ||
+        expiresAt == null ||
+        expiresAt.isAfter(DateTime.now());
   }
 }
 
@@ -127,8 +175,15 @@ final AsyncNotifierProviderFamily<CallSessionController, CallSessionState,
 
 class CallSessionController
     extends FamilyAsyncNotifier<CallSessionState, String> {
-  Timer? _timer;
+  Timer? _clockTimer;
+  Timer? _deadlineTimer;
+  Timer? _remoteDisconnectTimer;
+  bool _ending = false;
+  bool _togglingMute = false;
+  bool _togglingSpeaker = false;
+  bool _togglingVideo = false;
   bool _joinedEventSent = false;
+  bool _leftEventSent = false;
   CallMediaConnection? _lastMediaConnection;
 
   @override
@@ -138,9 +193,9 @@ class CallSessionController
     final CallMediaController media =
         ref.read(callMediaProvider(roomId).notifier);
     ref.onDispose(() {
-      _timer?.cancel();
+      _cancelTimers();
       unawaited(media.leave());
-      unawaited(_recordBestEffort(repository, roomId, 'left'));
+      unawaited(_recordLeftBestEffort(repository, roomId));
     });
 
     ref.listen<CallMediaState>(callMediaProvider(roomId),
@@ -160,8 +215,22 @@ class CallSessionController
     if (activeRoomId != null && activeRoomId != roomId) {
       throw StateError('An active call room already exists.');
     }
-    CallRoomModel room = await repository.fetchRoom(roomId);
     ref.read(activeCallRoomIdProvider.notifier).state = roomId;
+    late CallRoomModel room;
+    try {
+      room = await repository.fetchRoom(roomId);
+      final DateTime? expiresAt = room.requestExpiresAt;
+      if (!room.isLive &&
+          expiresAt != null &&
+          !expiresAt.isAfter(DateTime.now())) {
+        throw StateError('This consultation request has expired.');
+      }
+    } catch (_) {
+      if (ref.read(activeCallRoomIdProvider) == roomId) {
+        ref.read(activeCallRoomIdProvider.notifier).state = null;
+      }
+      rethrow;
+    }
     try {
       if (!room.isLive) room = await repository.acceptRoom(roomId);
       final AgoraCredentials credentials =
@@ -170,7 +239,9 @@ class CallSessionController
     } catch (error, stackTrace) {
       debugPrint('Unable to join consultation $roomId: $error');
       debugPrintStack(stackTrace: stackTrace);
-      ref.read(activeCallRoomIdProvider.notifier).state = null;
+      if (ref.read(activeCallRoomIdProvider) == roomId) {
+        ref.read(activeCallRoomIdProvider.notifier).state = null;
+      }
       await media.leave();
       unawaited(ref.read(incomingCallRoomsProvider.notifier).refresh());
       rethrow;
@@ -186,7 +257,7 @@ class CallSessionController
       isMuted: !mediaState.microphoneEnabled,
       isVideoOn: room.type == CallRoomType.video && mediaState.cameraEnabled,
     );
-    Future<void>.delayed(Duration.zero, _startClock);
+    Future<void>.delayed(Duration.zero, () => _startTimers(initial));
     return initial;
   }
 
@@ -196,12 +267,20 @@ class CallSessionController
   ) {
     final CallSessionState? current = state.valueOrNull;
     if (current != null && current.phase != CallSessionPhase.ended) {
-      final CallSessionPhase phase = media.remoteUid == null
-          ? CallSessionPhase.waitingForClient
-          : CallSessionPhase.connected;
+      if (media.connection == CallMediaConnection.ended) {
+        unawaited(_endFromBackend());
+        return;
+      }
+      final CallSessionPhase phase =
+          media.connection == CallMediaConnection.reconnecting
+              ? CallSessionPhase.reconnecting
+              : media.remoteUid == null
+                  ? CallSessionPhase.waitingForClient
+                  : CallSessionPhase.connected;
       if (current.phase != phase) {
         state = AsyncData<CallSessionState>(current.copyWith(phase: phase));
       }
+      _handleRemotePresence(current, media);
     }
     if (media.localJoined && !_joinedEventSent) {
       _joinedEventSent = true;
@@ -218,75 +297,163 @@ class CallSessionController
     }
   }
 
-  void _startClock() {
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+  void _startTimers(CallSessionState initial) {
+    if (_ending || state.valueOrNull?.phase == CallSessionPhase.ended) return;
+    _clockTimer?.cancel();
+    _clockTimer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
       final CallSessionState? current = state.valueOrNull;
       if (current == null || current.phase == CallSessionPhase.ended) return;
       state = AsyncData<CallSessionState>(
         current.copyWith(elapsedSeconds: current.elapsedSeconds + 1),
       );
     });
+    final DateTime? expectedEndAt = initial.room.expectedEndAt;
+    if (expectedEndAt == null) return;
+    final Duration remaining = expectedEndAt.difference(DateTime.now());
+    _deadlineTimer?.cancel();
+    _deadlineTimer = Timer(
+      remaining.isNegative ? Duration.zero : remaining,
+      () => unawaited(_endFromBackend()),
+    );
+  }
+
+  void _handleRemotePresence(
+    CallSessionState previous,
+    CallMediaState media,
+  ) {
+    if (media.remoteUid != null) {
+      _remoteDisconnectTimer?.cancel();
+      _remoteDisconnectTimer = null;
+      return;
+    }
+    if (previous.phase != CallSessionPhase.connected ||
+        _remoteDisconnectTimer != null) {
+      return;
+    }
+    _remoteDisconnectTimer = Timer(
+      ref.read(remoteClientDisconnectGraceProvider),
+      () {
+        _remoteDisconnectTimer = null;
+        final CallMediaState latest = ref.read(callMediaProvider(arg));
+        if (latest.remoteUid == null) unawaited(_endFromBackend());
+      },
+    );
   }
 
   Future<void> toggleMute() async {
     final CallSessionState? current = state.valueOrNull;
-    if (current == null || current.phase == CallSessionPhase.ended) return;
+    if (current == null ||
+        current.phase == CallSessionPhase.ended ||
+        _togglingMute) {
+      return;
+    }
+    _togglingMute = true;
     final bool requestedMuted = !current.isMuted;
-    final bool actualMuted = await ref
-        .read(callMediaProvider(arg).notifier)
-        .setMuted(requestedMuted);
-    state = AsyncData<CallSessionState>(
-      current.copyWith(isMuted: actualMuted),
-    );
+    try {
+      final bool actualMuted = await ref
+          .read(callMediaProvider(arg).notifier)
+          .setMuted(requestedMuted);
+      final CallSessionState? latest = state.valueOrNull;
+      if (latest != null && latest.phase != CallSessionPhase.ended) {
+        state = AsyncData<CallSessionState>(
+          latest.copyWith(isMuted: actualMuted),
+        );
+      }
+    } catch (error) {
+      debugPrint('Unable to toggle the microphone: $error');
+    } finally {
+      _togglingMute = false;
+    }
   }
 
   Future<void> toggleSpeaker() async {
     final CallSessionState? current = state.valueOrNull;
-    if (current == null || current.phase == CallSessionPhase.ended) return;
+    if (current == null ||
+        current.phase == CallSessionPhase.ended ||
+        _togglingSpeaker) {
+      return;
+    }
+    _togglingSpeaker = true;
     final bool enabled = !current.isSpeakerOn;
-    await ref.read(callMediaProvider(arg).notifier).setSpeakerEnabled(enabled);
-    state = AsyncData<CallSessionState>(current.copyWith(isSpeakerOn: enabled));
+    try {
+      await ref
+          .read(callMediaProvider(arg).notifier)
+          .setSpeakerEnabled(enabled);
+      final CallSessionState? latest = state.valueOrNull;
+      if (latest != null && latest.phase != CallSessionPhase.ended) {
+        state = AsyncData<CallSessionState>(
+          latest.copyWith(isSpeakerOn: enabled),
+        );
+      }
+    } catch (error) {
+      debugPrint('Unable to change the speaker route: $error');
+    } finally {
+      _togglingSpeaker = false;
+    }
   }
 
   Future<void> toggleVideo() async {
     final CallSessionState? current = state.valueOrNull;
-    if (current == null || current.phase == CallSessionPhase.ended) return;
+    if (current == null ||
+        current.phase == CallSessionPhase.ended ||
+        _togglingVideo) {
+      return;
+    }
+    _togglingVideo = true;
     final bool requestedEnabled = !current.isVideoOn;
-    final bool actualEnabled = await ref
-        .read(callMediaProvider(arg).notifier)
-        .setVideoEnabled(requestedEnabled);
-    state = AsyncData<CallSessionState>(
-      current.copyWith(isVideoOn: actualEnabled),
-    );
+    try {
+      final bool actualEnabled = await ref
+          .read(callMediaProvider(arg).notifier)
+          .setVideoEnabled(requestedEnabled);
+      final CallSessionState? latest = state.valueOrNull;
+      if (latest != null && latest.phase != CallSessionPhase.ended) {
+        state = AsyncData<CallSessionState>(
+          latest.copyWith(isVideoOn: actualEnabled),
+        );
+      }
+    } catch (error) {
+      debugPrint('Unable to toggle the camera: $error');
+    } finally {
+      _togglingVideo = false;
+    }
   }
 
   Future<void> endCall() async {
     final CallSessionState? current = state.valueOrNull;
-    if (current == null || current.phase == CallSessionPhase.ended) return;
-    _timer?.cancel();
+    if (current == null || current.phase == CallSessionPhase.ended || _ending) {
+      return;
+    }
+    _ending = true;
+    _finishCallImmediately(current, endedAutomatically: false);
     final CallRoomRepository repository = ref.read(callRoomRepositoryProvider);
-    await repository.endRoom(current.room.id);
-    await _finishCall(current, endedAutomatically: false);
+    await Future.wait<void>(<Future<void>>[
+      _endRoomBestEffort(repository, current.room.id),
+      _recordLeftBestEffort(repository, current.room.id),
+      ref.read(callMediaProvider(arg).notifier).leave(),
+    ]);
   }
 
   Future<void> _endFromBackend() async {
     final CallSessionState? current = state.valueOrNull;
-    if (current == null || current.phase == CallSessionPhase.ended) return;
-    _timer?.cancel();
-    await _finishCall(current, endedAutomatically: true);
+    if (current == null || current.phase == CallSessionPhase.ended || _ending) {
+      return;
+    }
+    _ending = true;
+    _finishCallImmediately(current, endedAutomatically: true);
+    await Future.wait<void>(<Future<void>>[
+      _recordLeftBestEffort(
+        ref.read(callRoomRepositoryProvider),
+        current.room.id,
+      ),
+      ref.read(callMediaProvider(arg).notifier).leave(),
+    ]);
   }
 
-  Future<void> _finishCall(
+  void _finishCallImmediately(
     CallSessionState current, {
     required bool endedAutomatically,
-  }) async {
-    await _recordBestEffort(
-      ref.read(callRoomRepositoryProvider),
-      current.room.id,
-      'left',
-    );
-    await ref.read(callMediaProvider(arg).notifier).leave();
+  }) {
+    _cancelTimers();
     if (ref.read(activeCallRoomIdProvider) == current.room.id) {
       ref.read(activeCallRoomIdProvider.notifier).state = null;
     }
@@ -299,6 +466,32 @@ class CallSessionController
     );
   }
 
+  void _cancelTimers() {
+    _clockTimer?.cancel();
+    _deadlineTimer?.cancel();
+    _remoteDisconnectTimer?.cancel();
+    _clockTimer = null;
+    _deadlineTimer = null;
+    _remoteDisconnectTimer = null;
+  }
+
+  Future<void> _endRoomBestEffort(
+    CallRoomRepository repository,
+    String roomId,
+  ) async {
+    for (int attempt = 0; attempt < 2; attempt += 1) {
+      try {
+        await repository.endRoom(roomId);
+        return;
+      } catch (error) {
+        debugPrint('Unable to sync ended consultation $roomId: $error');
+        if (attempt == 0) {
+          await Future<void>.delayed(const Duration(milliseconds: 500));
+        }
+      }
+    }
+  }
+
   Future<void> _recordBestEffort(
     CallRoomRepository repository,
     String roomId,
@@ -307,5 +500,14 @@ class CallSessionController
     try {
       await repository.recordCallEvent(roomId, eventType);
     } catch (_) {}
+  }
+
+  Future<void> _recordLeftBestEffort(
+    CallRoomRepository repository,
+    String roomId,
+  ) {
+    if (_leftEventSent) return Future<void>.value();
+    _leftEventSent = true;
+    return _recordBestEffort(repository, roomId, 'left');
   }
 }

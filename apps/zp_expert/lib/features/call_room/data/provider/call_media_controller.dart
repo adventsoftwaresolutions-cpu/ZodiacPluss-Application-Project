@@ -31,7 +31,9 @@ class CallMediaState {
 
   CallMediaState copyWith({
     RtcEngine? engine,
+    bool clearEngine = false,
     String? channelName,
+    bool clearChannelName = false,
     int? remoteUid,
     bool clearRemoteUid = false,
     bool? localJoined,
@@ -40,8 +42,9 @@ class CallMediaState {
     CallMediaConnection? connection,
   }) =>
       CallMediaState(
-        engine: engine ?? this.engine,
-        channelName: channelName ?? this.channelName,
+        engine: clearEngine ? null : (engine ?? this.engine),
+        channelName:
+            clearChannelName ? null : (channelName ?? this.channelName),
         remoteUid: clearRemoteUid ? null : (remoteUid ?? this.remoteUid),
         localJoined: localJoined ?? this.localJoined,
         microphoneEnabled: microphoneEnabled ?? this.microphoneEnabled,
@@ -196,26 +199,51 @@ class CallMediaController extends StateNotifier<CallMediaState> {
 
   Future<void> leave() async {
     final RtcEngine? engine = _engine;
-    if (engine == null) return;
+    if (engine == null) {
+      if (!_disposed && state.connection != CallMediaConnection.ended) {
+        state = const CallMediaState(connection: CallMediaConnection.ended);
+      }
+      return;
+    }
     _engine = null;
     if (!_disposed) {
       state = state.copyWith(
+        clearEngine: true,
+        clearChannelName: true,
         connection: CallMediaConnection.ended,
         localJoined: false,
+        microphoneEnabled: false,
+        cameraEnabled: false,
         clearRemoteUid: true,
       );
     }
-    await engine.stopPreview();
-    await engine.leaveChannel();
-    await engine.release();
+    await _releaseEngine(engine);
+  }
+
+  Future<void> _releaseEngine(RtcEngine engine) async {
+    try {
+      await engine.stopPreview();
+    } on AgoraRtcException catch (error) {
+      debugPrint('Unable to stop Agora camera preview: $error');
+    }
+    try {
+      await engine.leaveChannel();
+    } on AgoraRtcException catch (error) {
+      debugPrint('Unable to leave Agora channel cleanly: $error');
+    }
+    try {
+      await engine.release();
+    } on AgoraRtcException catch (error) {
+      debugPrint('Unable to release Agora engine cleanly: $error');
+    }
   }
 
   @override
   void dispose() {
     _disposed = true;
-    _engine?.leaveChannel();
-    _engine?.release();
+    final RtcEngine? engine = _engine;
     _engine = null;
+    if (engine != null) unawaited(_releaseEngine(engine));
     super.dispose();
   }
 }

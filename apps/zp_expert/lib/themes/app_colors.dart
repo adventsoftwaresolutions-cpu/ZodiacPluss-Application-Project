@@ -36,6 +36,11 @@ sealed class AppColors {
   static const Color error = Color(0xFFE53935);
   static const Color info = Color(0xFF42A5F5);
 
+  // Call invitation accents
+  static const Color callGlowBlue = Color(0xFF4DA8FF);
+  static const Color callGlowViolet = Color(0xFF8B5CF6);
+  static const Color callGlowRose = Color(0xFFF05D8A);
+
   // =========================
   // Gradients
   // =========================

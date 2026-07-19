@@ -51,12 +51,41 @@ class _CallParticipantAvatarState extends State<CallParticipantAvatar>
   }
 
   @override
-  Widget build(BuildContext context) => ScaleTransition(
-        scale: _controller,
+  Widget build(BuildContext context) => AnimatedBuilder(
+        animation: _controller,
+        builder: (BuildContext context, Widget? child) {
+          final double pulse = widget.animate ? _controller.value : 1;
+          return Transform.scale(
+            scale: pulse,
+            child: Container(
+              padding: const EdgeInsets.all(7),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onPrimary
+                      .withValues(alpha: .2),
+                ),
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: .34),
+                    blurRadius: 28,
+                    spreadRadius: widget.animate ? 5 : 1,
+                  ),
+                ],
+              ),
+              child: child,
+            ),
+          );
+        },
         child: CircleAvatar(
           radius: widget.radius,
           backgroundColor:
-              Theme.of(context).colorScheme.primary.withValues(alpha: .22),
+              Theme.of(context).colorScheme.surface.withValues(alpha: .18),
           child: Text(
             _initials(widget.name),
             style: TextStyle(

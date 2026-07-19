@@ -60,6 +60,24 @@ class ExpertProfile {
   final int mediaCount;
   final List<ConsultationRate> consultationRates;
 
+  ExpertProfile copyWith({
+    String? name,
+  }) =>
+      ExpertProfile(
+        id: id,
+        name: name ?? this.name,
+        role: role,
+        avatarUrl: avatarUrl,
+        isVerified: isVerified,
+        about: about,
+        yearsExperience: yearsExperience,
+        education: education,
+        specializations: specializations,
+        introUploaded: introUploaded,
+        mediaCount: mediaCount,
+        consultationRates: consultationRates,
+      );
+
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': id,
         'name': name,

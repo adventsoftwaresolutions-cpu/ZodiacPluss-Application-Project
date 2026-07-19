@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -97,6 +99,27 @@ void main() {
     expect(repository.acceptedRoomId, isNull);
   });
 
+  test('REST polling discovers a room when the SSE stream is silent', () async {
+    final _PollingCallRoomRepository repository = _PollingCallRoomRepository();
+    final ProviderContainer container = ProviderContainer(
+      overrides: <Override>[
+        callRoomRepositoryProvider.overrideWithValue(repository),
+        incomingCallPollIntervalProvider.overrideWithValue(
+          const Duration(milliseconds: 10),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    expect(await container.read(incomingCallRoomsProvider.future), isEmpty);
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+
+    final List<CallRoomModel> active =
+        container.read(incomingCallRoomsProvider).valueOrNull!;
+    expect(active, hasLength(1));
+    expect(active.single.id, 'room-1');
+  });
+
   testWidgets('retry reuses a valid media controller after a join failure',
       (WidgetTester tester) async {
     final _ImmediateCallRoomRepository repository =
@@ -151,6 +174,34 @@ void main() {
       throwsA(isA<StateError>()),
     );
     expect(repository.acceptedRoomId, isNull);
+  });
+
+  test('expired requests are rejected before Agora starts', () async {
+    final _ImmediateCallRoomRepository repository =
+        _ImmediateCallRoomRepository(
+      clientPresent: true,
+      requestExpiresAt: DateTime.now().subtract(const Duration(seconds: 1)),
+    );
+    final _ImmediateCallMediaController media =
+        _ImmediateCallMediaController(clientPresent: true);
+    final ProviderContainer container = ProviderContainer(
+      overrides: <Override>[
+        callRoomRepositoryProvider.overrideWithValue(repository),
+        callMediaProvider.overrideWith(
+          (Ref ref, String roomId) => media,
+        ),
+        expertProfileProvider.overrideWith((Ref ref) async => _profile()),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await expectLater(
+      container.read(callSessionProvider('room-1').future),
+      throwsA(isA<StateError>()),
+    );
+    expect(repository.acceptedRoomId, isNull);
+    expect(media.joinCalls, 0);
+    expect(container.read(activeCallRoomIdProvider), isNull);
   });
 
   testWidgets('audio and video rooms expose the correct controls',
@@ -271,6 +322,216 @@ void main() {
     expect(find.byKey(const ValueKey<String>('leave-ended-call-button')),
         findsOneWidget);
     expect(repository.endedRoomId, 'room-1');
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.byKey(const ValueKey<String>('ended-call-action')),
+        findsOneWidget);
+    expect(
+        find.byKey(const ValueKey<String>('drop-call-button')), findsNothing);
+  });
+
+  testWidgets('system back ends an active call before leaving the room',
+      (WidgetTester tester) async {
+    final _ImmediateCallRoomRepository repository =
+        _ImmediateCallRoomRepository(clientPresent: true);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: <Override>[
+          callRoomRepositoryProvider.overrideWithValue(repository),
+          callMediaProvider.overrideWith(
+            (Ref ref, String roomId) =>
+                _ImmediateCallMediaController(clientPresent: true),
+          ),
+          expertProfileProvider.overrideWith((Ref ref) async => _profile()),
+        ],
+        child: MaterialApp(
+          home: Builder(
+            builder: (BuildContext context) => Scaffold(
+              body: Center(
+                child: FilledButton(
+                  key: const ValueKey<String>('open-call-room'),
+                  onPressed: () => Navigator.of(context).push<void>(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const CallRoomPage(roomId: 'room-1'),
+                    ),
+                  ),
+                  child: const Text('Open call'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.byKey(const ValueKey<String>('open-call-room')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    await tester.binding.handlePopRoute();
+    await tester.pump();
+    expect(find.text('Call ended'), findsOneWidget);
+    expect(find.byKey(const ValueKey<String>('leave-ended-call-button')),
+        findsOneWidget);
+
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(
+        find.byKey(const ValueKey<String>('open-call-room')), findsOneWidget);
+  });
+
+  test('manual hang-up updates locally before the backend responds', () async {
+    final _DelayedEndCallRoomRepository repository =
+        _DelayedEndCallRoomRepository();
+    final _ImmediateCallMediaController media =
+        _ImmediateCallMediaController(clientPresent: true);
+    final ProviderContainer container = ProviderContainer(
+      overrides: <Override>[
+        callRoomRepositoryProvider.overrideWithValue(repository),
+        callMediaProvider.overrideWith(
+          (Ref ref, String roomId) => media,
+        ),
+        expertProfileProvider.overrideWith((Ref ref) async => _profile()),
+      ],
+    );
+    addTearDown(container.dispose);
+    await container.read(callSessionProvider('room-1').future);
+
+    final Future<void> endRequest =
+        container.read(callSessionProvider('room-1').notifier).endCall();
+
+    expect(
+      container.read(callSessionProvider('room-1')).valueOrNull?.phase,
+      CallSessionPhase.ended,
+    );
+    expect(container.read(activeCallRoomIdProvider), isNull);
+    expect(media.leaveCalls, 1);
+    expect(repository.endCalls, 1);
+
+    await container.read(callSessionProvider('room-1').notifier).endCall();
+    expect(repository.endCalls, 1);
+
+    repository.completeEnd();
+    await endRequest;
+    expect(repository.leftEvents, 1);
+  });
+
+  test('backend termination closes media without calling end twice', () async {
+    final _ImmediateCallRoomRepository repository =
+        _ImmediateCallRoomRepository(clientPresent: true);
+    final _ImmediateCallMediaController media =
+        _ImmediateCallMediaController(clientPresent: true);
+    final ProviderContainer container = ProviderContainer(
+      overrides: <Override>[
+        callRoomRepositoryProvider.overrideWithValue(repository),
+        callMediaProvider.overrideWith(
+          (Ref ref, String roomId) => media,
+        ),
+        expertProfileProvider.overrideWith((Ref ref) async => _profile()),
+      ],
+    );
+    addTearDown(container.dispose);
+    final CallSessionState session =
+        await container.read(callSessionProvider('room-1').future);
+
+    container.read(latestConsultationEventProvider.notifier).state =
+        ConsultationEvent(
+            type: ConsultationEventType.ended, room: session.room);
+    await Future<void>.delayed(Duration.zero);
+
+    final CallSessionState ended =
+        container.read(callSessionProvider('room-1')).valueOrNull!;
+    expect(ended.phase, CallSessionPhase.ended);
+    expect(ended.endedAutomatically, isTrue);
+    expect(repository.endedRoomId, isNull);
+    expect(media.leaveCalls, 1);
+  });
+
+  test('a brief client disconnect can recover within the grace period',
+      () async {
+    final _ImmediateCallRoomRepository repository =
+        _ImmediateCallRoomRepository(clientPresent: true);
+    final _ImmediateCallMediaController media =
+        _ImmediateCallMediaController(clientPresent: true);
+    final ProviderContainer container = ProviderContainer(
+      overrides: <Override>[
+        callRoomRepositoryProvider.overrideWithValue(repository),
+        callMediaProvider.overrideWith(
+          (Ref ref, String roomId) => media,
+        ),
+        remoteClientDisconnectGraceProvider.overrideWithValue(
+          const Duration(milliseconds: 25),
+        ),
+        expertProfileProvider.overrideWith((Ref ref) async => _profile()),
+      ],
+    );
+    addTearDown(container.dispose);
+    await container.read(callSessionProvider('room-1').future);
+
+    media.setRemotePresent(false);
+    await Future<void>.delayed(const Duration(milliseconds: 5));
+    media.setRemotePresent(true);
+    await Future<void>.delayed(const Duration(milliseconds: 35));
+
+    expect(
+      container.read(callSessionProvider('room-1')).valueOrNull?.phase,
+      CallSessionPhase.connected,
+    );
+  });
+
+  test('a client that stays disconnected ends the call automatically',
+      () async {
+    final _ImmediateCallRoomRepository repository =
+        _ImmediateCallRoomRepository(clientPresent: true);
+    final _ImmediateCallMediaController media =
+        _ImmediateCallMediaController(clientPresent: true);
+    final ProviderContainer container = ProviderContainer(
+      overrides: <Override>[
+        callRoomRepositoryProvider.overrideWithValue(repository),
+        callMediaProvider.overrideWith(
+          (Ref ref, String roomId) => media,
+        ),
+        remoteClientDisconnectGraceProvider.overrideWithValue(
+          const Duration(milliseconds: 10),
+        ),
+        expertProfileProvider.overrideWith((Ref ref) async => _profile()),
+      ],
+    );
+    addTearDown(container.dispose);
+    await container.read(callSessionProvider('room-1').future);
+
+    media.setRemotePresent(false);
+    await Future<void>.delayed(const Duration(milliseconds: 25));
+
+    final CallSessionState ended =
+        container.read(callSessionProvider('room-1')).valueOrNull!;
+    expect(ended.phase, CallSessionPhase.ended);
+    expect(ended.endedAutomatically, isTrue);
+  });
+
+  test('the local call closes when the paid-room deadline is reached',
+      () async {
+    final _ImmediateCallRoomRepository repository =
+        _ImmediateCallRoomRepository(
+      clientPresent: true,
+      expectedEndAt: DateTime.now().add(const Duration(milliseconds: 15)),
+    );
+    final ProviderContainer container = ProviderContainer(
+      overrides: <Override>[
+        callRoomRepositoryProvider.overrideWithValue(repository),
+        callMediaProvider.overrideWith(
+          (Ref ref, String roomId) =>
+              _ImmediateCallMediaController(clientPresent: true),
+        ),
+        expertProfileProvider.overrideWith((Ref ref) async => _profile()),
+      ],
+    );
+    addTearDown(container.dispose);
+    await container.read(callSessionProvider('room-1').future);
+    await Future<void>.delayed(const Duration(milliseconds: 30));
+
+    final CallSessionState ended =
+        container.read(callSessionProvider('room-1')).valueOrNull!;
+    expect(ended.phase, CallSessionPhase.ended);
+    expect(ended.endedAutomatically, isTrue);
   });
 }
 
@@ -286,6 +547,8 @@ CallRoomModel _room({
   required CallRoomType type,
   required bool clientPresent,
   String state = 'scheduled',
+  DateTime? expectedEndAt,
+  DateTime? requestExpiresAt,
 }) =>
     CallRoomModel(
       id: 'room-1',
@@ -298,23 +561,32 @@ CallRoomModel _room({
       readyAt: DateTime(2026, 7, 17, 10),
       queuePosition: 1,
       state: state,
+      expectedEndAt: expectedEndAt,
+      requestExpiresAt: requestExpiresAt,
     );
 
 class _ImmediateCallRoomRepository implements CallRoomRepository {
   _ImmediateCallRoomRepository({
     required this.clientPresent,
     this.roomState = 'scheduled',
+    this.expectedEndAt,
+    this.requestExpiresAt,
   });
 
   final bool clientPresent;
   final String roomState;
+  final DateTime? expectedEndAt;
+  final DateTime? requestExpiresAt;
   String? acceptedRoomId;
   String? endedRoomId;
+  int leftEvents = 0;
 
   CallRoomModel get room => _room(
         type: CallRoomType.video,
         clientPresent: clientPresent,
         state: roomState,
+        expectedEndAt: expectedEndAt,
+        requestExpiresAt: requestExpiresAt,
       );
 
   @override
@@ -337,6 +609,8 @@ class _ImmediateCallRoomRepository implements CallRoomRepository {
       readyAt: room.readyAt,
       queuePosition: room.queuePosition,
       state: 'live',
+      expectedEndAt: room.expectedEndAt,
+      requestExpiresAt: room.requestExpiresAt,
     );
   }
 
@@ -358,7 +632,9 @@ class _ImmediateCallRoomRepository implements CallRoomRepository {
   Future<void> endRoom(String roomId) async => endedRoomId = roomId;
 
   @override
-  Future<void> recordCallEvent(String roomId, String eventType) async {}
+  Future<void> recordCallEvent(String roomId, String eventType) async {
+    if (eventType == 'left') leftEvents += 1;
+  }
 
   @override
   Stream<ConsultationEvent> watchEvents() =>
@@ -369,12 +645,15 @@ class _ImmediateCallMediaController extends CallMediaController {
   _ImmediateCallMediaController({required this.clientPresent});
 
   final bool clientPresent;
+  int joinCalls = 0;
+  int leaveCalls = 0;
 
   @override
   Future<void> join(
     AgoraCredentials credentials, {
     required bool video,
   }) async {
+    joinCalls += 1;
     state = state.copyWith(
       localJoined: true,
       microphoneEnabled: true,
@@ -386,7 +665,44 @@ class _ImmediateCallMediaController extends CallMediaController {
 
   @override
   Future<void> leave() async {
+    leaveCalls += 1;
     state = state.copyWith(connection: CallMediaConnection.ended);
+  }
+
+  void setRemotePresent(bool present) {
+    state = state.copyWith(
+      remoteUid: present ? 2 : null,
+      clearRemoteUid: !present,
+    );
+  }
+}
+
+class _DelayedEndCallRoomRepository extends _ImmediateCallRoomRepository {
+  _DelayedEndCallRoomRepository() : super(clientPresent: true);
+
+  final Completer<void> _endCompleter = Completer<void>();
+  int endCalls = 0;
+
+  @override
+  Future<void> endRoom(String roomId) {
+    endCalls += 1;
+    return _endCompleter.future;
+  }
+
+  void completeEnd() => _endCompleter.complete();
+}
+
+class _PollingCallRoomRepository extends _ImmediateCallRoomRepository {
+  _PollingCallRoomRepository()
+      : super(clientPresent: true, roomState: 'scheduled');
+
+  int fetchCount = 0;
+
+  @override
+  Future<List<CallRoomModel>> fetchActiveRooms() async {
+    fetchCount += 1;
+    if (fetchCount < 3) return const <CallRoomModel>[];
+    return super.fetchActiveRooms();
   }
 }
 

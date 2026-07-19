@@ -43,7 +43,7 @@ class CallControls extends StatelessWidget {
             icon: isSpeakerOn
                 ? Icons.volume_up_rounded
                 : Icons.volume_off_rounded,
-            label: 'Speaker',
+            label: isSpeakerOn ? 'Speaker' : 'Earpiece',
             selected: isSpeakerOn,
             onTap: onToggleSpeaker,
           ),
@@ -98,37 +98,71 @@ class _CallControlButton extends StatelessWidget {
     return Semantics(
       button: true,
       label: label,
-      child: InkResponse(
-        onTap: onTap,
-        radius: 34,
+      child: Tooltip(
+        message: label,
         child: SizedBox(
           width: 58,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Container(
-                width: 54,
-                height: 54,
-                decoration: BoxDecoration(
-                  color: background,
-                  shape: BoxShape.circle,
-                  border: destructive || selected
-                      ? null
-                      : Border.all(
-                          color: colors.onPrimary.withValues(alpha: .2),
+              AnimatedScale(
+                duration: const Duration(milliseconds: 220),
+                curve: Curves.easeOutBack,
+                scale: selected || destructive ? 1 : .96,
+                child: Material(
+                  color: Colors.transparent,
+                  shape: const CircleBorder(),
+                  child: InkResponse(
+                    onTap: onTap,
+                    radius: 32,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 220),
+                      curve: Curves.easeOutCubic,
+                      width: 54,
+                      height: 54,
+                      decoration: BoxDecoration(
+                        color: background,
+                        shape: BoxShape.circle,
+                        border: destructive || selected
+                            ? null
+                            : Border.all(
+                                color: colors.onPrimary.withValues(alpha: .24),
+                              ),
+                        boxShadow: destructive
+                            ? <BoxShadow>[
+                                BoxShadow(
+                                  color: colors.error.withValues(alpha: .42),
+                                  blurRadius: 16,
+                                  spreadRadius: 1,
+                                ),
+                              ]
+                            : null,
+                      ),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 180),
+                        child: Icon(
+                          icon,
+                          key: ValueKey<IconData>(icon),
+                          color: colors.onPrimary,
                         ),
+                      ),
+                    ),
+                  ),
                 ),
-                child: Icon(icon, color: colors.onPrimary),
               ),
               const SizedBox(height: 6),
-              Text(
-                label,
-                maxLines: 1,
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 180),
                 style: TextStyle(
-                  color: colors.onPrimary,
+                  color: colors.onPrimary.withValues(
+                    alpha: selected || destructive ? 1 : .78,
+                  ),
                   fontSize: 10,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: selected || destructive
+                      ? FontWeight.w700
+                      : FontWeight.w600,
                 ),
+                child: Text(label, maxLines: 1),
               ),
             ],
           ),
