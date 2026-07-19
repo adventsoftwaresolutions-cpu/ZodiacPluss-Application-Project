@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
-
 class NavItem {
   const NavItem({
-    required this.icon,
-    required this.selectedIcon,
+    required this.artboard,
+    required this.stateMachineName,
+    required this.semanticLabel,
   });
 
-  final IconData icon;
-  final IconData selectedIcon;
+  final String artboard;
+  final String stateMachineName;
+  final String semanticLabel;
 }

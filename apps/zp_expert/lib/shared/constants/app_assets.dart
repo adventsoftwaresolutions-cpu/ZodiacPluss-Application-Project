@@ -58,6 +58,7 @@ class AppAssets {
   static const String certificate3 = 'assets/images/certificate3.jpg';
 
   // Animations
+  static const String navIconAnimation = 'assets/animation/navicon.riv';
   static const String walletAnimation = 'assets/animation/wallet.lottie';
   static const String paperPlaneAnimation =
       'assets/animation/paperPlane_flying.lottie';

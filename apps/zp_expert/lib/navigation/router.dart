@@ -29,13 +29,26 @@ import '../../features/call_room/call_room.dart';
 import '../../features/kundali/kundali.dart';
 
 final List<NavItem> expertNavItems = <NavItem>[
-  const NavItem(icon: Icons.home_outlined, selectedIcon: Icons.home),
   const NavItem(
-      icon: Icons.account_balance_wallet_outlined,
-      selectedIcon: Icons.account_balance_wallet),
+    artboard: 'Home-CLICK',
+    stateMachineName: 'State-machine',
+    semanticLabel: 'Home',
+  ),
   const NavItem(
-      icon: Icons.history_rounded, selectedIcon: Icons.history_rounded),
-  const NavItem(icon: Icons.person_outline, selectedIcon: Icons.person),
+    artboard: 'card',
+    stateMachineName: 'State Machine 1',
+    semanticLabel: 'Wallet',
+  ),
+  const NavItem(
+    artboard: 'TIMER',
+    stateMachineName: 'TIMER_Interactivity',
+    semanticLabel: 'Session history',
+  ),
+  const NavItem(
+    artboard: 'User-CLICK',
+    stateMachineName: 'State-machine',
+    semanticLabel: 'Profile',
+  ),
 ];
 
 final GoRouter expertRouter = GoRouter(
