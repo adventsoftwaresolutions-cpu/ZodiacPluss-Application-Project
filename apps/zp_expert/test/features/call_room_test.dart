@@ -294,6 +294,62 @@ void main() {
     expect(find.textContaining('min paid'), findsOneWidget);
   });
 
+  testWidgets('video call action panel transitions to back to app when ended',
+      (WidgetTester tester) async {
+    final CallRoomModel videoRoom = _room(
+      type: CallRoomType.video,
+      clientPresent: true,
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: CallRoomContent(
+            session: CallSessionState(
+              room: videoRoom,
+              expertRole: ExpertRole.astrologer,
+              phase: CallSessionPhase.connected,
+            ),
+            onToggleMute: () {},
+            onToggleSpeaker: () {},
+            onToggleVideo: () {},
+            onMessage: () {},
+            onEndCall: () {},
+            onLeave: () {},
+          ),
+        ),
+      ),
+    );
+    expect(
+        find.byKey(const ValueKey<String>('drop-call-button')), findsOneWidget);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: CallRoomContent(
+            session: CallSessionState(
+              room: videoRoom,
+              expertRole: ExpertRole.astrologer,
+              phase: CallSessionPhase.ended,
+            ),
+            onToggleMute: () {},
+            onToggleSpeaker: () {},
+            onToggleVideo: () {},
+            onMessage: () {},
+            onEndCall: () {},
+            onLeave: () {},
+          ),
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 460));
+
+    expect(
+      find.byKey(const ValueKey<String>('leave-ended-call-button')),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('expert can manually end an active room',
       (WidgetTester tester) async {
     final _ImmediateCallRoomRepository repository =

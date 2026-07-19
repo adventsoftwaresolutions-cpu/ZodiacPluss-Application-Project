@@ -61,12 +61,16 @@ class CallActionPanel extends StatelessWidget {
                 curve: Curves.easeOutCubic,
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 320),
-                  switchInCurve: Curves.easeOutBack,
+                  switchInCurve: Curves.easeOutCubic,
                   switchOutCurve: Curves.easeInCubic,
                   transitionBuilder: (Widget child, Animation<double> value) =>
                       FadeTransition(
                     opacity: value,
-                    child: ScaleTransition(scale: value, child: child),
+                    child: SizeTransition(
+                      sizeFactor: value,
+                      alignment: Alignment.topCenter,
+                      child: ScaleTransition(scale: value, child: child),
+                    ),
                   ),
                   child: ended
                       ? _BackToAppAction(onLeave: onLeave)

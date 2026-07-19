@@ -4,10 +4,10 @@ import 'package:go_router/go_router.dart';
 
 import '../../../navigation/app_routes.dart';
 import '../../../shared/data/expert_profile.dart';
-import '../../../shared/data/expert_profile_repository.dart';
 import '../../home/data/availability_controller.dart';
 import '../../home/data/availability_status.dart';
 import '../data/provider/profile_change_request_provider.dart';
+import '../data/provider/profile_provider.dart';
 import 'about_me_card.dart';
 import 'achievements_card.dart';
 import 'basic_info_sheet.dart';
@@ -26,22 +26,49 @@ class ProfileContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<ExpertProfile> profileAsync =
-        ref.watch(expertProfileProvider);
+        ref.watch(profileDetailsProvider);
     final AvailabilityStatus availability =
         ref.watch(availabilityControllerProvider);
-    return profileAsync.when(
-      loading: () => const ProfileLoadingSkeleton(),
-      error: (Object error, StackTrace stackTrace) => _ProfileError(
-        onRetry: () => ref.invalidate(expertProfileProvider),
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 320),
+      switchInCurve: Curves.easeOutCubic,
+      switchOutCurve: Curves.easeInCubic,
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0, .04),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          ),
+        );
+      },
+      child: profileAsync.when(
+        loading: () => const ProfileLoadingSkeleton(
+          key: ValueKey<String>('profile-loading'),
+        ),
+        error: (Object error, StackTrace stackTrace) => _ProfileError(
+          key: const ValueKey<String>('profile-error'),
+          onRetry: () => ref.invalidate(profileDetailsProvider),
+        ),
+        data: (ExpertProfile profile) => _ProfileList(
+          key: const ValueKey<String>('profile-data'),
+          profile: profile,
+          availability: availability,
+        ),
       ),
-      data: (ExpertProfile profile) =>
-          _ProfileList(profile: profile, availability: availability),
     );
   }
 }
 
 class _ProfileList extends ConsumerWidget {
-  const _ProfileList({required this.profile, required this.availability});
+  const _ProfileList({
+    required this.profile,
+    required this.availability,
+    super.key,
+  });
 
   final ExpertProfile profile;
   final AvailabilityStatus availability;
@@ -209,7 +236,7 @@ class _ProfileList extends ConsumerWidget {
 }
 
 class _ProfileError extends StatelessWidget {
-  const _ProfileError({required this.onRetry});
+  const _ProfileError({required this.onRetry, super.key});
 
   final VoidCallback onRetry;
 
