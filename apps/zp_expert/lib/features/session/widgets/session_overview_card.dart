@@ -8,9 +8,14 @@ import '../../../themes/app_radius.dart';
 import '../data/models/session_history_model.dart';
 
 class SessionOverviewCard extends StatelessWidget {
-  const SessionOverviewCard({required this.detail, super.key});
+  const SessionOverviewCard({
+    required this.detail,
+    required this.onClientTap,
+    super.key,
+  });
 
   final SessionDetailModel detail;
+  final VoidCallback onClientTap;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +81,12 @@ class SessionOverviewCard extends StatelessWidget {
           Row(
             children: <Widget>[
               Expanded(
-                  child: _PersonDetail(label: 'Client', person: detail.client)),
+                child: _PersonDetail(
+                  label: 'Client',
+                  person: detail.client,
+                  onNameTap: onClientTap,
+                ),
+              ),
               Expanded(
                   child: _PersonDetail(label: 'Expert', person: detail.expert)),
               _AmountDetail(amount: session.earnings),
@@ -231,10 +241,15 @@ class _SessionFact extends StatelessWidget {
 }
 
 class _PersonDetail extends StatelessWidget {
-  const _PersonDetail({required this.label, required this.person});
+  const _PersonDetail({
+    required this.label,
+    required this.person,
+    this.onNameTap,
+  });
 
   final String label;
   final SessionPerson person;
+  final VoidCallback? onNameTap;
 
   @override
   Widget build(BuildContext context) {
@@ -248,13 +263,25 @@ class _PersonDetail extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(label, style: Theme.of(context).textTheme.bodySmall),
-              Text(
-                person.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+              Semantics(
+                button: onNameTap != null,
+                label: onNameTap == null
+                    ? null
+                    : 'Open ${person.name} client history',
+                child: GestureDetector(
+                  onTap: onNameTap,
+                  child: Text(
+                    person.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: onNameTap == null
+                              ? null
+                              : Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                ),
               ),
               Text(person.role, style: Theme.of(context).textTheme.bodySmall),
             ],

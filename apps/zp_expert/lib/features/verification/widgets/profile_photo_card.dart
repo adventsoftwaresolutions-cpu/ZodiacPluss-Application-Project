@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
+import '../../../shared/utils/expert_avatar_image.dart';
 import '../data/provider/verification_form_provider.dart';
 import 'section_card.dart';
 
@@ -47,15 +49,28 @@ class ProfilePhotoCard extends ConsumerWidget {
                       color: const Color(0xffE4E8EE),
                     ),
                   ),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 240),
-                    child: Icon(
-                      source == null ? Icons.person : Icons.person_rounded,
-                      key: ValueKey<bool>(source != null),
-                      size: 58,
-                      color: source == null
-                          ? const Color(0xFFB8C0CC)
-                          : Theme.of(context).colorScheme.primary,
+                  child: ClipOval(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 240),
+                      child: source == null
+                          ? const Icon(
+                              Icons.person,
+                              key: ValueKey<bool>(false),
+                              size: 58,
+                              color: Color(0xFFB8C0CC),
+                            )
+                          : Image(
+                              key: ValueKey<String>(source),
+                              image: expertAvatarImage(source),
+                              width: 120,
+                              height: 120,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => Icon(
+                                Icons.broken_image_outlined,
+                                size: 48,
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                            ),
                     ),
                   ),
                 ),
@@ -95,7 +110,7 @@ class ProfilePhotoCard extends ConsumerWidget {
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 220),
               child: Text(
-                source ?? "JPG, PNG up to 5MB",
+                source == null ? 'JPG, PNG up to 5MB' : _fileName(source),
                 key: ValueKey<String?>(source),
                 style: const TextStyle(
                   fontSize: 13,
@@ -119,7 +134,7 @@ class ProfilePhotoCard extends ConsumerWidget {
   }
 
   Future<void> _selectPhoto(BuildContext context, WidgetRef ref) async {
-    final String? source = await showModalBottomSheet<String>(
+    final ImageSource? source = await showModalBottomSheet<ImageSource>(
       context: context,
       showDragHandle: true,
       builder: (BuildContext context) => SafeArea(
@@ -130,19 +145,34 @@ class ProfilePhotoCard extends ConsumerWidget {
             ListTile(
               leading: const Icon(Icons.photo_camera_outlined),
               title: const Text('Take a photo'),
-              onTap: () => Navigator.of(context).pop('Camera photo selected'),
+              onTap: () => Navigator.of(context).pop(ImageSource.camera),
             ),
             ListTile(
               leading: const Icon(Icons.photo_library_outlined),
               title: const Text('Choose from gallery'),
-              onTap: () => Navigator.of(context).pop('Gallery photo selected'),
+              onTap: () => Navigator.of(context).pop(ImageSource.gallery),
             ),
           ],
         ),
       ),
     );
-    if (source != null) {
-      ref.read(verificationFormProvider.notifier).setProfilePhoto(source);
+    if (source == null || !context.mounted) return;
+    try {
+      final XFile? image = await ImagePicker().pickImage(
+        source: source,
+        maxWidth: 1600,
+        imageQuality: 88,
+      );
+      if (image != null) {
+        ref.read(verificationFormProvider.notifier).setProfilePhoto(image.path);
+      }
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Unable to select this photo.')),
+      );
     }
   }
+
+  String _fileName(String path) => path.split(RegExp(r'[/\\]')).last;
 }

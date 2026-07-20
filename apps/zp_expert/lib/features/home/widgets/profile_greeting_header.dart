@@ -1,5 +1,6 @@
 // widgets/profile_greeting_header.dart
 import 'package:flutter/material.dart';
+import '../../../shared/utils/expert_avatar_image.dart';
 import '../data/availability_status.dart';
 import '../../../shared/widgets/shimmer_box.dart';
 
@@ -132,7 +133,7 @@ class _Avatar extends StatelessWidget {
           ),
           child: CircleAvatar(
             radius: radius,
-            backgroundImage: AssetImage(avatarUrl),
+            backgroundImage: expertAvatarImage(avatarUrl),
           ),
         ),
         Positioned(

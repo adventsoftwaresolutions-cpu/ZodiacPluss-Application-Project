@@ -34,6 +34,7 @@ class AppAssets {
   static const String flagIcon = 'assets/icons/flag.svg';
   static const String cautionIcon = 'assets/icons/caution.svg';
   static const String profileIcon = 'assets/icons/profile.svg';
+  static const String leaf = 'assets/icons/leaf.svg';
   static const String blob = 'assets/icons/blob/blob.svg';
   static const String blobOne = 'assets/icons/blob/blob1.svg';
   static const String blobTwo = 'assets/icons/blob/blob2.svg';

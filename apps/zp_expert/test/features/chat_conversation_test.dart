@@ -118,6 +118,23 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('client name in a chat header opens that client history',
+      (WidgetTester tester) async {
+    _configurePhone(tester);
+    await tester.pumpWidget(
+      _testApp(
+        role: ExpertRole.astrologer,
+        repository: _ConversationRepository(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Client One'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Client History: client-1'), findsOneWidget);
+  });
+
   testWidgets('astrologer can send a typed message and attach a document',
       (WidgetTester tester) async {
     _configurePhone(tester);
@@ -195,6 +212,12 @@ Widget _testApp({
         builder: (BuildContext context, GoRouterState state) =>
             const KundaliPage(),
       ),
+      GoRoute(
+        path: ExpertRoutes.clientHistory,
+        builder: (BuildContext context, GoRouterState state) => Scaffold(
+          body: Text('Client History: ${state.pathParameters['clientId']}'),
+        ),
+      ),
     ],
   );
 
@@ -228,6 +251,7 @@ class _ConversationRepository implements ChatConversationRepository {
       ChatConversationModel(
         threadId: threadId,
         sessionId: 'session-1',
+        clientId: 'client-1',
         clientName: 'Client One',
         consultationLabel: expertRole == ExpertRole.psychologist
             ? 'Video consultation ended'

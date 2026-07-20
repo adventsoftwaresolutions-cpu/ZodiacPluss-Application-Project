@@ -49,6 +49,9 @@ class ChatConversationPage extends ConsumerWidget {
             controller: ref.read(chatConversationProvider(threadId).notifier),
             promptSessionSummary: promptSessionSummary,
             onViewKundali: () => context.push(ExpertRoutes.kundali),
+            onClientNameTap: () => context.push(
+              ExpertRoutes.clientHistoryFor(data.clientId),
+            ),
             callRoom: readyRoom,
             onJoinCallRoom: readyRoom == null
                 ? null

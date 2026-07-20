@@ -54,6 +54,7 @@ class ChatConversationModel {
   const ChatConversationModel({
     required this.threadId,
     required this.sessionId,
+    required this.clientId,
     required this.clientName,
     required this.consultationLabel,
     required this.expertRole,
@@ -64,6 +65,7 @@ class ChatConversationModel {
 
   final String threadId;
   final String sessionId;
+  final String clientId;
   final String clientName;
   final String consultationLabel;
   final ExpertRole expertRole;
@@ -89,6 +91,7 @@ class ChatConversationModel {
       ChatConversationModel(
         threadId: threadId,
         sessionId: sessionId,
+        clientId: clientId,
         clientName: clientName,
         consultationLabel: consultationLabel,
         expertRole: expertRole,
@@ -101,6 +104,7 @@ class ChatConversationModel {
       ChatConversationModel(
         threadId: json['threadId'] as String,
         sessionId: json['sessionId'] as String,
+        clientId: json['clientId'] as String,
         clientName: json['clientName'] as String,
         consultationLabel: json['consultationLabel'] as String,
         expertRole: ExpertRole.values.byName(json['expertRole'] as String),
@@ -115,6 +119,7 @@ class ChatConversationModel {
   Map<String, dynamic> toJson() => <String, dynamic>{
         'threadId': threadId,
         'sessionId': sessionId,
+        'clientId': clientId,
         'clientName': clientName,
         'consultationLabel': consultationLabel,
         'expertRole': expertRole.name,

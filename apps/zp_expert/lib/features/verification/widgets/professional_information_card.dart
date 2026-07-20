@@ -48,7 +48,10 @@ class ProfessionalInformationCard extends ConsumerWidget {
                     (ExpertRole role) => _ProfessionCard(
                       role: role,
                       selected: selectedRole == role,
-                      onTap: () => controller.setProfession(role),
+                      enabled: role == ExpertRole.astrologer,
+                      onTap: role == ExpertRole.astrologer
+                          ? () => controller.setProfession(role)
+                          : null,
                     ),
                   )
                   .toList();
@@ -98,66 +101,84 @@ class _ProfessionCard extends StatelessWidget {
   const _ProfessionCard({
     required this.role,
     required this.selected,
+    required this.enabled,
     required this.onTap,
   });
 
   final ExpertRole role;
   final bool selected;
-  final VoidCallback onTap;
+  final bool enabled;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final Color primary = Theme.of(context).colorScheme.primary;
-    return AnimatedScale(
-      duration: const Duration(milliseconds: 180),
-      scale: selected ? 1.02 : 1,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 220),
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: selected
-                  ? primary.withValues(alpha: .12)
-                  : const Color(0xFFF7F9FA),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: selected ? primary : const Color(0xFFE5E7EB),
-                width: selected ? 1.5 : 1,
+    return Opacity(
+      opacity: enabled ? 1 : .55,
+      child: AnimatedScale(
+        duration: const Duration(milliseconds: 180),
+        scale: selected ? 1.02 : 1,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: onTap,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: selected
+                    ? primary.withValues(alpha: .12)
+                    : const Color(0xFFF7F9FA),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: selected ? primary : const Color(0xFFE5E7EB),
+                  width: selected ? 1.5 : 1,
+                ),
               ),
-            ),
-            child: Row(
-              children: <Widget>[
-                CircleAvatar(
-                  backgroundColor: selected ? primary : const Color(0xFFE7EEEE),
-                  foregroundColor: selected ? Colors.white : primary,
-                  child: Icon(
-                    role == ExpertRole.psychologist
-                        ? Icons.psychology_outlined
-                        : Icons.auto_awesome_outlined,
+              child: Row(
+                children: <Widget>[
+                  CircleAvatar(
+                    backgroundColor:
+                        selected ? primary : const Color(0xFFE7EEEE),
+                    foregroundColor: selected ? Colors.white : primary,
+                    child: Icon(
+                      role == ExpertRole.psychologist
+                          ? Icons.psychology_outlined
+                          : Icons.auto_awesome_outlined,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 11),
-                Expanded(
-                  child: Text(
-                    role.label,
-                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  const SizedBox(width: 11),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          role.label,
+                          style: const TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                        if (!enabled)
+                          const Text(
+                            'Temporarily unavailable',
+                            style: TextStyle(fontSize: 10),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 180),
-                  child: Icon(
-                    selected
-                        ? Icons.check_circle_rounded
-                        : Icons.circle_outlined,
-                    key: ValueKey<bool>(selected),
-                    color: selected ? primary : const Color(0xFF9CA3AF),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 180),
+                    child: Icon(
+                      !enabled
+                          ? Icons.lock_outline_rounded
+                          : selected
+                              ? Icons.check_circle_rounded
+                              : Icons.circle_outlined,
+                      key: ValueKey<String>('$selected-$enabled'),
+                      color: selected ? primary : const Color(0xFF9CA3AF),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

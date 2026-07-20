@@ -69,6 +69,17 @@ void main() {
     await tester.tap(find.text('Continue'));
     await tester.pumpAndSettle();
 
+    expect(find.text('Temporarily unavailable'), findsOneWidget);
+    final InkWell psychologistOption = tester.widget<InkWell>(
+      find
+          .ancestor(
+            of: find.text('Psychologist'),
+            matching: find.byType(InkWell),
+          )
+          .first,
+    );
+    expect(psychologistOption.onTap, isNull);
+
     await tester.tap(find.text('Astrologer'));
     await tester.pump();
     expect(tester.takeException(), isNull);

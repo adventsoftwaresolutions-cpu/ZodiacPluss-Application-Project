@@ -147,12 +147,35 @@ class _AuthBodyState extends State<AuthBody> with TickerProviderStateMixin {
                       step == AuthStep.phone ? continuePressed : verifyPressed,
                 ),
                 const SizedBox(height: 18),
-                Text(
-                  "Need help? Contact Support",
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: colors.onSurface.withValues(alpha: .72),
-                    fontWeight: FontWeight.w500,
-                  ),
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      'Need help? ',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colors.onSurface.withValues(alpha: .72),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => context.push(ExpertRoutes.contact),
+                      style: TextButton.styleFrom(
+                        foregroundColor: colors.primary,
+                        minimumSize: Size.zero,
+                        padding: EdgeInsets.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: VisualDensity.compact,
+                      ),
+                      child: Text(
+                        'Contact Us',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          decoration: TextDecoration.underline,
+                          decorationColor: colors.primary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

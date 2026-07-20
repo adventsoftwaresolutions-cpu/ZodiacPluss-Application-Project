@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/data/expert_profile.dart';
+import '../../../../shared/data/expert_profile_repository.dart';
+import '../../../../shared/data/expert_session_repository.dart';
 import '../models/verification_form_model.dart';
 import '../repository/verification_repository.dart';
 
@@ -59,6 +61,7 @@ class VerificationFormState {
 
 class VerificationFormController extends Notifier<VerificationFormState> {
   int _educationSequence = 0;
+  Future<void> _draftWrite = Future<void>.value();
 
   @override
   VerificationFormState build() => VerificationFormState.initial();
@@ -182,6 +185,9 @@ class VerificationFormController extends Notifier<VerificationFormState> {
 
   void removeProfilePhoto() {
     _setForm(state.form.copyWith(clearProfilePhoto: true));
+    _draftWrite = _draftWrite.then(
+      (_) => ref.read(expertProfileRepositoryProvider).clearDraftProfilePhoto(),
+    );
   }
 
   bool validateStep(int step) {
@@ -217,6 +223,10 @@ class VerificationFormController extends Notifier<VerificationFormState> {
       await ref
           .read(verificationRepositoryProvider)
           .submitVerification(state.form);
+      await _draftWrite;
+      await ref.read(expertProfileRepositoryProvider).activateDraftProfile();
+      ref.invalidate(expertProfileProvider);
+      ref.invalidate(expertSessionProvider);
       state = state.copyWith(isSubmitting: false, isSubmitted: true);
       return true;
     } catch (_) {
@@ -233,6 +243,36 @@ class VerificationFormController extends Notifier<VerificationFormState> {
       form: form,
       isSubmitted: false,
       clearValidationMessage: true,
+    );
+    _draftWrite = _draftWrite.then((_) => _saveDraftProfile(form));
+  }
+
+  Future<void> discardDraftProfile() async {
+    await _draftWrite;
+    await ref.read(expertProfileRepositoryProvider).discardDraftProfile();
+    ref.invalidate(expertProfileProvider);
+  }
+
+  Future<void> _saveDraftProfile(VerificationFormModel form) async {
+    final ExpertProfileRepository repository =
+        ref.read(expertProfileRepositoryProvider);
+    final List<EducationEntry> education = form.education
+        .where((VerificationEducationEntry item) =>
+            item.degree.trim().isNotEmpty && item.institution.trim().isNotEmpty)
+        .map((VerificationEducationEntry item) => EducationEntry(
+              degree: item.degree.trim(),
+              institution: item.institution.trim(),
+              year: item.year,
+            ))
+        .toList();
+    await repository.saveDraftProfile(
+      name: form.fullName.trim().isEmpty ? null : form.fullName.trim(),
+      role: form.profession,
+      avatarUrl: form.profilePhotoSource,
+      yearsExperience: form.yearsExperience > 0 ? form.yearsExperience : null,
+      education: education.isEmpty ? null : education,
+      specializations:
+          form.specializations.isEmpty ? null : form.specializations,
     );
   }
 

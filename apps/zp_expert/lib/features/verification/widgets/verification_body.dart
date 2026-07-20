@@ -186,8 +186,10 @@ class _VerificationBodyState extends ConsumerState<VerificationBody>
     _moveToStep(currentStep - 1);
   }
 
-  void _skipToHome() {
+  Future<void> _skipToHome() async {
     FocusScope.of(context).unfocus();
+    await ref.read(verificationFormProvider.notifier).discardDraftProfile();
+    if (!mounted) return;
     context.go(ExpertRoutes.home);
   }
 

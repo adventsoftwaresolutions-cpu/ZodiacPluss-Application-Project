@@ -325,6 +325,9 @@ class _ChatThreadList extends StatelessWidget {
               onTap: () => context.push(
                 ExpertRoutes.chatConversationFor(thread.id),
               ),
+              onClientNameTap: () => context.push(
+                ExpertRoutes.clientHistoryFor(thread.clientId),
+              ),
               onJoinRoom: room == null
                   ? null
                   : () => context.push(ExpertRoutes.callRoomFor(room!.id)),

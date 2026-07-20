@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../shared/data/expert_profile.dart';
+import '../../../shared/utils/expert_avatar_image.dart';
 import '../../home/data/availability_status.dart';
 
 class ExpertProfileHeader extends StatelessWidget {
@@ -105,7 +106,7 @@ class _ProfileAvatar extends StatelessWidget {
             ),
             child: CircleAvatar(
               radius: 43,
-              backgroundImage: AssetImage(profile.avatarUrl),
+              backgroundImage: expertAvatarImage(profile.avatarUrl),
             ),
           ),
           Positioned(

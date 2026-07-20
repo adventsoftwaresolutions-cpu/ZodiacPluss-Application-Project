@@ -17,7 +17,9 @@
 	<key>CFBundleName</key>
 	<string>zp_expert</string>
 	<key>NSCameraUsageDescription</key>
-	<string>ZodiacPlus uses the camera for expert video consultations.</string>
+	<string>ZodiacPlus uses the camera for expert profile photos and video consultations.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>ZodiacPlus uses your photo library so you can choose an expert profile photo.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>ZodiacPlus uses the microphone for expert audio and video consultations.</string>
 	<key>NSLocalNetworkUsageDescription</key>

@@ -5,6 +5,7 @@ import 'package:zp_expert/features/home/data/availability_controller.dart';
 import 'package:zp_expert/features/home/data/availability_repository.dart';
 import 'package:zp_expert/features/home/data/availability_status.dart';
 import 'package:zp_expert/features/home/home.dart';
+import 'package:zp_expert/features/clients/client_history.dart';
 import 'package:zp_expert/features/wallet/wallet.dart';
 import 'package:zp_expert/shared/widgets/glass_top_bar.dart';
 
@@ -41,6 +42,25 @@ void main() {
     expect(
       find.descendant(
         of: find.byType(CustomScrollView),
+        matching: find.byType(GlassTopBar),
+      ),
+      findsNothing,
+    );
+    expect(tester.takeException(), isNull);
+    await _disposePage(tester);
+  });
+
+  testWidgets('client history uses the shared fixed glass top bar',
+      (WidgetTester tester) async {
+    await _pumpPage(
+      tester,
+      const ClientHistoryPage(clientId: 'client-101'),
+    );
+
+    expect(find.byType(GlassTopBar), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(ListView),
         matching: find.byType(GlassTopBar),
       ),
       findsNothing,

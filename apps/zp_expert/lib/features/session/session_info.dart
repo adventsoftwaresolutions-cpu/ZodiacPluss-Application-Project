@@ -42,7 +42,12 @@ class SessionInfoScreen extends ConsumerWidget {
                   const SizedBox(height: 24),
                   Expanded(
                     child: TopScrollFade(
-                      child: SessionInfoContent(sessionId: sessionId),
+                      child: SessionInfoContent(
+                        sessionId: sessionId,
+                        onClientTap: (String clientId) => context.push(
+                          ExpertRoutes.clientHistoryFor(clientId),
+                        ),
+                      ),
                     ),
                   ),
                 ],
