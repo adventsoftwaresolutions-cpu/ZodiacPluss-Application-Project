@@ -68,8 +68,6 @@ class _VerificationBodyState extends ConsumerState<VerificationBody>
   @override
   Widget build(BuildContext context) {
     final VerificationFormState state = ref.watch(verificationFormProvider);
-    final bool isPsychologist =
-        state.form.profession == ExpertRole.psychologist;
     final bool isAstrologer = state.form.profession == ExpertRole.astrologer;
 
     return FadeTransition(
@@ -127,10 +125,8 @@ class _VerificationBodyState extends ConsumerState<VerificationBody>
                             ],
                             const SizedBox(height: 16),
                             const SpecializationCard(),
-                            if (isPsychologist) ...<Widget>[
-                              const SizedBox(height: 16),
-                              const QualificationCard(),
-                            ],
+                            const SizedBox(height: 16),
+                            const QualificationCard(),
                           ],
                         ),
                         _StepScrollView(

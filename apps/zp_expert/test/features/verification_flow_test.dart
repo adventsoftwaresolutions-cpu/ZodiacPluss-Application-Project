@@ -94,10 +94,10 @@ void main() {
 
     expect(container.read(verificationFormProvider).form.profession,
         ExpertRole.astrologer);
-    expect(find.text('Your Experience'), findsOneWidget);
+    expect(find.text('Education & Experience'), findsOneWidget);
     expect(find.text('Your astrology journey'), findsOneWidget);
     expect(find.text('Vedic Astrology'), findsOneWidget);
-    expect(find.text('Professional Qualification'), findsNothing);
+    expect(find.text('Professional Qualification'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
