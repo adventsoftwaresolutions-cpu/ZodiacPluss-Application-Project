@@ -127,6 +127,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                         onReviewsTap: () {
                           context.push(ExpertRoutes.reviews);
                         },
+                        onTodayProgressTap: () {
+                          context.push(ExpertRoutes.todayProgress);
+                        },
                       ),
                       const SizedBox(height: 12),
                       const AvailabilityScheduleCard(),

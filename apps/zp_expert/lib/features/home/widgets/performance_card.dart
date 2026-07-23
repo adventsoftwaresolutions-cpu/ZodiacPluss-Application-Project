@@ -11,12 +11,14 @@ class PerformanceCard extends ConsumerWidget {
     required this.onSessionHistoryTap,
     required this.onTransactionHistoryTap,
     required this.onReviewsTap,
+    required this.onTodayProgressTap,
     super.key,
   });
 
   final VoidCallback onSessionHistoryTap;
   final VoidCallback onTransactionHistoryTap;
   final VoidCallback onReviewsTap;
+  final VoidCallback onTodayProgressTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,6 +35,8 @@ class PerformanceCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Row(
+            children: <Widget>[
           const Text(
             'Performance Card',
             style: TextStyle(
@@ -40,6 +44,31 @@ class PerformanceCard extends ConsumerWidget {
               fontWeight: FontWeight.bold,
               color: Color(0xFF0D3B3E),
             ),
+          ),
+          const Spacer(),
+          GestureDetector(
+            onTap: onTodayProgressTap,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  "Today's Stats",
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 13,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ],
+            ),
+          ),
+            ],
           ),
           const SizedBox(height: 8),
           const Divider(height: 1),
@@ -86,20 +115,6 @@ class _StatsRows extends StatelessWidget {
     return Column(
       children: <Widget>[
         _PerformanceRow(
-          icon: Icons.account_balance_wallet_rounded,
-          accentColor: AppColors.callGlowBlue,
-          title: 'Earnings Today',
-          subtitle: 'Total Earnings till now',
-          trailing: Text(
-            currency.format(data.earningsToday),
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-        ),
-        _PerformanceRow(
           icon: Icons.history_rounded,
           accentColor: AppColors.callGlowViolet,
           title: 'Session History',
@@ -107,34 +122,6 @@ class _StatsRows extends StatelessWidget {
           trailing: _ArrowButton(
             accentColor: AppColors.callGlowViolet,
             onTap: onSessionHistoryTap,
-          ),
-        ),
-        _PerformanceRow(
-          icon: Icons.star_rounded,
-          accentColor: AppColors.warning,
-          title: 'Average Rating',
-          subtitle: 'Rating from clients',
-          trailing: Text(
-            data.averageRating.toStringAsFixed(1),
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-        ),
-        _PerformanceRow(
-          icon: Icons.access_time_rounded,
-          accentColor: AppColors.primaryVariant,
-          title: 'Response Time',
-          subtitle: 'Average response time',
-          trailing: Text(
-            _formatDuration(data.responseTime),
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
           ),
         ),
         _PerformanceRow(
@@ -156,35 +143,6 @@ class _StatsRows extends StatelessWidget {
             accentColor: AppColors.info,
             onTap: onReviewsTap,
           ),
-        ),
-        _PerformanceRow(
-          icon: Icons.call_missed_rounded,
-          accentColor: AppColors.warning,
-          title: 'Missed Session',
-          subtitle: 'Your total missed session',
-          trailing: Text(
-            '${data.missedSessions}',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-        ),
-        _PerformanceRow(
-          icon: Icons.cancel_outlined,
-          accentColor: AppColors.error,
-          title: 'Cancel Session',
-          subtitle: 'Your total cancel session',
-          trailing: Text(
-            '${data.cancelledSessions}',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-          isLast: true,
         ),
       ],
     );

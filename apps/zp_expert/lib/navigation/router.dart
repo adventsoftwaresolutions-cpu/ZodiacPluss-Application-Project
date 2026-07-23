@@ -28,6 +28,7 @@ import '../../features/chat/chat.dart';
 import '../../features/chat/chat_conversation.dart';
 import '../../features/call_room/call_room.dart';
 import '../../features/kundali/kundali.dart';
+import '../../features/today_progress/today_progress.dart';
 
 final List<NavItem> expertNavItems = <NavItem>[
   const NavItem(
@@ -126,6 +127,11 @@ final GoRouter expertRouter = GoRouter(
       path: ExpertRoutes.kundali,
       builder: (BuildContext context, GoRouterState state) =>
           const KundaliPage(),
+    ),
+    GoRoute(
+      path: ExpertRoutes.todayProgress,
+      builder: (BuildContext context, GoRouterState state) =>
+          const TodayProgressPage(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state,

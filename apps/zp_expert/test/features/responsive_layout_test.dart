@@ -49,6 +49,7 @@ void main() {
             onSessionHistoryTap: () {},
             onTransactionHistoryTap: () {},
             onReviewsTap: () {},
+            onTodayProgressTap: () {},
           ),
         ],
       ),
@@ -77,6 +78,7 @@ void main() {
         onSessionHistoryTap: () {},
         onTransactionHistoryTap: () {},
         onReviewsTap: () {},
+        onTodayProgressTap: () {},
       ),
       overrides: <Override>[
         performanceStatsProvider.overrideWith(
