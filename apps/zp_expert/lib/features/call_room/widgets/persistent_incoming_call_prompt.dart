@@ -5,11 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zp_core/zp_core.dart';
 
 import '../../../navigation/app_routes.dart';
-import '../data/models/call_room_model.dart';
-import '../data/provider/call_room_provider.dart';
-import 'call_invitation_effects.dart';
 
 class PersistentIncomingCallPrompt extends ConsumerStatefulWidget {
   const PersistentIncomingCallPrompt({super.key});

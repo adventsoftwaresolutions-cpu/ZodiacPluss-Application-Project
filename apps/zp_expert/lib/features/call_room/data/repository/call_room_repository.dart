@@ -1,18 +1,12 @@
+import 'package:zp_core/zp_core.dart';
+
 import '../../../../shared/data/expert_session_repository.dart';
 import '../../../../shared/network/expert_api_client.dart';
-import '../models/call_room_model.dart';
 
-abstract class CallRoomRepository {
-  Future<List<CallRoomModel>> fetchActiveRooms();
-  Future<CallRoomModel> fetchRoom(String roomId);
-  Future<CallRoomModel> acceptRoom(String roomId);
-  Future<void> declineRoom(String roomId);
-  Future<AgoraCredentials> fetchAgoraCredentials(String roomId);
-  Future<void> endRoom(String roomId);
-  Future<void> recordCallEvent(String roomId, String eventType);
-  Stream<ConsultationEvent> watchEvents();
-}
-
+/// Expert-specific concrete implementation of [CallRoomRepository].
+///
+/// Depends on [ExpertApiClient] and [ExpertSessionRepository], which is why
+/// it stays in zp_expert rather than moving to zp_core.
 class ApiCallRoomRepository implements CallRoomRepository {
   ApiCallRoomRepository({
     required ExpertApiClient api,

@@ -5,8 +5,7 @@ import '../../shared/widgets/gradient_page.dart';
 import 'data/models/chat_conversation_model.dart';
 import 'data/provider/chat_conversation_provider.dart';
 import 'widgets/chat_conversation_content.dart';
-import '../call_room/data/models/call_room_model.dart';
-import '../call_room/data/provider/call_room_provider.dart';
+import 'package:zp_core/zp_core.dart';
 import '../../navigation/app_routes.dart';
 import 'package:go_router/go_router.dart';
 
