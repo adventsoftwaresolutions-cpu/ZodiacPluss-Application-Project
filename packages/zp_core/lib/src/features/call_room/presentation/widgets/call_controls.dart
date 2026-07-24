@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Row of call-control buttons (mute, speaker, video, message, end-call).
 class CallControls extends StatelessWidget {
   const CallControls({
     required this.isMuted,

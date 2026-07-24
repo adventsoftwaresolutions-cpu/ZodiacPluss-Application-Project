@@ -3,12 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zp_core/zp_core.dart';
 import 'package:zp_expert/features/call_room/call_room.dart';
-import 'package:zp_expert/features/call_room/data/models/call_room_model.dart';
-import 'package:zp_expert/features/call_room/data/provider/call_room_provider.dart';
-import 'package:zp_expert/features/call_room/data/provider/call_media_controller.dart';
-import 'package:zp_expert/features/call_room/data/repository/call_room_repository.dart';
-import 'package:zp_expert/features/call_room/widgets/call_room_content.dart';
 import 'package:zp_expert/shared/data/expert_profile.dart';
 import 'package:zp_expert/shared/data/expert_profile_repository.dart';
 
@@ -213,10 +209,9 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: CallRoomContent(
+          body: CallRoomView(
             session: CallSessionState(
               room: audioRoom,
-              expertRole: ExpertRole.psychologist,
               phase: CallSessionPhase.connected,
             ),
             onToggleMute: () {},
@@ -244,13 +239,12 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: CallRoomContent(
+          body: CallRoomView(
             session: CallSessionState(
               room: _room(
                 type: CallRoomType.video,
                 clientPresent: false,
               ),
-              expertRole: ExpertRole.psychologist,
               phase: CallSessionPhase.waitingForClient,
             ),
             onToggleMute: () {},
@@ -275,10 +269,9 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: CallRoomContent(
+          body: CallRoomView(
             session: CallSessionState(
               room: audioRoom,
-              expertRole: ExpertRole.astrologer,
               phase: CallSessionPhase.connected,
             ),
             onToggleMute: () {},
@@ -304,10 +297,9 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: CallRoomContent(
+          body: CallRoomView(
             session: CallSessionState(
               room: videoRoom,
-              expertRole: ExpertRole.astrologer,
               phase: CallSessionPhase.connected,
             ),
             onToggleMute: () {},
@@ -326,10 +318,9 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: CallRoomContent(
+          body: CallRoomView(
             session: CallSessionState(
               room: videoRoom,
-              expertRole: ExpertRole.astrologer,
               phase: CallSessionPhase.ended,
             ),
             onToggleMute: () {},

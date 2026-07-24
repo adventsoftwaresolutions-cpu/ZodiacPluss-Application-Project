@@ -1,35 +1,50 @@
 import 'package:flutter/material.dart';
 
-import '../../../themes/app_radius.dart';
-import '../../../shared/data/expert_profile.dart';
-import '../data/models/call_room_model.dart';
+import '../../data/models/call_room_model.dart';
 import 'call_invitation_effects.dart';
 
+/// A card that displays an incoming or active consultation room with a join
+/// button, wrapped in a revolving glow border for attention.
+///
+/// Instead of accepting `ExpertRole` (which is app-specific), this widget
+/// accepts plain [title] and [subtitle] strings so the calling app can compose
+/// the appropriate labels.
 class CallRoomJoinCard extends StatelessWidget {
   const CallRoomJoinCard({
     required this.room,
-    required this.expertRole,
+    required this.title,
+    required this.subtitle,
     required this.onJoin,
     this.compact = false,
+    this.borderRadius = 16,
     super.key,
   });
 
   final CallRoomModel room;
-  final ExpertRole expertRole;
+
+  /// Primary line of text (e.g. "Video call room ready").
+  final String title;
+
+  /// Secondary line of text (e.g. "Client Name · 5 min").
+  final String subtitle;
+
   final VoidCallback onJoin;
   final bool compact;
+
+  /// Border radius of the card. Defaults to 16 (AppRadius.lg).
+  final double borderRadius;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return RevolvingCallBorder(
-      borderRadius: AppRadius.lg,
+      borderRadius: borderRadius,
       child: Container(
         key: ValueKey<String>('join-room-card-${room.id}'),
         padding: EdgeInsets.all(compact ? 10 : 13),
         decoration: BoxDecoration(
           color: colors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.lg),
+          borderRadius: BorderRadius.circular(borderRadius),
           border: Border.all(color: colors.primary.withValues(alpha: .2)),
           boxShadow: <BoxShadow>[
             BoxShadow(
@@ -56,20 +71,12 @@ class CallRoomJoinCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  room.isLive
-                      ? 'Consultation in progress'
-                      : expertRole == ExpertRole.psychologist
-                          ? (compact
-                              ? 'Paid room ready'
-                              : '${room.type.label} room ready')
-                          : '${room.type.label} room ready',
+                  title,
                   style: const TextStyle(fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  expertRole == ExpertRole.psychologist
-                      ? '${room.clientName} · ${room.paidMinutes} min'
-                      : room.clientName,
+                  subtitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodySmall,

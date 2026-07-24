@@ -2,17 +2,31 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../../themes/app_colors.dart';
+/// Default accent colors for the revolving call border gradient.
+///
+/// These match the original `AppColors.callGlow*` values from zp_expert so the
+/// visual output is identical without depending on expert-only theme tokens.
+const Color _kDefaultGlowBlue = Color(0xFF4DA8FF);
+const Color _kDefaultGlowViolet = Color(0xFF8B5CF6);
+const Color _kDefaultGlowRose = Color(0xFFF05D8A);
 
+/// An animated revolving gradient border painted around its [child].
+///
+/// Used to draw attention to incoming call cards and prompts.
 class RevolvingCallBorder extends StatefulWidget {
   const RevolvingCallBorder({
     required this.child,
     this.borderRadius = 20,
+    this.glowColors,
     super.key,
   });
 
   final Widget child;
   final double borderRadius;
+
+  /// Optional override for the three accent colors used in the sweep gradient.
+  /// Defaults to `[blue, violet, rose]` matching the original zp_expert theme.
+  final List<Color>? glowColors;
 
   @override
   State<RevolvingCallBorder> createState() => _RevolvingCallBorderState();
@@ -38,29 +52,44 @@ class _RevolvingCallBorderState extends State<RevolvingCallBorder>
   }
 
   @override
-  Widget build(BuildContext context) => RepaintBoundary(
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (BuildContext context, Widget? child) => CustomPaint(
-            painter: _RevolvingBorderPainter(
-              rotation: _controller.value * math.pi * 2,
-              radius: widget.borderRadius + 5,
-              colors: <Color>[
-                Theme.of(context).colorScheme.primary,
-                AppColors.callGlowBlue,
-                AppColors.callGlowViolet,
-                AppColors.callGlowRose,
-                Theme.of(context).colorScheme.primary,
-              ],
-            ),
-            child: child,
+  Widget build(BuildContext context) {
+    final Color glowBlue =
+        widget.glowColors != null && widget.glowColors!.isNotEmpty
+            ? widget.glowColors![0]
+            : _kDefaultGlowBlue;
+    final Color glowViolet =
+        widget.glowColors != null && widget.glowColors!.length > 1
+            ? widget.glowColors![1]
+            : _kDefaultGlowViolet;
+    final Color glowRose =
+        widget.glowColors != null && widget.glowColors!.length > 2
+            ? widget.glowColors![2]
+            : _kDefaultGlowRose;
+
+    return RepaintBoundary(
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (BuildContext context, Widget? child) => CustomPaint(
+          painter: _RevolvingBorderPainter(
+            rotation: _controller.value * math.pi * 2,
+            radius: widget.borderRadius + 5,
+            colors: <Color>[
+              Theme.of(context).colorScheme.primary,
+              glowBlue,
+              glowViolet,
+              glowRose,
+              Theme.of(context).colorScheme.primary,
+            ],
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(5),
-            child: widget.child,
-          ),
+          child: child,
         ),
-      );
+        child: Padding(
+          padding: const EdgeInsets.all(5),
+          child: widget.child,
+        ),
+      ),
+    );
+  }
 }
 
 class _RevolvingBorderPainter extends CustomPainter {
@@ -110,6 +139,7 @@ class _RevolvingBorderPainter extends CustomPainter {
       oldDelegate.colors != colors;
 }
 
+/// An attention-grabbing join button with a pulsing glow effect.
 class AttentionJoinButton extends StatefulWidget {
   const AttentionJoinButton({
     required this.label,

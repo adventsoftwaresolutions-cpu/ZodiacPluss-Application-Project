@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../../../../shared/data/expert_profile.dart';
-
+/// The type of call room — audio or video.
 enum CallRoomType { audio, video }
 
 extension CallRoomTypeLabel on CallRoomType {
@@ -11,6 +10,7 @@ extension CallRoomTypeLabel on CallRoomType {
       };
 }
 
+/// Represents a single consultation/call room.
 @immutable
 class CallRoomModel {
   const CallRoomModel({
@@ -92,6 +92,7 @@ class CallRoomModel {
       };
 }
 
+/// Credentials needed to join an Agora channel.
 @immutable
 class AgoraCredentials {
   const AgoraCredentials({
@@ -131,8 +132,10 @@ class AgoraCredentials {
   final String remoteDisplayName;
 }
 
+/// Types of consultation events received from the backend.
 enum ConsultationEventType { requested, live, ended, other }
 
+/// A consultation event received from the backend event stream.
 @immutable
 class ConsultationEvent {
   const ConsultationEvent({required this.type, required this.room});
@@ -141,13 +144,18 @@ class ConsultationEvent {
   final CallRoomModel room;
 }
 
+/// The phase of a call session lifecycle.
 enum CallSessionPhase { waitingForClient, connected, reconnecting, ended }
 
+/// The state of an active call session.
+///
+/// Note: `expertRole` is intentionally omitted from the shared model. Widgets
+/// that need role-specific behavior receive it as a constructor parameter from
+/// the consuming app, following zp_core's rule against internal role checks.
 @immutable
 class CallSessionState {
   const CallSessionState({
     required this.room,
-    required this.expertRole,
     required this.phase,
     this.elapsedSeconds = 0,
     this.isMuted = false,
@@ -157,7 +165,6 @@ class CallSessionState {
   });
 
   final CallRoomModel room;
-  final ExpertRole expertRole;
   final CallSessionPhase phase;
   final int elapsedSeconds;
   final bool isMuted;
@@ -176,7 +183,6 @@ class CallSessionState {
   }) =>
       CallSessionState(
         room: room ?? this.room,
-        expertRole: expertRole,
         phase: phase ?? this.phase,
         elapsedSeconds: elapsedSeconds ?? this.elapsedSeconds,
         isMuted: isMuted ?? this.isMuted,

@@ -9,8 +9,7 @@ import 'chat_conversation_header.dart';
 import 'chat_message_composer.dart';
 import 'chat_message_list.dart';
 import 'session_summary_sheet.dart';
-import '../../call_room/data/models/call_room_model.dart';
-import '../../call_room/widgets/call_room_join_card.dart';
+import 'package:zp_core/zp_core.dart';
 
 class ChatConversationContent extends StatefulWidget {
   const ChatConversationContent({
@@ -96,7 +95,12 @@ class _ChatConversationContentState extends State<ChatConversationContent> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: CallRoomJoinCard(
                 room: widget.callRoom!,
-                expertRole: widget.conversation.expertRole,
+                title: widget.callRoom!.isLive
+                    ? 'Consultation in progress'
+                    : '${widget.callRoom!.type.label} room ready',
+                subtitle: widget.conversation.isPsychologist
+                    ? '${widget.callRoom!.clientName} · ${widget.callRoom!.paidMinutes} min'
+                    : widget.callRoom!.clientName,
                 onJoin: widget.onJoinCallRoom!,
                 compact: true,
               ),

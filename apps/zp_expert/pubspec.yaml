@@ -25,10 +25,8 @@ dependencies:
   flutter_riverpod: ^2.6.1
   riverpod_annotation: ^2.6.1
   supabase_flutter: ^2.15.4
-  agora_rtc_engine: ^6.5.4
   flutter_secure_storage: ^9.2.4
   http: ^1.6.0
-  permission_handler: ^11.3.1
   flutter_ringtone_player: ^4.0.0+4
   intl: ^0.20.2
   flutter_svg: ^2.0.9

@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zp_core/zp_core.dart';
 
 import '../../navigation/app_routes.dart';
 import '../../shared/network/expert_api_client.dart';
-import 'data/models/call_room_model.dart';
-import 'data/provider/call_room_provider.dart';
-import 'data/provider/call_media_controller.dart';
-import 'widgets/call_room_content.dart';
 
 class CallRoomPage extends ConsumerWidget {
   const CallRoomPage({required this.roomId, super.key});
@@ -59,7 +56,7 @@ class CallRoomPage extends ConsumerWidget {
                 if (context.mounted) context.pop();
               },
             ),
-            data: (CallSessionState data) => CallRoomContent(
+            data: (CallSessionState data) => CallRoomView(
               session: data,
               media: media,
               onToggleMute: () =>

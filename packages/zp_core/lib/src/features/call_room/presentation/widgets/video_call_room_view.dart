@@ -1,13 +1,18 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 
-import '../data/models/call_room_model.dart';
-import '../data/provider/call_media_controller.dart';
+import '../../data/models/call_room_model.dart';
+import '../../data/provider/call_media_controller.dart';
 import 'call_action_panel.dart';
 import 'call_controls.dart';
 import 'call_participant_avatar.dart';
 import 'call_status_text.dart';
 
+/// Full-screen video call room UI with remote video surface, local preview,
+/// and overlaid controls.
+///
+/// This is a content-only widget — it does not own a [Scaffold] or route.
+/// The consuming app wraps it in its own [Scaffold] and routing setup.
 class VideoCallRoomView extends StatelessWidget {
   const VideoCallRoomView({
     required this.session,

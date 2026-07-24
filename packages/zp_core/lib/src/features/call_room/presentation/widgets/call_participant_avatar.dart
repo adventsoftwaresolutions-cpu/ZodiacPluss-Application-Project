@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Animated avatar circle showing participant initials with a pulsing glow.
 class CallParticipantAvatar extends StatefulWidget {
   const CallParticipantAvatar({
     required this.name,

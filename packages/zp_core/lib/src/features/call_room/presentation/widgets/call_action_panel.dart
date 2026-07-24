@@ -2,19 +2,29 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../../../themes/app_radius.dart';
+/// The default border radius used by the call action panel.
+///
+/// Matches the `AppRadius.xl` value from the original expert implementation
+/// so the visual output is identical without depending on expert-only tokens.
+const double _kPanelRadius = 28.0;
 
+/// Frosted-glass panel at the bottom of the call room that contains either the
+/// active call controls or the "Back to app" action after the call ends.
 class CallActionPanel extends StatelessWidget {
   const CallActionPanel({
     required this.ended,
     required this.controls,
     required this.onLeave,
+    this.borderRadius = _kPanelRadius,
     super.key,
   });
 
   final bool ended;
   final Widget controls;
   final VoidCallback onLeave;
+
+  /// The border radius of the panel. Defaults to 28.0 (AppRadius.xl + 4).
+  final double borderRadius;
 
   @override
   Widget build(BuildContext context) => TweenAnimationBuilder<double>(
@@ -24,7 +34,7 @@ class CallActionPanel extends StatelessWidget {
         builder: (BuildContext context, double widthFactor, Widget? child) =>
             FractionallySizedBox(widthFactor: widthFactor, child: child),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(AppRadius.xl + 4),
+          borderRadius: BorderRadius.circular(borderRadius),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
             child: AnimatedContainer(
@@ -41,7 +51,7 @@ class CallActionPanel extends StatelessWidget {
                     .colorScheme
                     .scrim
                     .withValues(alpha: ended ? .66 : .5),
-                borderRadius: BorderRadius.circular(AppRadius.xl + 4),
+                borderRadius: BorderRadius.circular(borderRadius),
                 border: Border.all(
                   color: Theme.of(context)
                       .colorScheme

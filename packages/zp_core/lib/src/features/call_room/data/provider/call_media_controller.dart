@@ -7,8 +7,10 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../models/call_room_model.dart';
 
+/// Connection state of the Agora media channel.
 enum CallMediaConnection { idle, connecting, connected, reconnecting, ended }
 
+/// Snapshot of the local + remote media state for a call room.
 @immutable
 class CallMediaState {
   const CallMediaState({
@@ -59,6 +61,7 @@ final StateNotifierProviderFamily<CallMediaController, CallMediaState, String>
   (Ref ref, String roomId) => CallMediaController(),
 );
 
+/// Manages the Agora RTC engine lifecycle for a single call room.
 class CallMediaController extends StateNotifier<CallMediaState> {
   CallMediaController() : super(const CallMediaState());
 

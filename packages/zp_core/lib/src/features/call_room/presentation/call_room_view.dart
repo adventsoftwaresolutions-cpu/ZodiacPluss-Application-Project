@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../data/models/call_room_model.dart';
 import '../data/provider/call_media_controller.dart';
-import 'audio_call_room_view.dart';
-import 'video_call_room_view.dart';
+import 'widgets/audio_call_room_view.dart';
+import 'widgets/video_call_room_view.dart';
 
-class CallRoomContent extends StatelessWidget {
-  const CallRoomContent({
+/// Content-only call room widget that switches between audio and video views.
+///
+/// This is a shared widget that does **not** own a [Scaffold], [AppBar], or
+/// route. Each consuming app wraps it in its own page-level [Scaffold] and
+/// routing setup per `core.md` rules.
+class CallRoomView extends StatelessWidget {
+  const CallRoomView({
     required this.session,
     this.media = const CallMediaState(),
     required this.onToggleMute,

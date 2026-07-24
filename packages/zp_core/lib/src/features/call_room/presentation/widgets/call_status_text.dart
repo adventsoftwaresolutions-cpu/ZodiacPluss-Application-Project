@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../data/models/call_room_model.dart';
+import '../../data/models/call_room_model.dart';
 
+/// Displays the current call status as text (waiting, connected, ended, etc.).
 class CallStatusText extends StatelessWidget {
   const CallStatusText({required this.session, super.key});
 

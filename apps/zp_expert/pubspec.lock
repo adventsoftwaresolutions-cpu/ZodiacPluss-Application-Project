@@ -10,7 +10,7 @@ packages:
     source: hosted
     version: "85.0.0"
   agora_rtc_engine:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: agora_rtc_engine
       sha256: d9a88129b8fdc36ec5246331f36486b198dd7eb41ee68bfb54b289be8d60c6df
@@ -886,7 +886,7 @@ packages:
     source: hosted
     version: "2.3.0"
   permission_handler:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: permission_handler
       sha256: "59adad729136f01ea9e35a48f5d1395e25cba6cea552249ddbe9cf950f5d7849"
