@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../themes/app_colors.dart';
 import '../data/models/today_progress_model.dart';
-import 'progress_section_card.dart';
-import 'progress_stat_row.dart';
+import '../../../shared/widgets/progress_section_card.dart';
+import '../../../shared/widgets/progress_stat_row.dart';
 
 class SessionStatusCard extends StatelessWidget {
   const SessionStatusCard({required this.data, super.key});

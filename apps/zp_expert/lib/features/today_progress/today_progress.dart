@@ -30,7 +30,7 @@ class TodayProgressPage extends ConsumerWidget {
             Padding(
               padding: GlassTopBar.rootPagePadding,
               child: GlassTopBar(
-                title: "Today's Progress",
+                title: "Today's Stats",
                 onBackTap: () => context.pop(),
                 onNotificationTap: () {},
                 onChatTap: () => context.push(ExpertRoutes.chats),

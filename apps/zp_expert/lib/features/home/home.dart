@@ -130,6 +130,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                         onTodayProgressTap: () {
                           context.push(ExpertRoutes.todayProgress);
                         },
+                        onOverallPerformanceTap: () {
+                          context.push(ExpertRoutes.overallPerformance);
+                        },
                       ),
                       const SizedBox(height: 12),
                       const AvailabilityScheduleCard(),

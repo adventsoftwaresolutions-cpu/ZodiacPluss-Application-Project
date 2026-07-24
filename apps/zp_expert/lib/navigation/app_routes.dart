@@ -23,6 +23,7 @@ abstract final class ExpertRoutes {
   static const String ticketStatus = '/ticket-status';
   static const String contact = '/contact';
   static const String todayProgress = '/today-progress';
+  static const String overallPerformance = '/overall-performance';
   static const String faq = '/faq';
 
   static String sessionInfoFor(String sessionId) =>

@@ -12,6 +12,7 @@ class PerformanceCard extends ConsumerWidget {
     required this.onTransactionHistoryTap,
     required this.onReviewsTap,
     required this.onTodayProgressTap,
+    required this.onOverallPerformanceTap,
     super.key,
   });
 
@@ -19,6 +20,7 @@ class PerformanceCard extends ConsumerWidget {
   final VoidCallback onTransactionHistoryTap;
   final VoidCallback onReviewsTap;
   final VoidCallback onTodayProgressTap;
+  final VoidCallback onOverallPerformanceTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -78,6 +80,7 @@ class PerformanceCard extends ConsumerWidget {
               onSessionHistoryTap: onSessionHistoryTap,
               onTransactionHistoryTap: onTransactionHistoryTap,
               onReviewsTap: onReviewsTap,
+              onOverallPerformanceTap: onOverallPerformanceTap,
             ),
             loading: () => const PerformanceCardSkeleton(),
             error: (Object error, StackTrace stackTrace) => const Padding(
@@ -100,12 +103,14 @@ class _StatsRows extends StatelessWidget {
     required this.onSessionHistoryTap,
     required this.onTransactionHistoryTap,
     required this.onReviewsTap,
+    required this.onOverallPerformanceTap,
   });
 
   final PerformanceStats data;
   final VoidCallback onSessionHistoryTap;
   final VoidCallback onTransactionHistoryTap;
   final VoidCallback onReviewsTap;
+  final VoidCallback onOverallPerformanceTap;
 
   @override
   Widget build(BuildContext context) {
@@ -142,6 +147,16 @@ class _StatsRows extends StatelessWidget {
           trailing: _ArrowButton(
             accentColor: AppColors.info,
             onTap: onReviewsTap,
+          ),
+        ),
+        _PerformanceRow(
+          icon: Icons.insights_rounded,
+          accentColor: AppColors.primaryVariant,
+          title: 'Overall Performance',
+          subtitle: 'Day & month wise detailed stats',
+          trailing: _ArrowButton(
+            accentColor: AppColors.primaryVariant,
+            onTap: onOverallPerformanceTap,
           ),
         ),
       ],

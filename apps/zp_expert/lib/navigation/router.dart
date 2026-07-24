@@ -29,6 +29,7 @@ import '../../features/chat/chat_conversation.dart';
 import '../../features/call_room/call_room.dart';
 import '../../features/kundali/kundali.dart';
 import '../../features/today_progress/today_progress.dart';
+import '../../features/overall_performance/overall_performance.dart';
 
 final List<NavItem> expertNavItems = <NavItem>[
   const NavItem(
@@ -54,7 +55,7 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: ExpertRoutes.splash,
+  initialLocation: ExpertRoutes.home,
   routes: <RouteBase>[
     GoRoute(
       path: ExpertRoutes.splash,
@@ -132,6 +133,11 @@ final GoRouter expertRouter = GoRouter(
       path: ExpertRoutes.todayProgress,
       builder: (BuildContext context, GoRouterState state) =>
           const TodayProgressPage(),
+    ),
+    GoRoute(
+      path: ExpertRoutes.overallPerformance,
+      builder: (BuildContext context, GoRouterState state) =>
+          const OverallPerformancePage(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state,

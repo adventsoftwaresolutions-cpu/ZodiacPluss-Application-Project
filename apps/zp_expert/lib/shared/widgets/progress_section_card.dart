@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../themes/app_radius.dart';
-import '../../../themes/app_spacing.dart';
+import '../../themes/app_radius.dart';
+import '../../themes/app_spacing.dart';
 
 class ProgressSectionCard extends StatelessWidget {
   const ProgressSectionCard({

@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 
 import '../../../themes/app_colors.dart';
 import '../data/models/today_progress_model.dart';
-import 'progress_section_card.dart';
-import 'progress_stat_row.dart';
+import '../../../shared/widgets/progress_section_card.dart';
+import '../../../shared/widgets/progress_stat_row.dart';
 
 class OverviewCard extends StatelessWidget {
   const OverviewCard({required this.data, super.key});
