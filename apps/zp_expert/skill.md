@@ -1,6 +1,6 @@
 # SKILL.md
 
-# ZP Client Development Guide
+# ZP Expert Development Guide
 
 This document defines the architecture, coding standards, and conventions for this project. Every new feature should follow these guidelines.
 
@@ -52,6 +52,86 @@ lib/
                 widget_one.dart
                 widget_two.dart
 ```
+
+---
+
+# Shared Code and `zp_core`
+
+`zp_expert` is an application. `zp_core` is the shared package used by
+`zp_expert` and `zp_client`. Before creating a feature, model, repository,
+provider, widget, theme token, or asset, decide where it belongs.
+
+## Put code in `zp_core` only when all three are true
+
+1. Both `zp_expert` and `zp_client` use it now or it is on the current roadmap.
+2. Its behaviour is identical or nearly identical in both apps.
+3. It has no dependency on expert-only or client-only models, routes,
+providers, API clients, themes, or user-role checks.
+
+If any condition is false, keep the code in `zp_expert`.
+
+When a feature is partly shared, split it instead of forcing it into one
+role-aware widget:
+
+- Put shared models, repository interfaces, generic providers, low-level
+  widgets, and content-only views in `zp_core`.
+- Keep expert API implementations, routes, `Scaffold`/app bars, navigation,
+  role-specific copy, and expert-only composition in `zp_expert`.
+
+`zp_core` must never import `zp_expert` or `zp_client`. Dependency direction is
+always one-way:
+
+```
+zp_expert  ─┐
+             ├──> zp_core
+zp_client  ─┘
+```
+
+## How to create a shared feature
+
+1. Read `../../packages/zp_core/core.md` in full; it is the source of truth
+   for shared-package work.
+2. Confirm the feature passes the three conditions above and compare any
+   existing expert/client implementations before moving code.
+3. Build the shared layers in this order:
+
+   ```
+   Model → Repository interface → Provider → Widgets → content-only view
+   ```
+
+4. Place the feature under
+   `packages/zp_core/lib/src/features/feature_name/` using the same nested
+   `data/models`, `data/repository`, `data/provider`, and
+   `presentation/widgets` layout.
+5. Export every consumer-facing type from
+   `packages/zp_core/lib/zp_core.dart`. Apps import only
+   `package:zp_core/zp_core.dart`, never `lib/src/**`.
+6. Let each app provide app-specific repositories through Riverpod provider
+   overrides and wrap shared content views in its own route and `Scaffold`.
+7. Add shared assets to `zp_core/pubspec.yaml`; consuming apps reference them
+   as `packages/zp_core/assets/...`.
+
+## Handling expert/client differences
+
+Use these options in order:
+
+1. Constructor parameters for labels, callbacks, flags, and small UI changes.
+2. Riverpod provider overrides for app-specific data and logic.
+3. Composition slots/children for structural differences.
+
+Never add `isExpert`, `isClient`, `ExpertRole`, or client-role branching inside
+`zp_core` widgets. The app decides role-specific behaviour before calling the
+shared widget.
+
+## Shared-feature verification
+
+For every new or migrated shared feature:
+
+- Run `flutter analyze` in `packages/zp_core`, `apps/zp_expert`, and
+  `apps/zp_client`.
+- Search changed `zp_core` files for `zp_expert` and `zp_client` imports.
+- State what was moved into `zp_core`, what remains app-specific, and how
+  behavioural differences are supplied.
 
 Example
 
