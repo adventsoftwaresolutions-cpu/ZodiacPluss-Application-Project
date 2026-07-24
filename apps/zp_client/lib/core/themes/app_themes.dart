@@ -12,7 +12,7 @@ sealed class AppThemes {
         useMaterial3: true,
         brightness: Brightness.light,
 
-        scaffoldBackgroundColor: const Color(0xFFF7F9EF),
+        scaffoldBackgroundColor: AppColors.topBarGradient.colors.first,
 
         colorScheme: const ColorScheme.light(
           primary: AppColors.primary,

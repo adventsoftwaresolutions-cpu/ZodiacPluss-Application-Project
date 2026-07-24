@@ -7,8 +7,8 @@ sealed class AppColors {
   // Brand
   // =========================
 
-  static const Color primary = Color(0xFF0D4F23);
-  static const Color primaryVariant = Color(0xFF0C755E);
+  static const Color primary = Color(0xFFCFE8C1);
+  static const Color primaryVariant = Color(0xFFA0C38B);
 
   static const Color secondary = Color(0xFF0080C6);
   static const Color secondaryVariant = Color(0xFF49BFFF);
