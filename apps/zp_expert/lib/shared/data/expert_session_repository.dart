@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../network/expert_api_client.dart';
-import 'expert_identity.dart';
+import 'expert_profile_repository.dart';
 import 'expert_session.dart';
 
 abstract class ExpertSessionRepository {
@@ -31,13 +31,15 @@ class SecureExpertSessionRepository implements ExpertSessionRepository {
   Future<ExpertSession>? _pending;
 
   @override
-  Future<ExpertSession> getOrCreateSession() {
-    if (_cached != null) return Future<ExpertSession>.value(_cached);
-    return _pending ??= _restoreOrCreate().whenComplete(() => _pending = null);
+  Future<ExpertSession> getOrCreateSession() async {
+    final String requestedDisplayName = await _displayName();
+    if (_cached?.displayName == requestedDisplayName) return _cached!;
+    if (_cached != null) await clearSession();
+    return _pending ??= _restoreOrCreate(requestedDisplayName)
+        .whenComplete(() => _pending = null);
   }
 
-  Future<ExpertSession> _restoreOrCreate() async {
-    final String requestedDisplayName = await _displayName();
+  Future<ExpertSession> _restoreOrCreate(String requestedDisplayName) async {
     final String? stored = await _storage.read(key: _storageKey);
     if (stored != null) {
       try {
@@ -94,7 +96,8 @@ final Provider<ExpertSessionRepository> expertSessionRepositoryProvider =
   return SecureExpertSessionRepository(
     api: ref.watch(expertApiClientProvider),
     storage: ref.watch(secureStorageProvider),
-    displayName: () async => ref.read(initialExpertDisplayNameProvider),
+    displayName: () async =>
+        (await ref.read(expertProfileProvider.future)).name,
   );
 });
 

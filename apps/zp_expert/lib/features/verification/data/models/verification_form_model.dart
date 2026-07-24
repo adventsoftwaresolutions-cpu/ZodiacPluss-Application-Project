@@ -150,18 +150,14 @@ class VerificationFormModel {
         'otherPlatformName': otherPlatformName,
         'dailyContributionHours': dailyContributionHours,
         'yearsExperience': yearsExperience,
-        'education': profession == ExpertRole.psychologist
-            ? education
-                .map((VerificationEducationEntry item) => item.toJson())
-                .toList()
-            : <Map<String, dynamic>>[],
+        'education': education
+            .map((VerificationEducationEntry item) => item.toJson())
+            .toList(),
         'specializations': specializations,
         'astrologyLearningSource': profession == ExpertRole.astrologer
             ? astrologyLearningSource
             : null,
-        'qualificationFileName': profession == ExpertRole.psychologist
-            ? qualificationFileName
-            : null,
+        'qualificationFileName': qualificationFileName,
         'profilePhotoSource': profilePhotoSource,
       };
 

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
-class VerificationStepIndicator extends StatelessWidget {
+import '../../../shared/constants/app_assets.dart';
+
+class VerificationStepIndicator extends StatefulWidget {
   const VerificationStepIndicator({
     required this.currentStep,
     required this.onStepTap,
@@ -18,43 +21,144 @@ class VerificationStepIndicator extends StatelessWidget {
   final ValueChanged<int> onStepTap;
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          if (constraints.maxWidth < 500) {
-            return _CompactProgress(
-              currentStep: currentStep,
-              onStepTap: onStepTap,
-            );
-          }
-          return Row(
-            children: List<Widget>.generate(labels.length * 2 - 1, (int index) {
-              if (index.isOdd) {
-                final int beforeStep = index ~/ 2;
-                return Expanded(
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 240),
-                    height: 2,
-                    color: beforeStep < currentStep
-                        ? Theme.of(context).colorScheme.primary
-                        : const Color(0xFFD9E0E4),
+  State<VerificationStepIndicator> createState() =>
+      _VerificationStepIndicatorState();
+}
+
+class _VerificationStepIndicatorState extends State<VerificationStepIndicator>
+    with SingleTickerProviderStateMixin {
+  static const Duration _transitionDuration = Duration(milliseconds: 520);
+  static const Color _sourceCompletedColor = Color(0xFF333C45);
+  static const Color _sourcePendingColor = Color(0xFF5359FD);
+
+  late final AnimationController _controller;
+  late final LottieDelegates _colorDelegates;
+  bool _isLoaded = false;
+
+  double get _targetProgress =>
+      widget.currentStep / VerificationStepIndicator.labels.length;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this);
+    _colorDelegates = LottieDelegates(
+      values: <ValueDelegate<dynamic>>[
+        ValueDelegate.color(
+          <String>['**'],
+          callback: (frameInfo) =>
+              _reversedStepColor(frameInfo.startValue, frameInfo.endValue),
+        ),
+        ValueDelegate.strokeColor(
+          <String>['**'],
+          callback: (frameInfo) =>
+              _reversedStepColor(frameInfo.startValue, frameInfo.endValue),
+        ),
+      ],
+    );
+  }
+
+  Color _reversedStepColor(Color? startValue, Color? endValue) {
+    final Color original = startValue ?? endValue ?? Colors.transparent;
+    if (original == _sourceCompletedColor) return _sourcePendingColor;
+    if (original == _sourcePendingColor) return _sourceCompletedColor;
+    return original;
+  }
+
+  @override
+  void didUpdateWidget(covariant VerificationStepIndicator oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_isLoaded && oldWidget.currentStep != widget.currentStep) {
+      _moveToCurrentStep();
+    }
+  }
+
+  void _onLoaded(LottieComposition composition) {
+    _controller.duration = composition.duration;
+    _controller.value = _targetProgress;
+    _isLoaded = true;
+  }
+
+  void _moveToCurrentStep() {
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _controller.value = _targetProgress;
+      return;
+    }
+    _controller.animateTo(
+      _targetProgress,
+      duration: _transitionDuration,
+      curve: Curves.easeInOutCubic,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+        label: 'Application progress',
+        value:
+            'Step ${widget.currentStep + 1} of ${VerificationStepIndicator.labels.length}',
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Text(
+                  'Step ${widget.currentStep + 1} of ${VerificationStepIndicator.labels.length}',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: .62),
+                      ),
+                ),
+                const Spacer(),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 220),
+                  child: Text(
+                    VerificationStepIndicator.labels[widget.currentStep],
+                    key: ValueKey<int>(widget.currentStep),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                   ),
-                );
-              }
-              final int step = index ~/ 2;
-              return _StepNode(
-                step: step,
-                label: labels[step],
-                currentStep: currentStep,
-                onTap: () => onStepTap(step),
-              );
-            }),
-          );
-        },
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              height: 40,
+              child: Stack(
+                fit: StackFit.expand,
+                children: <Widget>[
+                  Lottie.asset(
+                    AppAssets.verificationStepsAnimation,
+                    key: const ValueKey<String>('verification-step-lottie'),
+                    controller: _controller,
+                    delegates: _colorDelegates,
+                    animate: false,
+                    repeat: false,
+                    fit: BoxFit.contain,
+                    onLoaded: _onLoaded,
+                  ),
+                  _StepTapTargets(
+                    currentStep: widget.currentStep,
+                    onStepTap: widget.onStepTap,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       );
 }
 
-class _CompactProgress extends StatelessWidget {
-  const _CompactProgress({
+class _StepTapTargets extends StatelessWidget {
+  const _StepTapTargets({
     required this.currentStep,
     required this.onStepTap,
   });
@@ -63,107 +167,21 @@ class _CompactProgress extends StatelessWidget {
   final ValueChanged<int> onStepTap;
 
   @override
-  Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Text(
-                'Step ${currentStep + 1} of ${VerificationStepIndicator.labels.length}',
-                style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280)),
-              ),
-              const Spacer(),
-              Text(
-                VerificationStepIndicator.labels[currentStep],
-                style:
-                    const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
-              ),
-            ],
-          ),
-          const SizedBox(height: 9),
-          Row(
-            children: List<Widget>.generate(
-              VerificationStepIndicator.labels.length,
-              (int step) => Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    right: step == VerificationStepIndicator.labels.length - 1
-                        ? 0
-                        : 6,
-                  ),
-                  child: InkWell(
-                    onTap: () => onStepTap(step),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 220),
-                      height: 5,
-                      decoration: BoxDecoration(
-                        color: step <= currentStep
-                            ? Theme.of(context).colorScheme.primary
-                            : const Color(0xFFD9E0E4),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                    ),
-                  ),
+  Widget build(BuildContext context) => Row(
+        children: List<Widget>.generate(
+          VerificationStepIndicator.labels.length,
+          (int step) => Expanded(
+            child: Semantics(
+              button: true,
+              label: VerificationStepIndicator.labels[step],
+              child: SizedBox.expand(
+                key: ValueKey<String>('verification-step-target-$step'),
+                child: InkWell(
+                  onTap: step < currentStep ? () => onStepTap(step) : null,
                 ),
               ),
             ),
           ),
-        ],
-      );
-}
-
-class _StepNode extends StatelessWidget {
-  const _StepNode({
-    required this.step,
-    required this.label,
-    required this.currentStep,
-    required this.onTap,
-  });
-
-  final int step;
-  final String label;
-  final int currentStep;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final bool active = step <= currentStep;
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-        child: Column(
-          children: <Widget>[
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 220),
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(
-                color: active
-                    ? Theme.of(context).colorScheme.primary
-                    : const Color(0xFFE6ECEF),
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: step < currentStep
-                    ? const Icon(Icons.check_rounded,
-                        size: 17, color: Colors.white)
-                    : Text(
-                        '${step + 1}',
-                        style: TextStyle(
-                          color:
-                              active ? Colors.white : const Color(0xFF6B7280),
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-              ),
-            ),
-            const SizedBox(height: 5),
-            Text(label, style: const TextStyle(fontSize: 11)),
-          ],
         ),
-      ),
-    );
-  }
+      );
 }

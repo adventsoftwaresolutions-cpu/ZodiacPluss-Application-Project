@@ -16,47 +16,48 @@ class StatsRow extends StatelessWidget {
   final double avgEarningPerSession;
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: _AnimatedStatCard(
-            delay: const Duration(milliseconds: 0),
-            child: StatCard(
-              iconPath: AppAssets.trendUpIcon,
-              label: 'Total Withdraw',
-              value: formatCompactINR(totalWithdraw),
-              caption: 'All time',
+  Widget build(BuildContext context) => IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Expanded(
+              child: _AnimatedStatCard(
+                delay: const Duration(milliseconds: 0),
+                child: StatCard(
+                  iconPath: AppAssets.trendUpIcon,
+                  label: 'Total Withdraw',
+                  value: formatCompactINR(totalWithdraw),
+                  caption: 'All time',
+                ),
+              ),
             ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _AnimatedStatCard(
-            delay: const Duration(milliseconds: 100),
-            child: StatCard(
-              iconPath: AppAssets.calendarIcon,
-              label: 'Sessions Completed',
-              value: sessionsCompleted.toString(),
-              caption: 'Total sessions',
+            const SizedBox(width: 12),
+            Expanded(
+              child: _AnimatedStatCard(
+                delay: const Duration(milliseconds: 100),
+                child: StatCard(
+                  iconPath: AppAssets.calendarIcon,
+                  label: 'Sessions Completed',
+                  value: sessionsCompleted.toString(),
+                  caption: 'Total sessions',
+                ),
+              ),
             ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _AnimatedStatCard(
-            delay: const Duration(milliseconds: 200),
-            child: StatCard(
-              iconPath: AppAssets.walletIcon,
-              label: 'Avg./Session',
-              value: formatCompactINR(avgEarningPerSession),
-              caption: 'Per session',
+            const SizedBox(width: 12),
+            Expanded(
+              child: _AnimatedStatCard(
+                delay: const Duration(milliseconds: 200),
+                child: StatCard(
+                  iconPath: AppAssets.walletIcon,
+                  label: 'Avg./Session',
+                  value: formatCompactINR(avgEarningPerSession),
+                  caption: 'Per session',
+                ),
+              ),
             ),
-          ),
+          ],
         ),
-      ],
-    );
-  }
+      );
 }
 
 class _AnimatedStatCard extends StatefulWidget {

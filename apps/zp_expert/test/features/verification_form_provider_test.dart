@@ -4,6 +4,9 @@ import 'package:zp_expert/features/verification/data/models/verification_form_mo
 import 'package:zp_expert/features/verification/data/provider/verification_form_provider.dart';
 import 'package:zp_expert/features/verification/data/repository/verification_repository.dart';
 import 'package:zp_expert/shared/data/expert_profile.dart';
+import 'package:zp_expert/shared/data/expert_identity.dart';
+import 'package:zp_expert/shared/data/expert_profile_repository.dart';
+import 'package:zp_expert/shared/constants/app_assets.dart';
 
 void main() {
   test('complete verification form is submitted through its repository',
@@ -92,6 +95,29 @@ void main() {
       repository.submission?.specializations,
       contains('Vedic Astrology'),
     );
+    final ExpertProfile temporaryProfile =
+        await container.read(expertProfileRepositoryProvider).fetchProfile();
+    expect(temporaryProfile.name, 'Arjun Mehta');
+    expect(temporaryProfile.role, ExpertRole.astrologer);
+    expect(temporaryProfile.avatarUrl, 'Camera photo');
+    expect(temporaryProfile.yearsExperience, 10);
+  });
+
+  test('discarding a verification draft preserves shared fallback profile',
+      () async {
+    final ProviderContainer container = ProviderContainer();
+    addTearDown(container.dispose);
+    final VerificationFormController controller =
+        container.read(verificationFormProvider.notifier);
+
+    controller.updateBasicInfo(fullName: 'Temporary Expert');
+    controller.setProfilePhoto('/tmp/temporary-profile.jpg');
+    await controller.discardDraftProfile();
+
+    final ExpertProfile profile =
+        await container.read(expertProfileRepositoryProvider).fetchProfile();
+    expect(profile.name, defaultExpertDisplayName);
+    expect(profile.avatarUrl, AppAssets.expertAvatar);
   });
 
   test('incomplete verification form is not sent to the repository', () async {

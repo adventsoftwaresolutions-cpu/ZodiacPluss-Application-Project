@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../shared/data/expert_profile.dart';
 import '../data/models/verification_form_model.dart';
 import '../data/provider/verification_form_provider.dart';
 import 'section_card.dart';
@@ -19,7 +18,6 @@ class VerificationEducationExperienceCard extends ConsumerWidget {
     );
     final VerificationFormController controller =
         ref.read(verificationFormProvider.notifier);
-    final bool needsEducation = form.profession == ExpertRole.psychologist;
 
     return SectionCard(
       child: AnimatedSize(
@@ -29,7 +27,7 @@ class VerificationEducationExperienceCard extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              needsEducation ? 'Education & Experience' : 'Your Experience',
+              'Education & Experience',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
@@ -38,9 +36,7 @@ class VerificationEducationExperienceCard extends ConsumerWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              needsEducation
-                  ? 'Add your professional experience and education history.'
-                  : 'How long have you been guiding clients through astrology?',
+              'Add your professional experience and education history.',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontSize: 13,
                     color: const Color(0xFF6B7280),
@@ -52,29 +48,27 @@ class VerificationEducationExperienceCard extends ConsumerWidget {
               years: form.yearsExperience,
               onChanged: controller.setYearsExperience,
             ),
-            if (needsEducation) ...<Widget>[
-              const SizedBox(height: 14),
-              if (form.education.isEmpty)
-                const _EmptyEducation()
-              else
-                ...form.education.map(
-                  (VerificationEducationEntry entry) =>
-                      _VerificationEducationEditor(
-                    key: ValueKey<String>(entry.id),
-                    entry: entry,
-                    onChanged: controller.updateEducation,
-                    onRemove: () => controller.removeEducation(entry.id),
-                  ),
-                ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton.icon(
-                  onPressed: controller.addEducation,
-                  icon: const Icon(Icons.add_rounded),
-                  label: const Text('Add education'),
+            const SizedBox(height: 14),
+            if (form.education.isEmpty)
+              const _EmptyEducation()
+            else
+              ...form.education.map(
+                (VerificationEducationEntry entry) =>
+                    _VerificationEducationEditor(
+                  key: ValueKey<String>(entry.id),
+                  entry: entry,
+                  onChanged: controller.updateEducation,
+                  onRemove: () => controller.removeEducation(entry.id),
                 ),
               ),
-            ],
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: controller.addEducation,
+                icon: const Icon(Icons.add_rounded),
+                label: const Text('Add education'),
+              ),
+            ),
           ],
         ),
       ),

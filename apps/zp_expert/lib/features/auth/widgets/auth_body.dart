@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../navigation/app_routes.dart';
+import 'auth_glass_panel.dart';
 import 'login_logo.dart';
 import 'otp_box.dart';
 import 'primary_button.dart';
@@ -110,45 +111,74 @@ class _AuthBodyState extends State<AuthBody> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
+    final bool isCompact = MediaQuery.sizeOf(context).width < 360;
 
     return Center(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24,
+        padding: EdgeInsets.symmetric(
+          horizontal: isCompact ? 16 : 24,
           vertical: 20,
         ),
         child: ConstrainedBox(
           constraints: const BoxConstraints(
             maxWidth: 420,
           ),
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              const LoginLogo(),
-              const SizedBox(height: 45),
-              AnimatedSwitcher(
-                duration: const Duration(
-                  milliseconds: 450,
+          child: AuthGlassPanel(
+            child: Column(
+              children: [
+                const SizedBox(height: 8),
+                const LoginLogo(),
+                const SizedBox(height: 28),
+                AnimatedSwitcher(
+                  duration: const Duration(
+                    milliseconds: 450,
+                  ),
+                  switchInCurve: Curves.easeOutBack,
+                  switchOutCurve: Curves.easeIn,
+                  child: step == AuthStep.phone
+                      ? _buildPhone(theme, colors)
+                      : _buildOtp(theme, colors),
                 ),
-                switchInCurve: Curves.easeOutBack,
-                switchOutCurve: Curves.easeIn,
-                child: step == AuthStep.phone
-                    ? _buildPhone(theme, colors)
-                    : _buildOtp(theme, colors),
-              ),
-              const SizedBox(height: 30),
-              PrimaryButton(
-                loading: loading,
-                text: step == AuthStep.phone ? "Continue" : "Verify OTP",
-                onPressed:
-                    step == AuthStep.phone ? continuePressed : verifyPressed,
-              ),
-              const SizedBox(height: 18),
-              Text(
-                "Need help? Contact Support",
-                style: theme.textTheme.bodySmall,
-              ),
-            ],
+                const SizedBox(height: 24),
+                PrimaryButton(
+                  loading: loading,
+                  text: step == AuthStep.phone ? "Continue" : "Verify OTP",
+                  onPressed:
+                      step == AuthStep.phone ? continuePressed : verifyPressed,
+                ),
+                const SizedBox(height: 18),
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      'Need help? ',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colors.onSurface.withValues(alpha: .72),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => context.push(ExpertRoutes.contact),
+                      style: TextButton.styleFrom(
+                        foregroundColor: colors.primary,
+                        minimumSize: Size.zero,
+                        padding: EdgeInsets.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: VisualDensity.compact,
+                      ),
+                      child: Text(
+                        'Contact Us',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          decoration: TextDecoration.underline,
+                          decorationColor: colors.primary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -178,7 +208,7 @@ class _AuthBodyState extends State<AuthBody> with TickerProviderStateMixin {
             "Login with your phone number to continue\nyour Expert journey",
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: Colors.black54,
+              color: colors.onSurface.withValues(alpha: .68),
               height: 1.4,
             ),
           ),
@@ -194,10 +224,10 @@ class _AuthBodyState extends State<AuthBody> with TickerProviderStateMixin {
         Container(
           height: 52,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: colors.surface.withValues(alpha: .94),
             borderRadius: BorderRadius.circular(30),
             border: Border.all(
-              color: Colors.grey.shade300,
+              color: colors.onSurface.withValues(alpha: .14),
             ),
           ),
           child: Row(
@@ -219,7 +249,7 @@ class _AuthBodyState extends State<AuthBody> with TickerProviderStateMixin {
               Container(
                 width: 1,
                 height: 24,
-                color: Colors.grey.shade300,
+                color: colors.onSurface.withValues(alpha: .14),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -232,6 +262,7 @@ class _AuthBodyState extends State<AuthBody> with TickerProviderStateMixin {
                     border: InputBorder.none,
                     counterText: "",
                     hintText: "Enter your phone number",
+                    hintStyle: TextStyle(fontSize: 13),
                   ),
                 ),
               ),
@@ -250,7 +281,9 @@ class _AuthBodyState extends State<AuthBody> with TickerProviderStateMixin {
             Expanded(
               child: Text(
                 "We'll send you a secure OTP to verify your number",
-                style: theme.textTheme.bodySmall,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: colors.onSurface.withValues(alpha: .76),
+                ),
               ),
             ),
           ],
@@ -263,6 +296,7 @@ class _AuthBodyState extends State<AuthBody> with TickerProviderStateMixin {
     ThemeData theme,
     ColorScheme colors,
   ) {
+    final double boxGap = MediaQuery.sizeOf(context).width < 360 ? 6 : 10;
     return Column(
       key: const ValueKey("otp"),
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -282,7 +316,7 @@ class _AuthBodyState extends State<AuthBody> with TickerProviderStateMixin {
             "Enter the OTP sent to your\nregistered mobile number",
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: Colors.black54,
+              color: colors.onSurface.withValues(alpha: .68),
               height: 1.4,
             ),
           ),
@@ -294,11 +328,17 @@ class _AuthBodyState extends State<AuthBody> with TickerProviderStateMixin {
             (index) => Expanded(
               child: Padding(
                 padding: EdgeInsets.only(
-                  right: index == 3 ? 0 : 10,
+                  right: index == 3 ? 0 : boxGap,
                 ),
                 child: OtpBox(
                   controller: otpControllers[index],
                   focusNode: otpFocus[index],
+                  onDigitEntered: index == otpControllers.length - 1
+                      ? null
+                      : () => otpFocus[index + 1].requestFocus(),
+                  onBackspaceWhenEmpty: index == 0
+                      ? null
+                      : () => _focusAndSelectOtpBox(index - 1),
                 ),
               ),
             ),
@@ -319,5 +359,14 @@ class _AuthBodyState extends State<AuthBody> with TickerProviderStateMixin {
         ),
       ],
     );
+  }
+
+  void _focusAndSelectOtpBox(int index) {
+    final TextEditingController controller = otpControllers[index];
+    controller.selection = TextSelection(
+      baseOffset: 0,
+      extentOffset: controller.text.length,
+    );
+    otpFocus[index].requestFocus();
   }
 }

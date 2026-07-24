@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../navigation/app_routes.dart';
+import '../../shared/widgets/glass_top_bar.dart';
 import '../../shared/widgets/gradient_page.dart';
 import '../../shared/widgets/top_scroll_fade.dart';
 import 'widgets/session_history_header.dart';
@@ -16,7 +17,7 @@ class SessionScreen extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+          padding: GlassTopBar.rootPagePadding,
           child: Column(
             children: <Widget>[
               SessionHistoryHeader(

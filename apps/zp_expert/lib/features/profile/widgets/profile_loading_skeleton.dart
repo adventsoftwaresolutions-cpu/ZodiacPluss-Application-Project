@@ -13,7 +13,7 @@ class ProfileLoadingSkeleton extends StatefulWidget {
 
 class _ProfileLoadingSkeletonState extends State<ProfileLoadingSkeleton>
     with SingleTickerProviderStateMixin {
-  static const int _entryCount = 6;
+  static const int _entryCount = 5;
 
   late final AnimationController _controller;
 
@@ -39,31 +39,26 @@ class _ProfileLoadingSkeletonState extends State<ProfileLoadingSkeleton>
         children: <Widget>[
           _AnimatedProfileSkeletonEntry(
             animation: _entryAnimation(0),
-            child: const _ProfileTitleSkeleton(),
-          ),
-          const SizedBox(height: 28),
-          _AnimatedProfileSkeletonEntry(
-            animation: _entryAnimation(1),
             child: const _ProfileHeaderSkeleton(),
           ),
           const SizedBox(height: 24),
           _AnimatedProfileSkeletonEntry(
-            animation: _entryAnimation(2),
+            animation: _entryAnimation(1),
             child: const _CardSkeleton(height: 142),
           ),
           const SizedBox(height: 16),
           _AnimatedProfileSkeletonEntry(
-            animation: _entryAnimation(3),
+            animation: _entryAnimation(2),
             child: const _CardSkeleton(height: 210),
           ),
           const SizedBox(height: 16),
           _AnimatedProfileSkeletonEntry(
-            animation: _entryAnimation(4),
+            animation: _entryAnimation(3),
             child: const _CardSkeleton(height: 142),
           ),
           const SizedBox(height: 16),
           _AnimatedProfileSkeletonEntry(
-            animation: _entryAnimation(5),
+            animation: _entryAnimation(4),
             child: const _CardSkeleton(height: 190),
           ),
         ],
@@ -99,29 +94,6 @@ class _AnimatedProfileSkeletonEntry extends StatelessWidget {
           ).animate(animation),
           child: child,
         ),
-      );
-}
-
-class _ProfileTitleSkeleton extends StatelessWidget {
-  const _ProfileTitleSkeleton();
-
-  @override
-  Widget build(BuildContext context) => const Row(
-        children: <Widget>[
-          ShimmerBox(width: 44, height: 44, borderRadius: 22),
-          SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                ShimmerBox(width: 164, height: 24),
-                SizedBox(height: 7),
-                ShimmerBox(width: 205, height: 14),
-              ],
-            ),
-          ),
-          ShimmerBox(width: 78, height: 36),
-        ],
       );
 }
 

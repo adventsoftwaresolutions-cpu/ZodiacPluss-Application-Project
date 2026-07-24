@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:zp_expert/themes/app_colors.dart';
 import 'performance_card_skeleton.dart';
 import '../data/performance_repository.dart';
 import '../data/performance_stats.dart';
@@ -10,12 +11,16 @@ class PerformanceCard extends ConsumerWidget {
     required this.onSessionHistoryTap,
     required this.onTransactionHistoryTap,
     required this.onReviewsTap,
+    required this.onTodayProgressTap,
+    required this.onOverallPerformanceTap,
     super.key,
   });
 
   final VoidCallback onSessionHistoryTap;
   final VoidCallback onTransactionHistoryTap;
   final VoidCallback onReviewsTap;
+  final VoidCallback onTodayProgressTap;
+  final VoidCallback onOverallPerformanceTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,6 +37,8 @@ class PerformanceCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Row(
+            children: <Widget>[
           const Text(
             'Performance Card',
             style: TextStyle(
@@ -39,6 +46,31 @@ class PerformanceCard extends ConsumerWidget {
               fontWeight: FontWeight.bold,
               color: Color(0xFF0D3B3E),
             ),
+          ),
+          const Spacer(),
+          GestureDetector(
+            onTap: onTodayProgressTap,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  "Today's Stats",
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 13,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ],
+            ),
+          ),
+            ],
           ),
           const SizedBox(height: 8),
           const Divider(height: 1),
@@ -48,6 +80,7 @@ class PerformanceCard extends ConsumerWidget {
               onSessionHistoryTap: onSessionHistoryTap,
               onTransactionHistoryTap: onTransactionHistoryTap,
               onReviewsTap: onReviewsTap,
+              onOverallPerformanceTap: onOverallPerformanceTap,
             ),
             loading: () => const PerformanceCardSkeleton(),
             error: (Object error, StackTrace stackTrace) => const Padding(
@@ -70,12 +103,14 @@ class _StatsRows extends StatelessWidget {
     required this.onSessionHistoryTap,
     required this.onTransactionHistoryTap,
     required this.onReviewsTap,
+    required this.onOverallPerformanceTap,
   });
 
   final PerformanceStats data;
   final VoidCallback onSessionHistoryTap;
   final VoidCallback onTransactionHistoryTap;
   final VoidCallback onReviewsTap;
+  final VoidCallback onOverallPerformanceTap;
 
   @override
   Widget build(BuildContext context) {
@@ -85,88 +120,44 @@ class _StatsRows extends StatelessWidget {
     return Column(
       children: <Widget>[
         _PerformanceRow(
-          icon: Icons.account_balance_wallet_rounded,
-          title: 'Earnings Today',
-          subtitle: 'Total Earnings till now',
-          trailing: Text(
-            currency.format(data.earningsToday),
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-        ),
-        _PerformanceRow(
           icon: Icons.history_rounded,
+          accentColor: AppColors.callGlowViolet,
           title: 'Session History',
           subtitle: 'Total sessions completed',
-          trailing: _ArrowButton(onTap: onSessionHistoryTap),
-        ),
-        _PerformanceRow(
-          icon: Icons.star_rounded,
-          title: 'Average Rating',
-          subtitle: 'Rating from clients',
-          trailing: Text(
-            data.averageRating.toStringAsFixed(1),
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-        ),
-        _PerformanceRow(
-          icon: Icons.access_time_rounded,
-          title: 'Response Time',
-          subtitle: 'Average response time',
-          trailing: Text(
-            _formatDuration(data.responseTime),
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+          trailing: _ArrowButton(
+            accentColor: AppColors.callGlowViolet,
+            onTap: onSessionHistoryTap,
           ),
         ),
         _PerformanceRow(
           icon: Icons.swap_horiz_rounded,
+          accentColor: AppColors.callGlowRose,
           title: 'Transaction History',
           subtitle: 'All transaction history and invoice',
-          trailing: _ArrowButton(onTap: onTransactionHistoryTap),
+          trailing: _ArrowButton(
+            accentColor: AppColors.callGlowRose,
+            onTap: onTransactionHistoryTap,
+          ),
         ),
         _PerformanceRow(
           icon: Icons.chat_bubble_outline_rounded,
+          accentColor: AppColors.info,
           title: 'Reviews',
           subtitle: 'All your session reviews',
-          trailing: _ArrowButton(onTap: onReviewsTap),
-        ),
-        _PerformanceRow(
-          icon: Icons.call_missed_rounded,
-          title: 'Missed Session',
-          subtitle: 'Your total missed session',
-          trailing: Text(
-            '${data.missedSessions}',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+          trailing: _ArrowButton(
+            accentColor: AppColors.info,
+            onTap: onReviewsTap,
           ),
         ),
         _PerformanceRow(
-          icon: Icons.cancel_outlined,
-          title: 'Cancel Session',
-          subtitle: 'Your total cancel session',
-          trailing: Text(
-            '${data.cancelledSessions}',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+          icon: Icons.insights_rounded,
+          accentColor: AppColors.primaryVariant,
+          title: 'Overall Performance',
+          subtitle: 'Day & month wise detailed stats',
+          trailing: _ArrowButton(
+            accentColor: AppColors.primaryVariant,
+            onTap: onOverallPerformanceTap,
           ),
-          isLast: true,
         ),
       ],
     );
@@ -182,6 +173,7 @@ String _formatDuration(Duration duration) {
 class _PerformanceRow extends StatelessWidget {
   const _PerformanceRow({
     required this.icon,
+    required this.accentColor,
     required this.title,
     required this.subtitle,
     required this.trailing,
@@ -189,6 +181,7 @@ class _PerformanceRow extends StatelessWidget {
   });
 
   final IconData icon;
+  final Color accentColor;
   final String title;
   final String subtitle;
   final Widget trailing;
@@ -204,6 +197,7 @@ class _PerformanceRow extends StatelessWidget {
             builder: (BuildContext context, BoxConstraints constraints) {
               final Widget details = _PerformanceDetails(
                 icon: icon,
+                accentColor: accentColor,
                 title: title,
                 subtitle: subtitle,
               );
@@ -238,11 +232,13 @@ class _PerformanceRow extends StatelessWidget {
 class _PerformanceDetails extends StatelessWidget {
   const _PerformanceDetails({
     required this.icon,
+    required this.accentColor,
     required this.title,
     required this.subtitle,
   });
 
   final IconData icon;
+  final Color accentColor;
   final String title;
   final String subtitle;
 
@@ -253,13 +249,16 @@ class _PerformanceDetails extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: const Color(0xFFDCEAE8),
+              color: Color.alphaBlend(
+                accentColor.withValues(alpha: 0.14),
+                Colors.white,
+              ),
               borderRadius: BorderRadius.circular(14),
             ),
             alignment: Alignment.center,
             child: Icon(
               icon,
-              color: Theme.of(context).colorScheme.primary,
+              color: accentColor,
               size: 22,
             ),
           ),
@@ -293,14 +292,18 @@ class _PerformanceDetails extends StatelessWidget {
 }
 
 class _ArrowButton extends StatelessWidget {
-  const _ArrowButton({required this.onTap});
+  const _ArrowButton({required this.accentColor, required this.onTap});
 
+  final Color accentColor;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: const Color(0xFFDCEAE8),
+      color: Color.alphaBlend(
+        accentColor.withValues(alpha: 0.14),
+        Colors.white,
+      ),
       shape: const CircleBorder(),
       child: InkWell(
         onTap: onTap,
@@ -310,7 +313,7 @@ class _ArrowButton extends StatelessWidget {
           child: Icon(
             Icons.arrow_forward_rounded,
             size: 18,
-            color: Theme.of(context).colorScheme.primary,
+            color: accentColor,
           ),
         ),
       ),

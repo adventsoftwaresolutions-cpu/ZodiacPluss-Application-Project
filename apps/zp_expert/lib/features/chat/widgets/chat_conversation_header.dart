@@ -7,11 +7,13 @@ class ChatConversationHeader extends StatelessWidget {
   const ChatConversationHeader({
     required this.conversation,
     required this.onBackTap,
+    required this.onClientNameTap,
     super.key,
   });
 
   final ChatConversationModel conversation;
   final VoidCallback onBackTap;
+  final VoidCallback onClientNameTap;
 
   @override
   Widget build(BuildContext context) => Row(
@@ -34,14 +36,21 @@ class ChatConversationHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  conversation.clientName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                      ),
+                Semantics(
+                  button: true,
+                  label: 'Open ${conversation.clientName} client history',
+                  child: GestureDetector(
+                    onTap: onClientNameTap,
+                    child: Text(
+                      conversation.clientName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800,
+                          ),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(

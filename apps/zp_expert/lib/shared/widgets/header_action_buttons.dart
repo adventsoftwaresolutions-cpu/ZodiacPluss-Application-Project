@@ -1,7 +1,10 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../constants/app_assets.dart';
+import '../../themes/app_radius.dart';
 
 class HeaderActionButtons extends StatelessWidget {
   const HeaderActionButtons({
@@ -68,24 +71,36 @@ class _ActionIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final BorderRadius borderRadius = BorderRadius.circular(AppRadius.lg);
 
     return Tooltip(
       message: tooltip,
-      child: Material(
-        color: colors.surface,
-        shape: const CircleBorder(),
-        elevation: 1,
-        child: InkWell(
-          customBorder: const CircleBorder(),
-          onTap: onTap,
-          child: SizedBox(
-            width: diameter,
-            height: diameter,
-            child: Center(
-              child: SvgPicture.asset(
-                assetPath,
-                width: iconSize,
-                height: iconSize,
+      child: ClipRRect(
+        borderRadius: borderRadius,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+          child: Material(
+            color: colors.surface.withValues(alpha: isDark ? 0.72 : 0.82),
+            child: InkWell(
+              borderRadius: borderRadius,
+              onTap: onTap,
+              child: Container(
+                width: diameter,
+                height: diameter,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: borderRadius,
+                  border: Border.all(
+                    color: (isDark ? Colors.white : colors.primary)
+                        .withValues(alpha: 0.16),
+                  ),
+                ),
+                child: SvgPicture.asset(
+                  assetPath,
+                  width: iconSize,
+                  height: iconSize,
+                ),
               ),
             ),
           ),

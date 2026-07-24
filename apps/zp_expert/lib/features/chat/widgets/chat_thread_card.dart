@@ -10,6 +10,7 @@ class ChatThreadCard extends StatelessWidget {
     required this.thread,
     required this.expertRole,
     this.onTap,
+    this.onClientNameTap,
     this.onJoinRoom,
     this.joinRoomLabel,
     super.key,
@@ -18,6 +19,7 @@ class ChatThreadCard extends StatelessWidget {
   final ChatThreadModel thread;
   final ExpertRole expertRole;
   final VoidCallback? onTap;
+  final VoidCallback? onClientNameTap;
   final VoidCallback? onJoinRoom;
   final String? joinRoomLabel;
 
@@ -55,7 +57,12 @@ class ChatThreadCard extends StatelessWidget {
                     expertRole: expertRole,
                   ),
                   const SizedBox(width: 12),
-                  Expanded(child: _ThreadDetails(thread: thread)),
+                  Expanded(
+                    child: _ThreadDetails(
+                      thread: thread,
+                      onClientNameTap: onClientNameTap,
+                    ),
+                  ),
                   const SizedBox(width: 8),
                   _ThreadMeta(thread: thread),
                 ],
@@ -147,23 +154,34 @@ class _ClientAvatar extends StatelessWidget {
 }
 
 class _ThreadDetails extends StatelessWidget {
-  const _ThreadDetails({required this.thread});
+  const _ThreadDetails({required this.thread, this.onClientNameTap});
 
   final ChatThreadModel thread;
+  final VoidCallback? onClientNameTap;
 
   @override
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            thread.clientName,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: thread.unreadCount > 0
-                      ? FontWeight.w800
-                      : FontWeight.w700,
-                ),
+          Semantics(
+            button: onClientNameTap != null,
+            label: 'Open ${thread.clientName} client history',
+            child: GestureDetector(
+              onTap: onClientNameTap,
+              child: Text(
+                thread.clientName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: onClientNameTap == null
+                          ? null
+                          : Theme.of(context).colorScheme.primary,
+                      fontWeight: thread.unreadCount > 0
+                          ? FontWeight.w800
+                          : FontWeight.w700,
+                    ),
+              ),
+            ),
           ),
           const SizedBox(height: 3),
           Text(

@@ -80,6 +80,7 @@ class StubChatConversationRepository implements ChatConversationRepository {
     return ChatConversationModel(
       threadId: threadId,
       sessionId: 'session-$threadId',
+      clientId: _clientId(threadId),
       clientName: name,
       consultationLabel:
           psychologist ? 'Video consultation ended' : 'Astrology consultation',
@@ -259,4 +260,19 @@ class StubChatConversationRepository implements ChatConversationRepository {
         'thread-astro-4': 'Neha Joshi',
       }[threadId] ??
       'Client';
+
+  String _clientId(String threadId) =>
+      <String, String>{
+        'thread-psy-1': 'client-101',
+        'thread-psy-2': 'client-102',
+        'thread-psy-3': 'client-103',
+        'thread-psy-4': 'client-104',
+        'thread-psy-5': 'client-105',
+        'thread-psy-6': 'client-106',
+        'thread-astro-1': 'client-201',
+        'thread-astro-2': 'client-202',
+        'thread-astro-3': 'client-203',
+        'thread-astro-4': 'client-204',
+      }[threadId] ??
+      'client-$threadId';
 }

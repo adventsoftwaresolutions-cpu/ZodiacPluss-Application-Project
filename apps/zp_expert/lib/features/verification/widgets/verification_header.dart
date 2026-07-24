@@ -4,9 +4,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../shared/constants/app_assets.dart';
 
 class VerificationHeader extends StatelessWidget {
-  const VerificationHeader({required this.onBack, super.key});
+  const VerificationHeader({required this.onSkip, super.key});
 
-  final VoidCallback onBack;
+  final VoidCallback onSkip;
 
   @override
   Widget build(BuildContext context) {
@@ -19,29 +19,23 @@ class VerificationHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              InkWell(
-                borderRadius: BorderRadius.circular(12),
-                onTap: onBack,
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: const Color(0xffE5E7EB),
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    size: 14,
-                    color: Color(0xff111827),
+              TextButton.icon(
+                key: const ValueKey<String>('verification-skip-button'),
+                onPressed: onSkip,
+                icon: const Icon(Icons.skip_next_rounded, size: 18),
+                label: const Text('Skip'),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: theme.colorScheme.primary,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 8,
                   ),
                 ),
               ),
               const SizedBox(height: 18),
               Text(
-                'Complete your profile',
+                'Apply to become an expert',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.titleLarge?.copyWith(

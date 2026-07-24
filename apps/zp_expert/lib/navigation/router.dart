@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../features/faq/faq.dart';
+import '../../features/splash/splash.dart';
 import '../../features/verification_pending/verification_pending.dart';
 import '../../features/auth/auth.dart';
 import '../../features/max_attempt_exhausted/max_attempt_exhausted.dart';
@@ -27,6 +28,8 @@ import '../../features/chat/chat.dart';
 import '../../features/chat/chat_conversation.dart';
 import '../../features/call_room/call_room.dart';
 import '../../features/kundali/kundali.dart';
+import '../../features/today_progress/today_progress.dart';
+import '../../features/overall_performance/overall_performance.dart';
 
 final List<NavItem> expertNavItems = <NavItem>[
   const NavItem(
@@ -52,8 +55,13 @@ final List<NavItem> expertNavItems = <NavItem>[
 ];
 
 final GoRouter expertRouter = GoRouter(
-  initialLocation: '/home',
+  initialLocation: ExpertRoutes.home,
   routes: <RouteBase>[
+    GoRoute(
+      path: ExpertRoutes.splash,
+      builder: (BuildContext context, GoRouterState state) =>
+          const SplashPage(),
+    ),
     GoRoute(
       path: ExpertRoutes.managePricing,
       builder: (BuildContext context, GoRouterState state) =>
@@ -120,6 +128,16 @@ final GoRouter expertRouter = GoRouter(
       path: ExpertRoutes.kundali,
       builder: (BuildContext context, GoRouterState state) =>
           const KundaliPage(),
+    ),
+    GoRoute(
+      path: ExpertRoutes.todayProgress,
+      builder: (BuildContext context, GoRouterState state) =>
+          const TodayProgressPage(),
+    ),
+    GoRoute(
+      path: ExpertRoutes.overallPerformance,
+      builder: (BuildContext context, GoRouterState state) =>
+          const OverallPerformancePage(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state,

@@ -7,9 +7,14 @@ import 'session_price_breakdown_card.dart';
 import 'session_summary_card.dart';
 
 class SessionInfoContent extends ConsumerWidget {
-  const SessionInfoContent({required this.sessionId, super.key});
+  const SessionInfoContent({
+    required this.sessionId,
+    required this.onClientTap,
+    super.key,
+  });
 
   final String sessionId;
+  final ValueChanged<String> onClientTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,7 +29,10 @@ class SessionInfoContent extends ConsumerWidget {
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.only(bottom: 116),
         children: <Widget>[
-          SessionOverviewCard(detail: detail),
+          SessionOverviewCard(
+            detail: detail,
+            onClientTap: () => onClientTap(detail.client.id),
+          ),
           const SizedBox(height: 16),
           const SessionReplayCard(),
           const SizedBox(height: 16),

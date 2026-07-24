@@ -31,7 +31,7 @@ class QualificationCard extends ConsumerWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'Required for psychologist verification. Upload your degree or professional certificate.',
+            'Required for verification. Upload your degree or professional certificate.',
             style: theme.textTheme.bodySmall?.copyWith(
               fontSize: 12,
               color: const Color(0xff6B7280),

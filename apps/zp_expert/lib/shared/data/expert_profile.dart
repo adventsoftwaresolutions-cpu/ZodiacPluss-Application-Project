@@ -62,20 +62,30 @@ class ExpertProfile {
 
   ExpertProfile copyWith({
     String? name,
+    ExpertRole? role,
+    String? avatarUrl,
+    bool? isVerified,
+    String? about,
+    int? yearsExperience,
+    List<EducationEntry>? education,
+    List<String>? specializations,
+    bool? introUploaded,
+    int? mediaCount,
+    List<ConsultationRate>? consultationRates,
   }) =>
       ExpertProfile(
         id: id,
         name: name ?? this.name,
-        role: role,
-        avatarUrl: avatarUrl,
-        isVerified: isVerified,
-        about: about,
-        yearsExperience: yearsExperience,
-        education: education,
-        specializations: specializations,
-        introUploaded: introUploaded,
-        mediaCount: mediaCount,
-        consultationRates: consultationRates,
+        role: role ?? this.role,
+        avatarUrl: avatarUrl ?? this.avatarUrl,
+        isVerified: isVerified ?? this.isVerified,
+        about: about ?? this.about,
+        yearsExperience: yearsExperience ?? this.yearsExperience,
+        education: education ?? this.education,
+        specializations: specializations ?? this.specializations,
+        introUploaded: introUploaded ?? this.introUploaded,
+        mediaCount: mediaCount ?? this.mediaCount,
+        consultationRates: consultationRates ?? this.consultationRates,
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
