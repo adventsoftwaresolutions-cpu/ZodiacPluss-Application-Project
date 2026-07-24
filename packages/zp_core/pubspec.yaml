@@ -29,6 +29,10 @@ dependencies:
   # Locallization
   intl: ^0.20.2
 
+  # Shared UI
+  flutter_svg: ^2.3.0
+  shimmer: ^3.0.0
+
   # Video / Audio Calling
   agora_rtc_engine: ^6.5.4
   permission_handler: ^11.3.1
@@ -49,3 +53,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/icons/kundali/

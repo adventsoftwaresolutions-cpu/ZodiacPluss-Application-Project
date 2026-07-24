@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zp_expert/features/kundali/data/models/kundali_chart_model.dart';
+import 'package:zp_core/zp_core.dart';
 import 'package:zp_expert/features/kundali/kundali.dart';
-import 'package:zp_expert/features/kundali/widgets/kundali_chart_reveal.dart';
-import 'package:zp_expert/features/kundali/widgets/kundali_loading_skeleton.dart';
-import 'package:zp_expert/shared/widgets/shimmer_box.dart';
 
 void main() {
   testWidgets('switches chart type, chart style, and divisional chart',
@@ -48,7 +45,7 @@ void main() {
       ),
     );
 
-    expect(find.byType(ShimmerBox), findsAtLeastNWidgets(6));
+    expect(find.byType(KundaliShimmerBox), findsAtLeastNWidgets(6));
     expect(tester.takeException(), isNull);
   });
 

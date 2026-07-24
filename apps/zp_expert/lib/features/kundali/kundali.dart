@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:zp_core/zp_core.dart';
 
 import '../../shared/widgets/gradient_page.dart';
-import '../../themes/app_spacing.dart';
-import 'widgets/kundali_content.dart';
 import 'widgets/kundali_header.dart';
-import 'widgets/kundali_primary_navigation.dart';
 
 class KundaliPage extends StatelessWidget {
-  const KundaliPage({super.key});
+  const KundaliPage({this.birthData, super.key});
+
+  final KundaliBirthData? birthData;
+
+  static final KundaliBirthData _previewBirthData = KundaliBirthData(
+    birthDateTimeUtc: DateTime.utc(1990, 5, 12, 8, 30),
+    latitude: 28.6139,
+    longitude: 77.2090,
+    timeZoneId: 'Asia/Kolkata',
+    placeName: 'New Delhi',
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -20,39 +28,10 @@ class KundaliPage extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(20, 12, 20, 0),
               child: KundaliHeader(),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: 16),
             Expanded(
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(28),
-                  ),
-                ),
-                child: CustomScrollView(
-                  slivers: <Widget>[
-                    SliverToBoxAdapter(
-                      child: Center(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 720),
-                          child: const KundaliPrimaryNavigation(),
-                        ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: Center(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 720),
-                          child: const Padding(
-                            padding: EdgeInsets.only(top: AppSpacing.sm),
-                            child: KundaliContent(),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+              child: KundaliView(
+                birthData: birthData ?? _previewBirthData,
               ),
             ),
           ],

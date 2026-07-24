@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zp_expert/features/kundali/data/models/kundali_chart_model.dart';
+import 'package:zp_core/zp_core.dart';
 
 void main() {
-  test('chart request maps selections to Prokerala query values', () {
+  test('chart request maps selections to engine-neutral calculation keys', () {
     const request = KundaliChartRequest(
       section: KundaliChartSection.divisional,
       style: KundaliChartStyle.southIndian,

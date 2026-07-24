@@ -42,18 +42,6 @@ class AppAssets {
   static const String blobWave = 'assets/icons/blob/blobWave.svg';
   static const String blobLeftTopCorner =
       'assets/icons/blob/blob_left_top_corner.svg';
-  static const String kundaliSun = 'assets/icons/kundali/sun.svg';
-  static const String kundaliMoon = 'assets/icons/kundali/moon.svg';
-  static const String kundaliMars = 'assets/icons/kundali/mars.svg';
-  static const String kundaliMercury = 'assets/icons/kundali/mercury.svg';
-  static const String kundaliJupiter = 'assets/icons/kundali/jupiter.svg';
-  static const String kundaliVenus = 'assets/icons/kundali/venus.svg';
-  static const String kundaliSaturn = 'assets/icons/kundali/saturn.svg';
-  static const String kundaliRahu = 'assets/icons/kundali/rahu.svg';
-  static const String kundaliKetu = 'assets/icons/kundali/ketu.svg';
-  static const String kundaliUranus = 'assets/icons/kundali/uranus.svg';
-  static const String kundaliNeptune = 'assets/icons/kundali/neptune.svg';
-  static const String kundaliPluto = 'assets/icons/kundali/pluto.svg';
   static const String splashLotus = 'assets/icons/splash/lotus.svg';
   static const String splashMoonPhase = 'assets/icons/splash/moon_phase.svg';
 

@@ -1,0 +1,11 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../models/kundali_birth_data.dart';
+import '../models/kundali_planet_model.dart';
+import 'kundali_repository_provider.dart';
+
+final kundaliPlanetsProvider =
+    FutureProvider.autoDispose.family<KundaliPlanetsData, KundaliBirthData>(
+  (ref, birthData) =>
+      ref.watch(kundaliRepositoryProvider).getPlanets(birthData),
+);

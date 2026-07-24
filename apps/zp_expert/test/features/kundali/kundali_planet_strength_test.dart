@@ -1,7 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zp_expert/features/kundali/data/models/kundali_planet_model.dart';
-import 'package:zp_expert/features/kundali/data/repository/kundali_planet_strength_calculator.dart';
-import 'package:zp_expert/features/kundali/data/repository/kundali_planets_repository.dart';
+import 'package:zp_core/zp_core.dart';
 
 void main() {
   const calculator = KundaliPlanetStrengthCalculator();

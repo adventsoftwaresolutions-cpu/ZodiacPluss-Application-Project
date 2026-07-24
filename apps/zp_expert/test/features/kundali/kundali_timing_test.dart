@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zp_expert/features/kundali/data/models/kundali_timing_model.dart';
-import 'package:zp_expert/features/kundali/data/repository/kundali_timing_repository.dart';
+import 'package:zp_core/zp_core.dart';
 
 void main() {
   test('stub resolves current and next Vimshottari periods', () async {

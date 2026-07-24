@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zp_expert/features/kundali/data/models/kundali_dosha_model.dart';
-import 'package:zp_expert/features/kundali/data/repository/kundali_doshas_repository.dart';
+import 'package:zp_core/zp_core.dart';
 
 void main() {
   test('stub returns only the supported Dosha calculations', () async {
